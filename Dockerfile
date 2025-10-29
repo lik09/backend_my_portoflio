@@ -1,29 +1,31 @@
-# =========================
-# Stage 1: Build React App
-# =========================
+# ------------------------------
+# Stage 1: Build React (inside Laravel)
+# ------------------------------
 FROM node:20-bullseye AS node_builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy only package files first
 COPY package*.json ./
 
-# Install dependencies (avoid Rollup optional deps issue)
+# Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy React source files
-COPY . .
+# Copy all Laravel + React source code
+COPY ./backend ./backend
+WORKDIR /app/backend
 
-# Build the React app
+# Build React
 RUN npm run build
 
-# =========================
-# Stage 2: Build Laravel App
-# =========================
+# ------------------------------
+# Stage 2: Build PHP / Laravel backend
+# ------------------------------
 FROM php:8.2-fpm-bullseye AS php_builder
 
-# Install system dependencies and PHP extensions
+WORKDIR /var/www/html
+
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -34,34 +36,27 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libzip-dev \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Copy Laravel backend + React build
+COPY --from=node_builder /app/backend ./
+
+# Install PHP dependencies
 WORKDIR /var/www/html
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer install --no-dev --optimize-autoloader
 
-# Copy Laravel files (repo root)
-COPY . ./
-
-# Copy built React files from stage 1 into Laravel public folder
-COPY --from=node_builder /app/dist ./public
-
-# Set permissions (optional)
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
-# =========================
-# Stage 3: Final Image
-# =========================
+# ------------------------------
+# Stage 3: Runtime image
+# ------------------------------
 FROM php:8.2-fpm-bullseye
 
 WORKDIR /var/www/html
 
-# Copy Laravel + React build from php_builder stage
+# Copy everything from php_builder
 COPY --from=php_builder /var/www/html ./
 
-# Expose port for PHP-FPM
+# Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM
 CMD ["php-fpm"]
