@@ -9,10 +9,10 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies (legacy-peer-deps avoids Rollup optional deps issue)
+# Install dependencies (avoid Rollup optional deps issue)
 RUN npm install --legacy-peer-deps
 
-# Copy all React source files
+# Copy React source files
 COPY . .
 
 # Build the React app
@@ -23,7 +23,7 @@ RUN npm run build
 # =========================
 FROM php:8.2-fpm-bullseye AS php_builder
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -33,18 +33,20 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy Laravel files
-COPY ./backend ./
+# Copy Laravel files (repo root)
+COPY . ./
 
 # Copy built React files from stage 1 into Laravel public folder
 COPY --from=node_builder /app/dist ./public
 
-# Set permissions (optional, but recommended)
+# Set permissions (optional)
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
@@ -55,10 +57,10 @@ FROM php:8.2-fpm-bullseye
 
 WORKDIR /var/www/html
 
-# Copy everything from PHP builder stage
+# Copy Laravel + React build from php_builder stage
 COPY --from=php_builder /var/www/html ./
 
-# Expose port 9000 (php-fpm)
+# Expose port for PHP-FPM
 EXPOSE 9000
 
 # Start PHP-FPM
