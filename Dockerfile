@@ -23,4 +23,6 @@ COPY --from=php_builder /var/www/html ./
 EXPOSE 8080
 RUN php artisan key:generate || true
 RUN chmod -R 777 storage bootstrap/cache
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+# CMD php artisan serve --host=0.0.0.0 --port=$PORT
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+
