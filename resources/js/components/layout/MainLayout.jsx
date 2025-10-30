@@ -72,7 +72,7 @@ const MainLayout = () => {
         <div style={{cursor: 'pointer'}} onClick={ 
           () => navigate('/')
           }>
-          <img src={logo} alt="" />
+          <img src="/storage/general/logo.png" alt=""  style={{height:"80px",width:"200px"}}/>
         </div>
         {/* <div className="demo-logo-vertical" style={{ marginTop:100 }} /> */}
         
@@ -87,7 +87,7 @@ const MainLayout = () => {
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
-          <Flex align='center' justify='space-between' style={{padding:'0px 18px'}}>
+          <Flex align='center' justify='space-between' style={{padding:'0px 18px',height:'60px'}}>
             <h3 style={{fontSize:20 ,fontWeight:'600' }}>My Portoflio</h3>
             <AvatarDropdown />
 
