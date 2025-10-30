@@ -12,16 +12,15 @@ COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
 # Copy all Laravel + React source code
-COPY ./backend ./backend
-WORKDIR /app/backend
+COPY . .
 
-# Build React
+# Build React (Vite)
 RUN npm run build
 
 # ------------------------------
 # Stage 2: Build PHP / Laravel backend
 # ------------------------------
-FROM php:8.2-fpm-bullseye AS php_builder
+FROM php:8.2-cli-bullseye AS php_builder
 
 WORKDIR /var/www/html
 
@@ -38,25 +37,31 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy Laravel backend + React build
-COPY --from=node_builder /app/backend ./
+# Copy Laravel backend + built assets
+COPY --from=node_builder /app ./
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install PHP dependencies
-WORKDIR /var/www/html
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install --no-dev --optimize-autoloader
 
 # ------------------------------
 # Stage 3: Runtime image
 # ------------------------------
-FROM php:8.2-fpm-bullseye
+FROM php:8.2-cli-bullseye
 
 WORKDIR /var/www/html
 
-# Copy everything from php_builder
+# Copy from php_builder
 COPY --from=php_builder /var/www/html ./
 
-# Expose port 9000 for PHP-FPM
-EXPOSE 9000
+# Expose port
+EXPOSE 8080
 
-CMD ["php-fpm"]
+# Laravel app key & permissions (optional)
+RUN php artisan key:generate || true
+RUN chmod -R 777 storage bootstrap/cache
+
+# Run Laravel development server on Render’s $PORT
+CMD php artisan serve --host=0.0.0.0 --port=$PORT
