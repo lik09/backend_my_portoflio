@@ -7,7 +7,6 @@ import {
 } from '@ant-design/icons';
 import { Breadcrumb, Flex, Layout, Menu, theme } from 'antd';
 import { Outlet, useLocation, useNavigate } from "react-router-dom";   // <-- import Outlet
-import logo from '../../../../public/storage/general/logo.png';
 import AvatarDropdown from '../profile/AvatarDropdown';
 import { AiOutlineFundProjectionScreen } from 'react-icons/ai';
 import { PiStudent } from 'react-icons/pi';
