@@ -49,8 +49,10 @@ COPY --from=php_builder /var/www/html ./
 EXPOSE 8080
 
 # Set permissions
-RUN php artisan key:generate || true
-RUN chmod -R 777 storage bootstrap/cache
+# RUN php artisan key:generate || true
+RUN php artisan config:cache
+
+RUN chmod -R 775 storage bootstrap/cache
 
 # Use JSON form CMD (best practice)
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
