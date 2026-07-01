@@ -110,7 +110,7 @@ class ConnectMeController extends Controller
             $connect_me = Connect_Me::findOrFail($id);
 
             $connect_me->delete();
-            
+             
             return response()->json([
                 'message' => 'Connect me deleted successfully',
                 'list' => $connect_me
