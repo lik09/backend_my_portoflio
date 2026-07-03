@@ -17,7 +17,9 @@ class EducationInfoController extends Controller
         try{
             $education_info = EducationInfo::all();
             return response()->json($education_info);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -46,7 +48,9 @@ class EducationInfoController extends Controller
            ], 201);
 
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
            return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -100,7 +104,9 @@ class EducationInfoController extends Controller
                 'error' => 'Not Found',
                 'message' => "Education Info with ID $id not found"
             ], 404);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
            return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -130,7 +136,9 @@ class EducationInfoController extends Controller
                 'error' => 'Not Found',
                 'message' => "Education Info with ID $id not found"
             ], 404);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
            return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()

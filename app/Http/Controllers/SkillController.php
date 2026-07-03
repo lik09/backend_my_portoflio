@@ -22,7 +22,9 @@ class SkillController extends Controller
                 'list' => $skill
             ]);
             
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -70,7 +72,9 @@ class SkillController extends Controller
                 'list' => $skill
             ], 201);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -127,6 +131,8 @@ class SkillController extends Controller
                 'list' => $skill
             ]);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',

@@ -18,7 +18,9 @@ class SkillTypeController extends Controller
             return response()->json(
              $skill_type
             );
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -33,7 +35,7 @@ class SkillTypeController extends Controller
     {
         try{
             $validated = $request->validate([
-                'name' => 'required|string',
+                'name' => 'required|string|unique:skill__types,name',
                 'name_kh' => 'nullable|string',
                 'status' => 'required|boolean',
             ]);
@@ -44,7 +46,9 @@ class SkillTypeController extends Controller
                 'message' => 'Skill Type added successfully',
                 'list' => $skill_type
             ], 201);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -71,7 +75,7 @@ class SkillTypeController extends Controller
             $skill_type = SkillType::findOrFail($id);
 
             $validated = $request->validate([
-                'name' => 'sometimes|required|string',
+                'name' => 'sometimes|required|string|unique:skill__types,name,' . $id,
                 'name_kh' => 'nullable|string',
                 'status' => 'sometimes|required|boolean',
             ]);
@@ -82,7 +86,9 @@ class SkillTypeController extends Controller
                 'message' => 'Skill Type updated successfully',
                 'list' => $skill_type
             ]);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -104,7 +110,9 @@ class SkillTypeController extends Controller
                 'message' => 'Skill Type deleted successfully',
                 'list' => $skill_type
             ]);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()

@@ -39,7 +39,9 @@ class ContactInfoController extends Controller
                 'message' => 'Data added successfully',
                 'data' => $contact_info
             ], 201);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
          return response()->json([
             'error' => 'error server',
             'message' => $e->getMessage(),
@@ -90,7 +92,9 @@ class ContactInfoController extends Controller
                 'message' => 'Data updated successfully',
                 'data' => $contact_info
             ]);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
          return response()->json([
             'error' => 'error server',
             'message' => $e->getMessage(),
@@ -118,7 +122,9 @@ class ContactInfoController extends Controller
                     'error' => 'Not Found',
                     'message' => "Contact info with ID $id not found"
                 ], 404);
-            } catch (Exception $e) {
+            } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
                 return response()->json([
                     'error' => 'Server Error',
                     'message' => $e->getMessage(),

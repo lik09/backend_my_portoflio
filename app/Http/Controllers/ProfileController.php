@@ -65,6 +65,8 @@ class ProfileController extends Controller
                 'profile' => $profile
             ], 201);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
@@ -134,6 +136,8 @@ class ProfileController extends Controller
                 'message' => 'Profile updated successfully',
                 'profile' => $profile,
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',

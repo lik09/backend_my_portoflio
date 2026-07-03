@@ -16,7 +16,9 @@ class SkillInfoController extends Controller
         try{
             $skill_info = SkillInfo::all();
             return response()->json($skill_info);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -45,7 +47,9 @@ class SkillInfoController extends Controller
                 'list' => $skill_info
             ], 201);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -85,7 +89,9 @@ class SkillInfoController extends Controller
                 'list' => $skill_info
             ]);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -105,6 +111,8 @@ class SkillInfoController extends Controller
             return response()->json([
                 'message' => 'Skill Info deleted successfully.'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',

@@ -22,7 +22,9 @@ class ProjectController extends Controller
                 'list' => $projects
             ]);
             
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -90,7 +92,9 @@ class ProjectController extends Controller
                 'message' => 'Data created successfully!'
             ], 201);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()

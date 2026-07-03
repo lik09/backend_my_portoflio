@@ -16,7 +16,9 @@ class ExperienceInfoController extends Controller
         try{
             $experiences_info = ExperienceInfo::all();
             return response()->json($experiences_info);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -45,7 +47,9 @@ class ExperienceInfoController extends Controller
                 'experience info' => $experiences_info
             ], 201);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -85,7 +89,9 @@ class ExperienceInfoController extends Controller
                 'experience info' => $experiences_info
             ]);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -105,6 +111,8 @@ class ExperienceInfoController extends Controller
             return response()->json([
                 'message' => 'Experience Info deleted successfully.'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',

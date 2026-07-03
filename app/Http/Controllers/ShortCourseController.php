@@ -18,7 +18,9 @@ class ShortCourseController extends Controller
         try{
             $short_course = ShortCourse::all();
             return response()->json($short_course);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -50,6 +52,8 @@ class ShortCourseController extends Controller
                 'message' => 'Course added successfully',
                 'data'    => $short_course
             ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error'   => 'Server Error',
@@ -106,6 +110,8 @@ class ShortCourseController extends Controller
                 'message' => 'Course updated successfully',
                 'data'    => $course
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error'   => 'Server error',
@@ -130,7 +136,9 @@ class ShortCourseController extends Controller
                 'message' => 'short course deleted successfully',
                 'list' => $course
             ]);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()

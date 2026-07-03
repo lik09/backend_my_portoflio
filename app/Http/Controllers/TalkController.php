@@ -18,7 +18,9 @@ class TalkController extends Controller
             return response()->json([
                 'list' => $talks
             ]);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -46,7 +48,9 @@ class TalkController extends Controller
                 'message' => 'Talk added successfully',
                 'list' => $talks
             ], 201);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -86,6 +90,8 @@ class TalkController extends Controller
                 'message' => 'Talk updated successfully',
                 'list' => $talks
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
@@ -108,7 +114,9 @@ class TalkController extends Controller
                 'message' => 'Talk deleted successfully',
                 'list' => $talks
             ]);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()

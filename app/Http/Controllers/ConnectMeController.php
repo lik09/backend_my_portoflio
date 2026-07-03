@@ -18,7 +18,9 @@ class ConnectMeController extends Controller
             return response()->json([
                 'list' => $connect_me
             ]);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -50,7 +52,9 @@ class ConnectMeController extends Controller
                 'message' => 'Connect me added successfully',
                 'list' => $connect_me
             ], 201);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -93,7 +97,9 @@ class ConnectMeController extends Controller
                 'message' => 'Connect me updated successfully',
                 'list' => $connect_me
             ]);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -115,7 +121,9 @@ class ConnectMeController extends Controller
                 'message' => 'Connect me deleted successfully',
                 'list' => $connect_me
             ]);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()

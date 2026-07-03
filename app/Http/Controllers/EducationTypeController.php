@@ -17,7 +17,9 @@ class EducationTypeController extends Controller
             $education_type = EducationType::all();
             return response()->json(['list' =>  $education_type ]
             );
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -32,8 +34,8 @@ class EducationTypeController extends Controller
     {
         try{
            $validated = $request->validate([
-                'name' => 'required|string',
-                'name_kh' => 'nullable|string',
+                'name' => 'required|string|unique:education__types,name',
+                'name_kh' => 'required|string|unique:education__types,name_kh',
                 'status' => 'required|boolean'
            ]);
            $edu_type = EducationType::create($validated);
@@ -44,7 +46,9 @@ class EducationTypeController extends Controller
            ], 201);
 
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
            return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -70,8 +74,8 @@ class EducationTypeController extends Controller
         try{
             $edu_type = EducationType::findOrFail($id);
             $validated = $request->validate([
-                'name' => 'sometimes|required|string',
-                'name_kh' => 'nullable|string',
+                'name' => 'sometimes|required|string|unique:education__types,name,' . $id,
+                'name_kh' => 'sometimes|required|string|unique:education__types,name_kh,' . $id,
                 'status' => 'sometimes|required|boolean'
             ]);
             $edu_type->update($validated);
@@ -82,7 +86,9 @@ class EducationTypeController extends Controller
             ]);
 
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
            return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -106,7 +112,9 @@ class EducationTypeController extends Controller
             ]);
 
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
            return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()

@@ -16,7 +16,9 @@ class ProjectInfoController extends Controller
         try{
             $project_info = ProjectInfo::all();
             return response()->json($project_info);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -45,7 +47,9 @@ class ProjectInfoController extends Controller
                 'list' => $project_info
             ], 201);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -85,7 +89,9 @@ class ProjectInfoController extends Controller
                 'project info' => $project_info
             ]);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -105,6 +111,8 @@ class ProjectInfoController extends Controller
             return response()->json([
                 'message' => 'Project Info deleted successfully.'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',

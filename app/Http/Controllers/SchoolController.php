@@ -94,6 +94,8 @@ class SchoolController extends Controller
                 'data'    => $high_school
             ], 201);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error'   => 'Server error',
@@ -176,6 +178,8 @@ class SchoolController extends Controller
                 'data'    => $high_school
             ]);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error'   => 'Server error',

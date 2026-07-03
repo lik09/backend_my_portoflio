@@ -16,7 +16,9 @@ class ProjectTypeController extends Controller
         try{
             $project_type = ProjectType::all();
             return response()->json($project_type);
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -31,7 +33,7 @@ class ProjectTypeController extends Controller
     {
         try{
             $validated = $request->validate([
-                'name' => 'required|string',
+                'name' => 'required|string|unique:project__types,name',
                 'name_kh' => 'nullable|string',
                 'status' => 'required|boolean'
             ]);
@@ -43,7 +45,9 @@ class ProjectTypeController extends Controller
                 'project type' => $project_type
             ], 201);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -69,7 +73,7 @@ class ProjectTypeController extends Controller
             $project_type = ProjectType::findOrFail($id);
 
             $validated = $request->validate([
-                'name' => 'sometimes|required|string',
+                'name' => 'sometimes|required|string|unique:project__types,name,' . $id,
                 'name_kh' => 'nullable|string',
                 'status' => 'sometimes|required|boolean'
             ]);
@@ -81,7 +85,9 @@ class ProjectTypeController extends Controller
                 'project Type' => $project_type
             ]);
 
-        }catch(Exception $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
                 'message' => $e->getMessage()
@@ -101,6 +107,8 @@ class ProjectTypeController extends Controller
             return response()->json([
                 'message' => 'Project Type deleted successfully.'
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Server error',
