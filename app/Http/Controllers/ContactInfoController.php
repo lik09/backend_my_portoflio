@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact_Info;
+use App\Models\ContactInfo;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class ContactInfoController extends Controller
     public function index()
     {
         return response()->json([
-            'list' => Contact_Info::all()
+            'list' => ContactInfo::all()
         ]);
     }
 
@@ -33,7 +33,7 @@ class ContactInfoController extends Controller
                 'status' => 'required|boolean'
             ]);
 
-            $contact_info = Contact_Info::create($validated);
+            $contact_info = ContactInfo::create($validated);
             
             return response()->json([
                 'message' => 'Data added successfully',
@@ -53,7 +53,7 @@ class ContactInfoController extends Controller
     public function show(string $id)
     {
         try {
-            $contact_info = Contact_Info::findOrFail($id);
+            $contact_info = ContactInfo::findOrFail($id);
 
             return response()->json([
                 'list' => $contact_info,
@@ -72,27 +72,24 @@ class ContactInfoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $contact_info = Contact_Info::findOrFail($id);
-        if (!$contact_info) {
-            return response()->json(['error' => 'Not Found'], 404);
-        }
+        $contact_info = ContactInfo::findOrFail($id);
 
         try{
 
             $validated = $request->validate([
-                'title' => 'required|string',
-                'title_kh' => 'required|string',
+                'title' => 'sometimes|required|string',
+                'title_kh' => 'sometimes|required|string',
                 'bio' => 'nullable|string',
                 'bio_kh' => 'nullable|string',
-                'status' => 'required|boolean'
+                'status' => 'sometimes|required|boolean'
             ]);
 
             $contact_info->update($validated);
-            
+
             return response()->json([
-                'message' => 'Data update successfully',
+                'message' => 'Data updated successfully',
                 'data' => $contact_info
-            ], 201);
+            ]);
         }catch(Exception $e){
          return response()->json([
             'error' => 'error server',
@@ -107,7 +104,7 @@ class ContactInfoController extends Controller
     public function destroy(string $id)
     {
         try {
-                $contact_info = Contact_Info::findOrFail($id);
+                $contact_info = ContactInfo::findOrFail($id);
 
                 $contact_info->delete();
 

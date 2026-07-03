@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class High_School extends Model
+class HighSchool extends Model
 {
+    protected $table = 'high__schools';
+
     protected $fillable = [
         'edu_type_id',
         'name_school',
@@ -28,7 +30,7 @@ class High_School extends Model
 
     public function eduType()
     {
-        return $this->belongsTo(Education_Type::class, 'edu_type_id');
+        return $this->belongsTo(EducationType::class, 'edu_type_id');
     }
 
 }

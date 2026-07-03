@@ -64,11 +64,11 @@ class SkillController extends Controller
                 'pct_status'    => $validated['pct_status'],
                 'status'        => $validated['status']
             ]);
-            
+
             return response()->json([
                 'message' => 'Skill added successfully',
                 'list' => $skill
-            ]);
+            ], 201);
 
         }catch(Exception $e){
             return response()->json([
@@ -97,14 +97,14 @@ class SkillController extends Controller
             $skill = Skill::findOrFail($id);
 
             $validated = $request->validate([
-                'name' => 'required|string',
-                'name_kh' => 'required|string',
-                'skill_type_id' => 'required|integer|exists:skill__types,id',
+                'name' => 'sometimes|required|string',
+                'name_kh' => 'sometimes|required|string',
+                'skill_type_id' => 'sometimes|required|integer|exists:skill__types,id',
                 'description' => 'nullable|string',
                 'description_kh' => 'nullable|string',
                 'images' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'pct_status' => 'required|integer|min:0|max:255',
-                'status' => 'required|boolean',
+                'pct_status' => 'sometimes|required|integer|min:0|max:255',
+                'status' => 'sometimes|required|boolean',
             ]);
 
             // Handle single image upload

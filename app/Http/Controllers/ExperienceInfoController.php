@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Experience_Info;
+use App\Models\ExperienceInfo;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ class ExperienceInfoController extends Controller
     public function index()
     {
         try{
-            $experiences_info = Experience_Info::all();
+            $experiences_info = ExperienceInfo::all();
             return response()->json($experiences_info);
         }catch(Exception $e){
             return response()->json([
@@ -32,16 +32,18 @@ class ExperienceInfoController extends Controller
         try{
             $validated = $request->validate([
                 'title' => 'required|string',
-                'bio'=> 'required|string',
+                'title_kh' => 'nullable|string',
+                'bio' => 'required|string',
+                'bio_kh' => 'nullable|string',
                 'status' => 'required|boolean'
             ]);
 
-            $experiences_info = Experience_Info::create($validated);
+            $experiences_info = ExperienceInfo::create($validated);
 
             return response()->json([
                 'message' => 'Experience Info added successfully',
                 'experience info' => $experiences_info
-            ]);
+            ], 201);
 
         }catch(Exception $e){
             return response()->json([
@@ -56,7 +58,7 @@ class ExperienceInfoController extends Controller
      */
     public function show(string $id)
     {
-        $experiences_info = Experience_Info::findOrFail($id);
+        $experiences_info = ExperienceInfo::findOrFail($id);
         return response()->json($experiences_info);
     }
 
@@ -66,18 +68,20 @@ class ExperienceInfoController extends Controller
     public function update(Request $request, string $id)
     {
         try{
-            $experiences_info = Experience_Info::findOrFail($id);
+            $experiences_info = ExperienceInfo::findOrFail($id);
 
             $validated = $request->validate([
-                'title' => 'required|string',
-                'bio'=> 'required|string',
-                'status' => 'required|boolean'
+                'title' => 'sometimes|required|string',
+                'title_kh' => 'nullable|string',
+                'bio' => 'sometimes|required|string',
+                'bio_kh' => 'nullable|string',
+                'status' => 'sometimes|required|boolean'
             ]);
 
             $experiences_info->update($validated);
 
             return response()->json([
-                'message' => 'Experience Info undated successfully',
+                'message' => 'Experience Info updated successfully',
                 'experience info' => $experiences_info
             ]);
 
@@ -95,7 +99,7 @@ class ExperienceInfoController extends Controller
     public function destroy(string $id)
     {
        try {
-            $experience_info = Experience_Info::findOrFail($id);
+            $experience_info = ExperienceInfo::findOrFail($id);
             $experience_info->delete();
 
             return response()->json([

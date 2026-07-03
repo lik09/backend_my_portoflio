@@ -2,34 +2,39 @@ import axios from "axios";
 import { config } from "./config";
 
 export const request = (url="" , method ="get" ,data={}, isFormData = false)=>{
+    const token = localStorage.getItem('auth_token');
     return axios({
         url: config.base_url_api + url,
         method: method,
         data: data,
         headers: {
             "Accept" : "application/json",
-            "Content-Type": isFormData ? "multipart/form-data" : "application/json"
-
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
+            ...(token ? { "Authorization": `Bearer ${token}` } : {}),
         }
     }).then(res => {
         return res.data;
     }).catch((error) => {
-         console.log("Error");
-        return "error-in-catch";
+        if (error.response?.status === 401) {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+            window.location.href = '/login';
+            return null;
+        }
+        return null;
     });
 }
 
 
-export async function requestFormData(url, method = 'GET', body = null, config = {}) {
-// const baseUrl = config.base_url_api; // your API base
-  const baseUrl = 'http://localhost:8000/api/'; // your API base
+export async function requestFormData(url, method = 'GET', body = null, opts = {}) {
+  const baseUrl = config.base_url_api;
 
-
+  const token = localStorage.getItem('auth_token');
   const options = {
     method,
     headers: {
-      // Don't set Content-Type for FormData; browser sets it with boundary
-      ...config.headers,
+      ...opts.headers,
+      ...(token ? { "Authorization": `Bearer ${token}` } : {}),
     },
   };
 

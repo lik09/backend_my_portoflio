@@ -69,8 +69,10 @@ function ProfilePage() {
     try {
       const formData = new FormData();
       formData.append("fullname", values.fullname || "");
+      formData.append("fullname_kh", values.fullname_kh || "");
       formData.append("bio", values.bio || "");
-      formData.append("status", values.status); // FIXED ✅
+      formData.append("bio_kh", values.bio_kh || "");
+      formData.append("status", values.status);
 
       if (Array.isArray(values.connect_with_me)) {
         formData.append("connect_with_me", JSON.stringify(values.connect_with_me));
@@ -187,7 +189,9 @@ function ProfilePage() {
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
     { title: "Full Name", dataIndex: "fullname", key: "fullname" },
+    { title: "Full Name (KH)", dataIndex: "fullname_kh", key: "fullname_kh" },
     { title: "BIO", dataIndex: "bio", key: "bio" },
+    { title: "BIO (KH)", dataIndex: "bio_kh", key: "bio_kh" },
     {
       title: "Connect With Me",
       dataIndex: "connect_with_me",
@@ -277,8 +281,14 @@ function ProfilePage() {
           <Form.Item label="Full Name" name="fullname" rules={[{ required: true, message: "Please input full name" }]}>
             <Input />
           </Form.Item>
+          <Form.Item label="Full Name (KH)" name="fullname_kh">
+            <Input />
+          </Form.Item>
 
           <Form.Item label="BIO" name="bio" rules={[{ required: true, message: "Please input bio" }]}>
+            <Input.TextArea style={{ height: 100 }} />
+          </Form.Item>
+          <Form.Item label="BIO (KH)" name="bio_kh">
             <Input.TextArea style={{ height: 100 }} />
           </Form.Item>
 
@@ -377,7 +387,13 @@ function ProfilePage() {
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
       {/* Table */}
-      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} />
+      <Table 
+        bordered 
+        columns={columns} 
+        dataSource={state.list} 
+        loading={state.loading} 
+        scroll={{ x: 'max-content' }} 
+      />
     </div>
   );
 }

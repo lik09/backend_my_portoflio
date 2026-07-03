@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project_Type;
+use App\Models\ProjectType;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ class ProjectTypeController extends Controller
     public function index()
     {
         try{
-            $project_type = Project_Type::all();
+            $project_type = ProjectType::all();
             return response()->json($project_type);
         }catch(Exception $e){
             return response()->json([
@@ -32,15 +32,16 @@ class ProjectTypeController extends Controller
         try{
             $validated = $request->validate([
                 'name' => 'required|string',
+                'name_kh' => 'nullable|string',
                 'status' => 'required|boolean'
             ]);
 
-            $project_type = Project_Type::create($validated);
+            $project_type = ProjectType::create($validated);
 
             return response()->json([
                 'message' => 'Project Type added successfully',
                 'project type' => $project_type
-            ]);
+            ], 201);
 
         }catch(Exception $e){
             return response()->json([
@@ -55,7 +56,7 @@ class ProjectTypeController extends Controller
      */
     public function show(string $id)
     {
-        $project_type = Project_Type::findOrFail($id);
+        $project_type = ProjectType::findOrFail($id);
         return response()->json($project_type);
     }
 
@@ -65,17 +66,18 @@ class ProjectTypeController extends Controller
     public function update(Request $request, string $id)
     {
         try{
-            $project_type = Project_Type::findOrFail($id);
+            $project_type = ProjectType::findOrFail($id);
 
             $validated = $request->validate([
-                'name' => 'required|string',
-                'status' => 'required|boolean'
+                'name' => 'sometimes|required|string',
+                'name_kh' => 'nullable|string',
+                'status' => 'sometimes|required|boolean'
             ]);
 
             $project_type->update($validated);
 
             return response()->json([
-                'message' => 'Project Type udated successfully',
+                'message' => 'Project Type updated successfully',
                 'project Type' => $project_type
             ]);
 
@@ -93,7 +95,7 @@ class ProjectTypeController extends Controller
     public function destroy(string $id)
     {
         try {
-            $project_type = Project_Type::findOrFail($id);
+            $project_type = ProjectType::findOrFail($id);
             $project_type->delete();
 
             return response()->json([

@@ -8,13 +8,14 @@ class Profile extends Model
 {
     protected $fillable = [
         'fullname',
+        'fullname_kh',
         'bio',
+        'bio_kh',
         'connect_with_me',
         'status',
         'cv',
         'cv_original_name',
         'photo_cover',
-        // 'user_id' // Uncomment if you added user relationship
     ];
 
    

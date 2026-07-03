@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConnectMeController;
 use App\Http\Controllers\ContactFormMailController;
 use App\Http\Controllers\ContactInfoController;
@@ -19,10 +20,17 @@ use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SkillInfoController;
 use App\Http\Controllers\SkillTypeController;
 use App\Http\Controllers\TalkController;
-use App\Models\Contact_Info;
-use App\Models\Education_Info;
-use App\Models\Project_Info;
+use App\Models\ContactInfo;
+use App\Models\EducationInfo;
+use App\Models\ProjectInfo;
 use Illuminate\Http\Request;
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
+Route::get('/me', [AuthController::class, 'me']);
+Route::post('/update-profile', [AuthController::class, 'updateProfile']);
+Route::put('/change-password', [AuthController::class, 'changePassword']);
+Route::put('/update-language', [AuthController::class, 'updateLanguage']);
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

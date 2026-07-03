@@ -106,7 +106,7 @@ class ProjectController extends Controller
         $projects = Project::with(["project_type"])->findOrFail($id);
         return response()->json([
             "data" => $projects
-        ],201);
+        ]);
     }
 
     /**
@@ -117,9 +117,9 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         $validated = $request->validate([
-            'name'              => 'required|string|max:255',
-            'name_kh'           => 'required|string|max:255',
-            'pro_type_id'       => 'required|exists:project__types,id',
+            'name'              => 'sometimes|required|string|max:255',
+            'name_kh'           => 'sometimes|required|string|max:255',
+            'pro_type_id'       => 'sometimes|required|exists:project__types,id',
             'description'       => 'nullable|string',
             'description_kh'    => 'nullable|string',
 
@@ -131,11 +131,11 @@ class ProjectController extends Controller
 
             'url_live_demo'     => 'nullable|url',
             'url_code_project'  => 'nullable|url',
-            'release_year'      => 'required|integer|min:1900|max:' . date('Y'),
+            'release_year'      => 'sometimes|required|integer|min:1900|max:' . date('Y'),
             'start_date'        => 'nullable|date',
             'end_date'          => 'nullable|date|after_or_equal:start_date',
             'customer_used'     => 'nullable|integer|min:0',
-            'status'            => 'required|boolean',
+            'status'            => 'sometimes|required|boolean',
         ]);
 
         // Handle image upload

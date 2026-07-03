@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Modal, Select, Space, Table, Tag } from "antd";
 import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
@@ -11,7 +11,6 @@ function ExperienceInfoPage() {
   const [formRef] = Form.useForm();
   const [toast, setToast] = useState(null);
 
-  // Delete modal state
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
@@ -43,10 +42,12 @@ function ExperienceInfoPage() {
   const handleClose = () => setOpenModal(false);
 
   const handleSave = async (values) => {
-    const body = { 
-      title: values.title, 
-      bio: values.bio, 
-      status: values.status 
+    const body = {
+      title: values.title,
+      title_kh: values.title_kh,
+      bio: values.bio,
+      bio_kh: values.bio_kh,
+      status: values.status,
     };
     let url = "experiences_info",
       method = "post";
@@ -55,8 +56,6 @@ function ExperienceInfoPage() {
       url = `experiences_info/${formRef.getFieldValue("id")}`;
       method = "put";
     }
-
-
 
     setState((pre) => ({ ...pre, loading: true }));
     try {
@@ -74,12 +73,13 @@ function ExperienceInfoPage() {
   };
 
   const handleEditBtn = (record) => {
-  
     formRef.setFieldsValue({
       title: record.title,
+      title_kh: record.title_kh,
       bio: record.bio,
+      bio_kh: record.bio_kh,
       status: record.status,
-      id: record.id
+      id: record.id,
     });
     setOpenModal(true);
   };
@@ -115,7 +115,9 @@ function ExperienceInfoPage() {
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
     { title: "Title", dataIndex: "title", key: "title" },
+    { title: "Title (KH)", dataIndex: "title_kh", key: "title_kh" },
     { title: "BIO", dataIndex: "bio", key: "bio" },
+    { title: "BIO (KH)", dataIndex: "bio_kh", key: "bio_kh" },
     {
       title: "Status",
       dataIndex: "status",
@@ -127,7 +129,7 @@ function ExperienceInfoPage() {
       key: "action",
       render: (_, record) => (
         <Space>
-          <Button type="primary"  onClick={() => handleEditBtn(record)}> Edit <EditFilled /></Button>
+          <Button type="primary" onClick={() => handleEditBtn(record)}>Edit <EditFilled /></Button>
           <Button danger onClick={() => handleDeleteClick(record)}>Delete <DeleteFilled /></Button>
         </Space>
       ),
@@ -143,7 +145,6 @@ function ExperienceInfoPage() {
         </Button>
       </div>
 
-      {/* Form Modal */}
       <Modal title="Experience Information" footer={null} open={openModal} onCancel={handleClose}>
         <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
           <Form.Item name="id" hidden>
@@ -152,7 +153,13 @@ function ExperienceInfoPage() {
           <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input title" }]}>
             <Input />
           </Form.Item>
+          <Form.Item label="Title (KH)" name="title_kh">
+            <Input />
+          </Form.Item>
           <Form.Item label="BIO" name="bio">
+            <Input.TextArea style={{ height: 100 }} />
+          </Form.Item>
+          <Form.Item label="BIO (KH)" name="bio_kh">
             <Input.TextArea style={{ height: 100 }} />
           </Form.Item>
           <Form.Item label="Status" name="status" rules={[{ required: true, message: "Please select status" }]}>
@@ -162,16 +169,13 @@ function ExperienceInfoPage() {
             <div style={{ textAlign: "right" }}>
               <Space>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button type="primary" htmlType="submit">
-                  Save
-                </Button>
+                <Button type="primary" htmlType="submit">Save</Button>
               </Space>
             </div>
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* Delete Modal */}
       <Modal
         title="Confirm Delete"
         open={deleteModalOpen}
@@ -183,11 +187,9 @@ function ExperienceInfoPage() {
         Are you sure you want to delete this item?
       </Modal>
 
-      {/* Toast */}
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
-      {/* Table */}
-      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} />
+      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} scroll={{ x: 'max-content' }} />
     </div>
   );
 }

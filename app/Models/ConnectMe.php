@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Connect_Me extends Model
+class ConnectMe extends Model
 {
+    protected $table = 'connect__mes';
+
     protected $fillable = [
         'name',
         'name_kh',

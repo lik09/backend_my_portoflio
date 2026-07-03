@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project_Info;
+use App\Models\ProjectInfo;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ class ProjectInfoController extends Controller
     public function index()
     {
         try{
-            $project_info = Project_Info::all();
+            $project_info = ProjectInfo::all();
             return response()->json($project_info);
         }catch(Exception $e){
             return response()->json([
@@ -32,16 +32,18 @@ class ProjectInfoController extends Controller
         try{
             $validated = $request->validate([
                 'title' => 'required|string',
-                'bio'=> 'required|string',
+                'title_kh' => 'nullable|string',
+                'bio' => 'required|string',
+                'bio_kh' => 'nullable|string',
                 'status' => 'required|boolean'
             ]);
 
-            $project_info = Project_Info::create($validated);
+            $project_info = ProjectInfo::create($validated);
 
             return response()->json([
                 'message' => 'Project Info added successfully',
                 'list' => $project_info
-            ]);
+            ], 201);
 
         }catch(Exception $e){
             return response()->json([
@@ -56,7 +58,7 @@ class ProjectInfoController extends Controller
      */
     public function show(string $id)
     {
-        $project_info = Project_Info::findOrFail($id);
+        $project_info = ProjectInfo::findOrFail($id);
         return response()->json($project_info);
     }
 
@@ -66,18 +68,20 @@ class ProjectInfoController extends Controller
     public function update(Request $request, string $id)
     {
         try{
-            $project_info = Project_Info::findOrFail($id);
+            $project_info = ProjectInfo::findOrFail($id);
 
             $validated = $request->validate([
-                'title' => 'required|string',
-                'bio'=> 'required|string',
-                'status' => 'required|boolean'
+                'title' => 'sometimes|required|string',
+                'title_kh' => 'nullable|string',
+                'bio' => 'sometimes|required|string',
+                'bio_kh' => 'nullable|string',
+                'status' => 'sometimes|required|boolean'
             ]);
 
             $project_info->update($validated);
 
             return response()->json([
-                'message' => 'Project Info undated successfully',
+                'message' => 'Project Info updated successfully',
                 'project info' => $project_info
             ]);
 
@@ -95,7 +99,7 @@ class ProjectInfoController extends Controller
     public function destroy(string $id)
     {
         try {
-            $project_info = Project_Info::findOrFail($id);
+            $project_info = ProjectInfo::findOrFail($id);
             $project_info->delete();
 
             return response()->json([

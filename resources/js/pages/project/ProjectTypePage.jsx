@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Modal, Select, Space, Table, Tag } from "antd";
 import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
@@ -11,7 +11,6 @@ function ProjectTypePage() {
   const [formRef] = Form.useForm();
   const [toast, setToast] = useState(null);
 
-  // Delete modal state
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
@@ -43,10 +42,10 @@ function ProjectTypePage() {
   const handleClose = () => setOpenModal(false);
 
   const handleSave = async (values) => {
-    const body = { 
-      name: values.name, 
-      bio: values.bio, 
-      status: values.status 
+    const body = {
+      name: values.name,
+      name_kh: values.name_kh,
+      status: values.status,
     };
     let url = "project_type",
       method = "post";
@@ -60,7 +59,7 @@ function ProjectTypePage() {
     try {
       const res = await request(url, method, body);
       if (res && !res.error) {
-        showToast("success", res?.message);
+        showToast("success", res?.message || "Saved successfully");
         handleClose();
         fetchList();
       }
@@ -74,9 +73,9 @@ function ProjectTypePage() {
   const handleEditBtn = (record) => {
     formRef.setFieldsValue({
       name: record.name,
-      bio: record.bio,
+      name_kh: record.name_kh,
       status: record.status,
-      id: record.id
+      id: record.id,
     });
     setOpenModal(true);
   };
@@ -112,6 +111,7 @@ function ProjectTypePage() {
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
     { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Name (KH)", dataIndex: "name_kh", key: "name_kh" },
     {
       title: "Status",
       dataIndex: "status",
@@ -123,7 +123,7 @@ function ProjectTypePage() {
       key: "action",
       render: (_, record) => (
         <Space>
-          <Button type="primary"  onClick={() => handleEditBtn(record)}> Edit <EditFilled /></Button>
+          <Button type="primary" onClick={() => handleEditBtn(record)}>Edit <EditFilled /></Button>
           <Button danger onClick={() => handleDeleteClick(record)}>Delete <DeleteFilled /></Button>
         </Space>
       ),
@@ -133,16 +133,21 @@ function ProjectTypePage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Project Information</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Project Type</h3>
         <Button type="primary" style={{ fontSize: 16, fontWeight: 600 }} onClick={handleNew}>
           <MdOutlineAdd /> Add
         </Button>
       </div>
 
-      {/* Form Modal */}
-      <Modal title="Project Information" footer={null} open={openModal} onCancel={handleClose}>
+      <Modal title="Project Type" footer={null} open={openModal} onCancel={handleClose}>
         <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
+          <Form.Item name="id" hidden>
+            <Input type="hidden" />
+          </Form.Item>
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input name" }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Name (KH)" name="name_kh">
             <Input />
           </Form.Item>
           <Form.Item label="Status" name="status" rules={[{ required: true, message: "Please select status" }]}>
@@ -152,16 +157,13 @@ function ProjectTypePage() {
             <div style={{ textAlign: "right" }}>
               <Space>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button type="primary" htmlType="submit">
-                  Save
-                </Button>
+                <Button type="primary" htmlType="submit">Save</Button>
               </Space>
             </div>
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* Delete Modal */}
       <Modal
         title="Confirm Delete"
         open={deleteModalOpen}
@@ -173,11 +175,9 @@ function ProjectTypePage() {
         Are you sure you want to delete this item?
       </Modal>
 
-      {/* Toast */}
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
-      {/* Table */}
-      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} />
+      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} scroll={{ x: 'max-content' }} />
     </div>
   );
 }

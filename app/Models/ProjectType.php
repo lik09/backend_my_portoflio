@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Project_Type extends Model
+class ProjectType extends Model
 {
-    protected  $fillable = ['name', 'status'];
+    protected $table = 'project__types';
+
+    protected  $fillable = ['name', 'name_kh', 'status'];
 
     public function projects(){
         return $this->hasMany(Project::class);

@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Short_Course extends Model
+class ShortCourse extends Model
 {
+    protected $table = 'short__courses';
+
     protected $fillable = [
         'course_name',
         'course_name_kh',

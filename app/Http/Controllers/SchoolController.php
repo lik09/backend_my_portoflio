@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\High_School;
+use App\Models\HighSchool;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -11,7 +11,7 @@ class SchoolController extends Controller
 {
     public function index()
     {
-        $schools = High_School::with('eduType')->get()->map(function ($school) {
+        $schools = HighSchool::with('eduType')->get()->map(function ($school) {
         return [
             'id' => $school->id,
             'edu_type_id' => [
@@ -76,7 +76,7 @@ class SchoolController extends Controller
                 }
             }
 
-            $high_school = High_School::create([
+            $high_school = HighSchool::create([
                 'edu_type_id'          => $validated['edu_type_id'],
                 'name_school'          => $validated['name_school'],
                 'name_school_kh'       => $validated['name_school_kh'],
@@ -104,7 +104,7 @@ class SchoolController extends Controller
 
     public function show(string $id)
     {
-        $high_school = High_School::find($id);
+        $high_school = HighSchool::find($id);
 
         if (!$high_school) {
             return response()->json(['error' => 'Not Found'], 404);
@@ -115,7 +115,7 @@ class SchoolController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $high_school = High_School::find($id);
+        $high_school = HighSchool::find($id);
 
         if (!$high_school) {
             return response()->json(['error' => 'Not Found'], 404);
@@ -186,7 +186,7 @@ class SchoolController extends Controller
 
     public function destroy(string $id)
     {
-        $high_school = High_School::find($id);
+        $high_school = HighSchool::find($id);
 
         if (!$high_school) {
             return response()->json(['error' => 'Not Found'], 404);

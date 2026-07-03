@@ -1,34 +1,49 @@
 import React from "react";
-import { Avatar, Menu, Dropdown } from "antd";
-import { UserAddOutlined, UserOutlined, SettingOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Avatar, Dropdown } from "antd";
+import { UserOutlined, SettingOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-
-function getItem(label, key, icon, danger = false) {
-  return { key, icon, label, danger };
-}
+import { request } from "../../utils/request";
+import { config } from "../../utils/config";
 
 const AvatarDropdown = () => {
   const navigate = useNavigate();
 
+  const _raw = localStorage.getItem("auth_user");
+  const authUser = (_raw && _raw !== "undefined") ? JSON.parse(_raw) : {};
+  const avatarSrc = authUser.profile_image
+    ? config.image_path + authUser.profile_image
+    : null;
+
   const menuItems = [
-    getItem("Profile", "/profile", <UserOutlined />),
-    getItem("Setting", "/setting", <SettingOutlined />),
-    getItem("Logout", "logout", <LogoutOutlined />, true), // highlighted in red
+    { key: "/profile",  icon: <UserOutlined />,  label: "Profile" },
+    { key: "/setting",  icon: <SettingOutlined />, label: "Setting" },
+    { key: "logout",    icon: <LogoutOutlined />,  label: "Logout", danger: true },
   ];
 
-  const handleMenuClick = (e) => {
-    if (e.key === "logout") {
-      console.log("Perform Logout");
+  const handleMenuClick = async ({ key }) => {
+    if (key === "logout") {
+      await request("logout", "post");
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_user");
+      navigate("/login", { replace: true });
     } else {
-      navigate(e.key); // works for /profile and /setting
+      navigate(key);
     }
   };
 
-  const menu = <Menu onClick={handleMenuClick} items={menuItems} />;
-
   return (
-    <Dropdown overlay={menu} placement="bottomRight" arrow trigger={['hover']}>
-      <Avatar size="large" icon={<UserAddOutlined />} style={{ cursor: "pointer" }} />
+    <Dropdown
+      menu={{ items: menuItems, onClick: handleMenuClick }}
+      placement="bottomRight"
+      arrow
+      trigger={["hover"]}
+    >
+      <Avatar
+        size="large"
+        src={avatarSrc}
+        icon={!avatarSrc ? <UserOutlined /> : undefined}
+        style={{ cursor: "pointer" }}
+      />
     </Dropdown>
   );
 };

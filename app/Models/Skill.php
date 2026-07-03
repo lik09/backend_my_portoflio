@@ -19,6 +19,6 @@ class Skill extends Model
 
     public function skill_type()
     {
-        return $this->belongsTo(Skill_Type::class, 'skill_type_id');
+        return $this->belongsTo(SkillType::class, 'skill_type_id');
     }
 }

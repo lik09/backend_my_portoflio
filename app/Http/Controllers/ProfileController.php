@@ -26,8 +26,10 @@ class ProfileController extends Controller
         try {
             $validated = $request->validate([
                 'fullname' => 'required|string|max:255',
+                'fullname_kh' => 'nullable|string|max:255',
                 'bio' => 'required|string',
-                'connect_with_me' => 'nullable|string', // JSON string
+                'bio_kh' => 'nullable|string',
+                'connect_with_me' => 'nullable|string',
                 'status' => 'required|boolean',
                 'cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
                 'photo_cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -46,15 +48,8 @@ class ProfileController extends Controller
             // }
 
             if ($request->hasFile('cv')) {
-                if (isset($profile) && $profile->cv) {
-                    Storage::disk('public')->delete($profile->cv);
-                }
-
-                $originalName = $request->file('cv')->getClientOriginalName();
-                $path = $request->file('cv')->store('cvs', 'public');
-
-                $validated['cv'] = $path;
-                $validated['cv_original_name'] = $originalName;
+                $validated['cv'] = $request->file('cv')->store('cvs', 'public');
+                $validated['cv_original_name'] = $request->file('cv')->getClientOriginalName();
             }
 
 
@@ -98,8 +93,10 @@ class ProfileController extends Controller
 
             $validated = $request->validate([
                 'fullname' => 'sometimes|required|string|max:255',
+                'fullname_kh' => 'nullable|string|max:255',
                 'bio' => 'sometimes|required|string',
-                'connect_with_me' => 'nullable|string', // JSON string from form-data
+                'bio_kh' => 'nullable|string',
+                'connect_with_me' => 'nullable|string',
                 'status' => 'sometimes|required|boolean',
                 'cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
                 'photo_cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -120,6 +117,7 @@ class ProfileController extends Controller
                     Storage::disk('public')->delete($profile->cv);
                 }
                 $validated['cv'] = $request->file('cv')->store('cvs', 'public');
+                $validated['cv_original_name'] = $request->file('cv')->getClientOriginalName();
             }
 
             // Handle photo_cover file upload

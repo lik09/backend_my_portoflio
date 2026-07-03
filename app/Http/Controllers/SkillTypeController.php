@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Skill_Type;
+use App\Models\SkillType;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ class SkillTypeController extends Controller
     public function index()
     {
         try{
-            $skill_type = Skill_Type::all();
+            $skill_type = SkillType::all();
             return response()->json(
              $skill_type
             );
@@ -34,15 +34,16 @@ class SkillTypeController extends Controller
         try{
             $validated = $request->validate([
                 'name' => 'required|string',
+                'name_kh' => 'nullable|string',
                 'status' => 'required|boolean',
             ]);
 
-            $skill_type = Skill_Type::create($validated);
-            
+            $skill_type = SkillType::create($validated);
+
             return response()->json([
                 'message' => 'Skill Type added successfully',
                 'list' => $skill_type
-            ]);
+            ], 201);
         }catch(Exception $e){
             return response()->json([
                 'error' => 'Server error',
@@ -57,7 +58,7 @@ class SkillTypeController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'list' => Skill_Type::findOrFail($id)
+            'list' => SkillType::findOrFail($id)
         ]);
     }
 
@@ -67,11 +68,12 @@ class SkillTypeController extends Controller
     public function update(Request $request, string $id)
     {
         try{
-            $skill_type = Skill_Type::findOrFail($id);
+            $skill_type = SkillType::findOrFail($id);
 
             $validated = $request->validate([
-                'name' => 'required|string',
-                'status' => 'required|boolean',
+                'name' => 'sometimes|required|string',
+                'name_kh' => 'nullable|string',
+                'status' => 'sometimes|required|boolean',
             ]);
 
             $skill_type->update($validated);
@@ -94,7 +96,7 @@ class SkillTypeController extends Controller
     public function destroy(string $id)
     {
         try{
-            $skill_type = Skill_Type::findOrFail($id);
+            $skill_type = SkillType::findOrFail($id);
 
             $skill_type->delete();
             

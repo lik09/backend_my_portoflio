@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Short_Course;
+use App\Models\ShortCourse;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +16,7 @@ class ShortCourseController extends Controller
     {
 
         try{
-            $short_course = Short_Course::all();
+            $short_course = ShortCourse::all();
             return response()->json($short_course);
         }catch(Exception $e){
             return response()->json([
@@ -44,7 +44,7 @@ class ShortCourseController extends Controller
                 'status'          => 'required|boolean',
             ]);
 
-            $short_course = Short_Course::create($validated);
+            $short_course = ShortCourse::create($validated);
 
             return response()->json([
                 'message' => 'Course added successfully',
@@ -63,7 +63,7 @@ class ShortCourseController extends Controller
      */
     public function show(string $id)
     {
-        $course = Short_Course::find($id);
+        $course = ShortCourse::find($id);
 
         if (!$course) {
             return response()->json(['error' => 'Not Found'], 404);
@@ -76,39 +76,43 @@ class ShortCourseController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-{
-    $course = Short_Course::findOrFail($id);
+    {
+        try {
+            $course = ShortCourse::findOrFail($id);
 
-    $validated = $request->validate([
-        'course_name'     => 'sometimes|string|max:191|unique:short__courses,course_name,' . $id . ',id',
-        'course_name_kh'  => 'sometimes|string|max:191|unique:short__courses,course_name_kh,' . $id . ',id',
-        'teacher_name'    => 'sometimes|string|max:191',
-        'teacher_name_kh' => 'sometimes|string|max:191',
-        'description'     => 'nullable|string',
-        'description_kh'  => 'nullable|string',
-        'time_study'      => 'nullable|string|max:100',
-        'mode'            => 'sometimes|in:online,direct',
-        'status'          => 'sometimes|boolean',
-    ]);
+            $validated = $request->validate([
+                'course_name'     => 'sometimes|string|max:191|unique:short__courses,course_name,' . $id . ',id',
+                'course_name_kh'  => 'sometimes|string|max:191|unique:short__courses,course_name_kh,' . $id . ',id',
+                'teacher_name'    => 'sometimes|string|max:191',
+                'teacher_name_kh' => 'sometimes|string|max:191',
+                'description'     => 'nullable|string',
+                'description_kh'  => 'nullable|string',
+                'time_study'      => 'nullable|string|max:100',
+                'mode'            => 'sometimes|in:online,direct',
+                'status'          => 'sometimes|boolean',
+            ]);
 
-    // If nothing valid is passed, stop here
-    if (empty($validated)) {
-        return response()->json([
-            'message' => 'No fields were provided for update',
-            'data'    => $course
-        ], 400);
+            if (empty($validated)) {
+                return response()->json([
+                    'message' => 'No fields were provided for update',
+                    'data'    => $course
+                ], 400);
+            }
+
+            $course->update($validated);
+            $course->refresh();
+
+            return response()->json([
+                'message' => 'Course updated successfully',
+                'data'    => $course
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'error'   => 'Server error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
-
-    $course->update($validated);
-
-    // reload fresh values from DB
-    $course->refresh();
-
-    return response()->json([
-        'message' => 'Course updated successfully',
-        'data'    => $course
-    ]);
-}
 
 
 
@@ -118,7 +122,7 @@ class ShortCourseController extends Controller
     public function destroy(string $id)
     {
         try{
-            $course = Short_Course::findOrFail($id);
+            $course = ShortCourse::findOrFail($id);
 
             $course->delete();
             

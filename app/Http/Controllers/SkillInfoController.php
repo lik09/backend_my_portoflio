@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Skill_Info;
+use App\Models\SkillInfo;
 use Exception;
 use Illuminate\Http\Request;
-use Mockery\Expectation;
 
 class SkillInfoController extends Controller
 {
@@ -15,7 +14,7 @@ class SkillInfoController extends Controller
     public function index()
     {
         try{
-            $skill_info = Skill_Info::all();
+            $skill_info = SkillInfo::all();
             return response()->json($skill_info);
         }catch(Exception $e){
             return response()->json([
@@ -33,16 +32,18 @@ class SkillInfoController extends Controller
         try{
             $validated = $request->validate([
                 'title' => 'required|string',
+                'title_kh' => 'nullable|string',
                 'bio' => 'required|string',
+                'bio_kh' => 'nullable|string',
                 'status' => 'required|boolean',
             ]);
 
-            $skill_info = Skill_Info::create($validated);
-            
+            $skill_info = SkillInfo::create($validated);
+
             return response()->json([
                 'message' => 'Skill Info added successfully',
                 'list' => $skill_info
-            ]);
+            ], 201);
 
         }catch(Exception $e){
             return response()->json([
@@ -58,7 +59,7 @@ class SkillInfoController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'list' => Skill_Info::findOrFail($id)
+            'list' => SkillInfo::findOrFail($id)
         ]);
     }
 
@@ -68,11 +69,13 @@ class SkillInfoController extends Controller
     public function update(Request $request, string $id)
     {
         try{
-            $skill_info = Skill_Info::findOrfail($id);
+            $skill_info = SkillInfo::findOrFail($id);
             $validated = $request->validate([
-                'title' => 'required|string',
-                'bio' => 'required|string',
-                'status' => 'required|boolean',
+                'title' => 'sometimes|required|string',
+                'title_kh' => 'nullable|string',
+                'bio' => 'sometimes|required|string',
+                'bio_kh' => 'nullable|string',
+                'status' => 'sometimes|required|boolean',
             ]);
 
             $skill_info->update($validated);
@@ -96,7 +99,7 @@ class SkillInfoController extends Controller
     public function destroy(string $id)
     {
         try {
-            $skill_info = Skill_Info::findOrFail($id);
+            $skill_info = SkillInfo::findOrFail($id);
             $skill_info->delete();
 
             return response()->json([

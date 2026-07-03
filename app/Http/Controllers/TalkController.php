@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Talks;
 use Exception;
-use Illuminate\Console\View\Components\Task;
 use Illuminate\Http\Request;
 
 class TalkController extends Controller
@@ -44,14 +43,14 @@ class TalkController extends Controller
             $talks = Talks::create($validated);
 
             return response()->json([
-                'message' => 'Talk added succesfully',
+                'message' => 'Talk added successfully',
                 'list' => $talks
-            ]);
+            ], 201);
         }catch(Exception $e){
             return response()->json([
-                'error' => 'Servr error',
+                'error' => 'Server error',
                 'message' => $e->getMessage()
-            ], 500 );
+            ], 500);
         }
     }
 
@@ -74,11 +73,11 @@ class TalkController extends Controller
             $talks = Talks::findOrFail($id);
 
             $validated = $request->validate([
-                'title' => 'required|string',
-                'title_kh' => 'required|string',
+                'title' => 'sometimes|required|string',
+                'title_kh' => 'sometimes|required|string',
                 'description' => 'nullable|string',
                 'description_kh' => 'nullable|string',
-                'status' => 'required|boolean'
+                'status' => 'sometimes|required|boolean'
             ]);
 
             $talks->update($validated);

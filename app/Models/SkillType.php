@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Skill_Type extends Model
+class SkillType extends Model
 {
-    protected $fillable = ['name', 'status' ];
+    protected $table = 'skill__types';
+
+    protected $fillable = ['name', 'name_kh', 'status'];
 
     public function skills(){
         return $this->hasMany(Skill::class);

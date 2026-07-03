@@ -1,0 +1,266 @@
+/* Sider.css */
+
+.custom-sider {
+  --sider-bg: #ffffff;
+  --sider-group-text: #363a94;
+  --sider-group-icon: #6469d8;
+  --sider-group-hover-bg: rgba(255, 255, 255, 0.55);
+  --sider-group-hover-text: #2b2f7e;
+  --sider-group-open-bg: rgba(255, 255, 255, 0.4);
+  --sider-arrow: #7075d6;
+  --sider-sub-text: #6367a8;
+  --sider-sub-hover-bg: rgba(255, 255, 255, 0.6);
+  --sider-sub-hover-text: #3a3ea0;
+  --sider-active-bg: #ffffff;
+  --sider-active-text: #4145a8;
+  --sider-active-shadow: 0 2px 6px rgba(90, 90, 180, 0.14);
+  --sider-connector: #ccceef;
+  --sider-active-connector: #b7bbf5;
+  --sider-trunk: #363a94;
+  --sider-tick: #363a94;
+  --sider-trigger-bg: rgba(255, 255, 255, 0.5);
+  --sider-trigger-hover-bg: rgba(255, 255, 255, 0.8);
+  --sider-trigger-text: #4145a8;
+
+  background: var(--sider-bg) !important;
+}
+
+.custom-sider.custom-sider-dark {
+  --sider-bg: #14162a;
+  --sider-group-text: #c7cbff;
+  --sider-group-icon: #9aa0f5;
+  --sider-group-hover-bg: rgba(255, 255, 255, 0.06);
+  --sider-group-hover-text: #ffffff;
+  --sider-group-open-bg: rgba(255, 255, 255, 0.045);
+  --sider-arrow: #9aa0f5;
+  --sider-sub-text: #9498c9;
+  --sider-sub-hover-bg: rgba(255, 255, 255, 0.07);
+  --sider-sub-hover-text: #ffffff;
+  --sider-active-bg: rgba(122, 128, 255, 0.18);
+  --sider-active-text: #ffffff;
+  --sider-active-shadow: 0 0 0 1px rgba(140, 145, 255, 0.35), 0 4px 14px rgba(90, 90, 220, 0.25);
+  --sider-connector: rgba(255, 255, 255, 0.14);
+  --sider-active-connector: rgba(180, 185, 255, 0.4);
+  --sider-trunk: #363a94;
+  --sider-tick: #363a94;
+  --sider-trigger-bg: rgba(255, 255, 255, 0.05);
+  --sider-trigger-hover-bg: rgba(255, 255, 255, 0.09);
+  --sider-trigger-text: #c7cbff;
+}
+
+.custom-sider .ant-layout-sider-children {
+  background: var(--sider-bg);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Scrollable menu area */
+.custom-menu-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 12px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.custom-menu-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Reset menu base */
+.custom-menu.ant-menu {
+  background: transparent;
+  border-inline-end: none !important;
+}
+
+.custom-menu .ant-menu-item,
+.custom-menu .ant-menu-submenu-title {
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+/* ============================================================
+   Top-level group header
+   IMPORTANT: the padding-inline/width overrides below are scoped
+   with `:not(.ant-menu-inline-collapsed)` so they only apply while
+   the sidebar is expanded. Antd computes its OWN padding when
+   collapsed (`.ant-menu-inline-collapsed`) specifically to center
+   the icon in the narrow collapsed rail — our !important padding
+   was clobbering that calculation, which is why icons looked
+   off-center instead of centered when collapsed.
+   ============================================================ */
+.custom-menu:not(.ant-menu-inline-collapsed) .ant-menu-submenu-title {
+  height: 42px;
+  line-height: 42px;
+  margin: 0 !important;
+  width: 100% !important;
+  padding-inline: 28px !important;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--sider-group-text);
+  position: relative;
+  /* background-color: #22c55e !important; */
+ 
+}
+
+.custom-menu.ant-menu-inline-collapsed .ant-menu-submenu-title {
+  border-radius: 10px;
+  color: var(--sider-group-text);
+}
+
+.custom-menu .ant-menu-submenu-title .ant-menu-item-icon {
+  font-size: 15px;
+  color: var(--sider-group-icon);
+}
+
+.custom-menu .ant-menu-submenu-title:hover {
+  background: var(--sider-group-hover-bg) !important;
+}
+
+/* Open submenu header gets a slightly stronger tint */
+.custom-menu .ant-menu-submenu-open > .ant-menu-submenu-title {
+  background: var(--sider-group-open-bg);
+  position: relative;
+}
+
+/* Extend the trunk line up into the header when the group is open, so the
+   line reads as continuous from the header icon down into the first
+   sub-item's hook instead of starting abruptly inside the submenu.
+   left:22px matches the in-submenu trunk's left offset exactly.
+
+   The pseudo-element always exists (opacity 0 by default) so its opacity
+   has something to transition from/to. Duration/easing matches antd's
+   own submenu expand/collapse motion so the stub fades in lockstep with
+   the trunk and hooks below it. Hidden entirely when collapsed. */
+.custom-menu:not(.ant-menu-inline-collapsed) .ant-menu-submenu-title::after {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  left: 34px !important;
+  top: 80% !important;
+  height: 26px !important;
+  width: 0 !important;
+  border-left: 1.5px solid var(--sider-trunk) !important;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.custom-menu:not(.ant-menu-inline-collapsed) .ant-menu-submenu-open > .ant-menu-submenu-title::after {
+  opacity: 1;
+}
+
+.custom-menu .ant-menu-submenu-arrow {
+  color: var(--sider-arrow);
+}
+
+/* Submenu container */
+.custom-menu .ant-menu-sub.ant-menu-inline {
+  background: transparent !important;
+  position: relative;
+  padding-left: 22px;
+}
+
+/* Sub menu items — same collapsed-safe scoping as the header above */
+.custom-menu:not(.ant-menu-inline-collapsed) .ant-menu-sub .ant-menu-item {
+  height: 38px;
+  line-height: 38px;
+  margin: 0 !important;
+  width: 100% !important;
+  padding-inline-start: 38px !important;
+  border-radius: 10px;
+  font-size: 13.5px;
+  color: var(--sider-sub-text);
+  position: relative;
+}
+
+/* Single continuous vertical trunk line, spanning from the top of the
+   submenu (meeting the header stub above with no gap) down to the
+   center of the last sub-item — nothing dangles past the last item
+   since there is nothing left to connect to. */
+.custom-menu:not(.ant-menu-inline-collapsed) .ant-menu-sub.ant-menu-inline::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  left: 34px !important;
+  top: 0px;     /* meets the header stub above with no gap */
+  bottom: 28px; /* centers on last item */
+  width: 0 !important;
+  border-left: 1.5px solid var(--sider-trunk) !important;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Antd v5 reserves `.ant-menu-item::after` internally for its own
+   selected-state indicator border. That silently fights with any custom
+   ::after we put on the same element (only the selected item "wins" and
+   shows a stray mark — every other item shows nothing). Kill it first. */
+.custom-menu .ant-menu-sub .ant-menu-item::after {
+  display: none !important;
+  border-right: none !important;
+  content: none !important;
+}
+
+/* Small curved "hook" pulling off the trunk into each item's text —
+   uses ::before (not ::after) so it never collides with antd's own
+   pseudo-element above. Hidden when collapsed (no room / no trunk to
+   connect to). */
+.custom-menu:not(.ant-menu-inline-collapsed) .ant-menu-sub .ant-menu-item::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  left: 12px !important;
+  top: 3px !important;
+  width: 22px !important;
+  height: 18px !important;
+  border-left: 1.5px solid var(--sider-tick) !important;
+  border-bottom: 1.5px solid var(--sider-tick) !important;
+  border-radius: 0 0 0 10px !important;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.custom-menu .ant-menu-sub .ant-menu-item:hover {
+  background: var(--sider-sub-hover-bg) !important;
+}
+
+/* Active / selected sub item — clean pill, no outline */
+.custom-menu .ant-menu-item-selected {
+  background: var(--sider-active-bg) !important;
+  color: var(--sider-active-text) !important;
+  font-weight: 500;
+}
+
+/* Remove antd's built-in active bar/inset shadow entirely */
+.custom-menu .ant-menu-item:active,
+.custom-menu .ant-menu-submenu-title:active {
+  background: transparent;
+}
+
+/* Collapsed flyout submenu popups (portalled outside the Sider) —
+   themed to match instead of falling back to antd defaults. */
+.custom-menu-popup .ant-menu {
+  background: var(--sider-bg);
+}
+.custom-menu-popup .ant-menu-item {
+  color: var(--sider-sub-text);
+}
+.custom-menu-popup .ant-menu-item-selected {
+  background: var(--sider-active-bg) !important;
+  color: var(--sider-active-text) !important;
+}
+
+/* Collapse trigger bar — match the sider palette instead of antd's stock dark strip */
+.custom-sider .ant-layout-sider-trigger {
+  background: var(--sider-trigger-bg);
+  color: var(--sider-trigger-text);
+  border-top: 1px solid var(--sider-connector);
+  transition: background 0.15s ease;
+}
+
+.custom-sider .ant-layout-sider-trigger:hover {
+  background: var(--sider-trigger-hover-bg);
+}

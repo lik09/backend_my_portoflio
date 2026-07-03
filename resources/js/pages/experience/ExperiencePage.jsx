@@ -43,17 +43,23 @@ function ExperiencePage() {
   const handleClose = () => setOpenModal(false);
 
   const handleSave = async (values) => {
-    const body = { 
+    const body = {
       title: values.title,
+      title_kh: values.title_kh,
       icon: values.icon,
       company_name: values.company_name,
+      company_name_kh: values.company_name_kh,
       description: values.description,
+      description_kh: values.description_kh,
       location: values.location,
+      location_kh: values.location_kh,
       emp_type: values.emp_type,
+      emp_type_kh: values.emp_type_kh,
       start_year: values.start_year,
       end_year: values.end_year,
       technologies: values.technologies,
       key_achievements: values.key_achievements,
+      key_achievements_kh: values.key_achievements_kh,
       status: values.status,
     };
     let url = "experiences",
@@ -82,15 +88,21 @@ function ExperiencePage() {
   const handleEditBtn = (record) => {
     formRef.setFieldsValue({
       title: record.title,
+      title_kh: record.title_kh,
       icon: record.icon,
       company_name: record.company_name,
+      company_name_kh: record.company_name_kh,
       description: record.description,
+      description_kh: record.description_kh,
       location: record.location,
+      location_kh: record.location_kh,
       emp_type: record.emp_type,
+      emp_type_kh: record.emp_type_kh,
       start_year: record.start_year,
       end_year: record.end_year,
       technologies: record.technologies,
       key_achievements: record.key_achievements,
+      key_achievements_kh: record.key_achievements_kh,
       status: record.status,
       id: record.id
     });
@@ -128,14 +140,15 @@ function ExperiencePage() {
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
     { title: "Title", dataIndex: "title", key: "title" },
+    { title: "Title (KH)", dataIndex: "title_kh", key: "title_kh" },
     { title: "Icon", dataIndex: "icon", key: "icon" },
     { title: "Company Name", dataIndex: "company_name", key: "company_name" },
+    { title: "Company (KH)", dataIndex: "company_name_kh", key: "company_name_kh" },
     { title: "Description", dataIndex: "description", key: "description" },
     { title: "Location", dataIndex: "location", key: "location" },
-    { title: "Jop Type", 
-      dataIndex: "emp_type", 
-      key: "emp_type"
-     },
+    { title: "Location (KH)", dataIndex: "location_kh", key: "location_kh" },
+    { title: "Job Type", dataIndex: "emp_type", key: "emp_type" },
+    { title: "Job Type (KH)", dataIndex: "emp_type_kh", key: "emp_type_kh" },
 
     {
       title: "Key Achievements",
@@ -190,20 +203,35 @@ function ExperiencePage() {
               <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input title" }]}>
                 <Input />
               </Form.Item>
+              <Form.Item label="Title (KH)" name="title_kh">
+                <Input />
+              </Form.Item>
 
-               <Form.Item label="Company Name" name="company_name" rules={[{ required: true, message: "Please input company name" }]}>
+              <Form.Item label="Company Name" name="company_name" rules={[{ required: true, message: "Please input company name" }]}>
+                <Input />
+              </Form.Item>
+              <Form.Item label="Company Name (KH)" name="company_name_kh">
                 <Input />
               </Form.Item>
 
               <Form.Item label="Location" name="location" rules={[{ required: true, message: "Please input location" }]}>
                 <Input />
               </Form.Item>
-              
+              <Form.Item label="Location (KH)" name="location_kh">
+                <Input />
+              </Form.Item>
+
               <Form.Item label="Employee Type" name="emp_type" rules={[{ required: true, message: "Please input employee type" }]}>
+                <Input />
+              </Form.Item>
+              <Form.Item label="Employee Type (KH)" name="emp_type_kh">
                 <Input />
               </Form.Item>
 
               <Form.Item label="Description" name="description">
+                <Input.TextArea style={{ height: 100 }} />
+              </Form.Item>
+              <Form.Item label="Description (KH)" name="description_kh">
                 <Input.TextArea style={{ height: 100 }} />
               </Form.Item>
 
@@ -242,13 +270,14 @@ function ExperiencePage() {
               <Form.Item
                 label="Key Achievements"
                 name="key_achievements"
-                rules={[{ required: false, message: "Please add at least one key achievements" }]}
               >
-                <Select
-                  mode="tags"
-                  style={{ width: "100%" }}
-                  placeholder="Key Achievements and press Enter"
-                />
+                <Select mode="tags" style={{ width: "100%" }} placeholder="Key Achievements and press Enter" />
+              </Form.Item>
+              <Form.Item
+                label="Key Achievements (KH)"
+                name="key_achievements_kh"
+              >
+                <Select mode="tags" style={{ width: "100%" }} placeholder="Key Achievements (KH) and press Enter" />
               </Form.Item>
 
               <Form.Item label="Logo" name="icon" rules={[{ required: false, message: "Please input end year" }]}>
@@ -293,7 +322,7 @@ function ExperiencePage() {
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
       {/* Table */}
-      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} />
+      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} scroll={{ x: 'max-content' }}  />
     </div>
   );
 }

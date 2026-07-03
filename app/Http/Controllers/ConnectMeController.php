@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Connect_Me;
+use App\Models\ConnectMe;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ class ConnectMeController extends Controller
     public function index()
     {
         try{
-            $connect_me = Connect_Me::all();
+            $connect_me = ConnectMe::all();
             return response()->json([
                 'list' => $connect_me
             ]);
@@ -44,12 +44,12 @@ class ConnectMeController extends Controller
                 'status' => 'required|boolean',
             ]);
 
-            $connect_me = Connect_Me::create($validated);
-            
+            $connect_me = ConnectMe::create($validated);
+
             return response()->json([
                 'message' => 'Connect me added successfully',
                 'list' => $connect_me
-            ]);
+            ], 201);
         }catch(Exception $e){
             return response()->json([
                 'error' => 'Server error',
@@ -64,7 +64,7 @@ class ConnectMeController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'list' => Connect_Me::findOrFail($id)
+            'list' => ConnectMe::findOrFail($id)
         ]);
     }
 
@@ -74,17 +74,17 @@ class ConnectMeController extends Controller
     public function update(Request $request, string $id)
     {
         try{
-            $connect_me = Connect_Me::findOrFail($id);
+            $connect_me = ConnectMe::findOrFail($id);
             $validated = $request->validate([
-                'name' => 'required|string',
-                'name_kh' => 'required|string',
-                'connection' => 'required|string',
+                'name' => 'sometimes|required|string',
+                'name_kh' => 'sometimes|required|string',
+                'connection' => 'sometimes|required|string',
                 'description' => 'nullable|string',
                 'description_kh' => 'nullable|string',
                 'icon_name' => 'nullable|string',
                 'icon_import' => 'nullable|string',
                 'bg_box' => 'nullable|string',
-                'status' => 'required|boolean',
+                'status' => 'sometimes|required|boolean',
             ]);
 
             $connect_me->update($validated);
@@ -107,7 +107,7 @@ class ConnectMeController extends Controller
     public function destroy(string $id)
     {
         try{
-            $connect_me = Connect_Me::findOrFail($id);
+            $connect_me = ConnectMe::findOrFail($id);
 
             $connect_me->delete();
              

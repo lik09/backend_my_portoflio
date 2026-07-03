@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { App as AntdApp, ConfigProvider, theme } from "antd";
+import enUS from "antd/locale/en_US";
+import kmKH from "antd/locale/km_KH";
 
-// Import your pages/components
-
+import { LanguageProvider, useLanguage } from "./context/LanguageContext";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import MainLayout from "./components/layout/MainLayout";
+import ProtectedRoute from "./components/guard/ProtectedRoute";
+import LoginPage from "./pages/auth/LoginPage";
+
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import SkillPage from "./pages/skill/SkillPage";
 import ProjectPage from "./pages/project/ProjectPage";
@@ -24,47 +30,63 @@ import ConnectMePage from "./pages/contact/ConnectMePage";
 import SettingPage from "./pages/setting/SettingPage";
 import ProfilePage from "./pages/home/ProfilePage";
 
-
-const App = () => {
+const AppWithConfig = () => {
+  const { lang } = useLanguage();
+  const { isDark } = useTheme();
 
   return (
-    <BrowserRouter>
+    <ConfigProvider
+      locale={lang === "km" ? kmKH : enUS}
+      theme={{
+        algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+        token: {
+          fontFamily: "'Noto Sans Khmer', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif",
+        },
+      }}
+    >
+      <AntdApp>
+      <BrowserRouter>
         <Routes>
-          <Route element={<MainLayout/>}>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/home.profile" element={<ProfilePage />} />
-            <Route path="/exp.experience_info" element={<ExperienceInfoPage />} />
-            <Route path="/exp.experience" element={<ExperiencePage />} />
-            <Route path="/edu.education_info" element={<EducationInfoPage />} /> 
-            <Route path="/edu.education_type" element={<EducationTypePage />} /> 
-            <Route path="/edu.school" element={<SchoolPage />} /> 
-            <Route path="/edu.short_course" element={<ShortSoursePage />} />
-            <Route path="/pro.project" element={<ProjectPage />} />  
-            <Route path="/pro.project_info" element={<ProjectInfoPage  />} />
-            <Route path="/pro.project_type" element={<ProjectTypePage />} />
-            
+          {/* Public route */}
+          <Route path="/login" element={<LoginPage />} />
 
-            <Route path="/sk.skill_info" element={<SkillInfoPage />} />
-            <Route path="/sk.skill_type" element={<SkillTypePage />} />
-            <Route path="/sk.skill" element={<SkillPage/>} />
-            <Route path="/con.contact_me" element={<ConnectMePage />} />
-            <Route path="/con.contact_info" element={<ContactInfoPage />} />
-            <Route path="/con.talk" element={<TalkPage />} />
-
-            <Route path="/setting" element={<SettingPage />} />
-            
-
-            {/* Optional: 404 route */}
-            <Route path="*" element={<h1>404 - Not Found</h1>} />
+          {/* Protected routes — redirect to /login if no token */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/home.profile" element={<ProfilePage />} />
+              <Route path="/exp.experience_info" element={<ExperienceInfoPage />} />
+              <Route path="/exp.experience" element={<ExperiencePage />} />
+              <Route path="/edu.education_info" element={<EducationInfoPage />} />
+              <Route path="/edu.education_type" element={<EducationTypePage />} />
+              <Route path="/edu.school" element={<SchoolPage />} />
+              <Route path="/edu.short_course" element={<ShortSoursePage />} />
+              <Route path="/pro.project" element={<ProjectPage />} />
+              <Route path="/pro.project_info" element={<ProjectInfoPage />} />
+              <Route path="/pro.project_type" element={<ProjectTypePage />} />
+              <Route path="/sk.skill_info" element={<SkillInfoPage />} />
+              <Route path="/sk.skill_type" element={<SkillTypePage />} />
+              <Route path="/sk.skill" element={<SkillPage />} />
+              <Route path="/con.contact_me" element={<ConnectMePage />} />
+              <Route path="/con.contact_info" element={<ContactInfoPage />} />
+              <Route path="/con.talk" element={<TalkPage />} />
+              <Route path="/setting" element={<SettingPage />} />
+              <Route path="*" element={<h1>404 - Not Found</h1>} />
+            </Route>
           </Route>
-
-          {/* <Route>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-          </Route> */}
         </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+      </AntdApp>
+    </ConfigProvider>
   );
 };
+
+const App = () => (
+  <LanguageProvider>
+    <ThemeProvider>
+      <AppWithConfig />
+    </ThemeProvider>
+  </LanguageProvider>
+);
 
 ReactDOM.createRoot(document.getElementById("app")).render(<App />);

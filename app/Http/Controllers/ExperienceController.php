@@ -33,15 +33,21 @@ class ExperienceController extends Controller
         try {
             $validated = $request->validate([
                 'title' => 'required|string',
+                'title_kh' => 'nullable|string',
                 'icon' => 'nullable|string',
                 'company_name' => 'required|string',
+                'company_name_kh' => 'nullable|string',
                 'start_year' => 'required|string',
                 'end_year' => 'nullable|string',
                 'location' => 'required|string',
+                'location_kh' => 'nullable|string',
                 'emp_type' => 'required|string',
+                'emp_type_kh' => 'nullable|string',
                 'description' => 'nullable|string',
+                'description_kh' => 'nullable|string',
                 'technologies' => 'nullable|array',
                 'key_achievements' => 'nullable|array',
+                'key_achievements_kh' => 'nullable|array',
                 'status' => 'required|boolean'
             ]);
 
@@ -78,15 +84,21 @@ class ExperienceController extends Controller
 
             $validated = $request->validate([
                 'title' => 'sometimes|required|string',
+                'title_kh' => 'nullable|string',
                 'icon' => 'nullable|string',
                 'company_name' => 'sometimes|required|string',
+                'company_name_kh' => 'nullable|string',
                 'start_year' => 'sometimes|required|string',
                 'end_year' => 'nullable|string',
                 'location' => 'sometimes|required|string',
+                'location_kh' => 'nullable|string',
                 'emp_type' => 'sometimes|required|string',
+                'emp_type_kh' => 'nullable|string',
                 'description' => 'nullable|string',
+                'description_kh' => 'nullable|string',
                 'technologies' => 'nullable|array',
                 'key_achievements' => 'nullable|array',
+                'key_achievements_kh' => 'nullable|array',
                 'status' => 'sometimes|required|boolean'
             ]);
 

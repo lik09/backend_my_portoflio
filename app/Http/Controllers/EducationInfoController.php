@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Education_Info;
+use App\Models\EducationInfo;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class EducationInfoController extends Controller
     public function index()
     {
         try{
-            $education_info = Education_Info::all();
+            $education_info = EducationInfo::all();
             return response()->json($education_info);
         }catch(Exception $e){
             return response()->json([
@@ -33,22 +33,24 @@ class EducationInfoController extends Controller
         try{
            $validated = $request->validate([
                 'title' => 'required|string',
+                'title_kh' => 'nullable|string',
                 'bio' => 'nullable|string',
+                'bio_kh' => 'nullable|string',
                 'status' => 'required|boolean'
            ]);
-           $edu_info = Education_Info::create($validated);
+           $edu_info = EducationInfo::create($validated);
 
            return response()->json([
-                'message' => 'Education Info Added succesfully',
+                'message' => 'Education Info added successfully',
                 'data' => $edu_info
-           ]);
+           ], 201);
 
 
         }catch(Exception $e){
            return response()->json([
-                'error' => 'Servr error',
+                'error' => 'Server error',
                 'message' => $e->getMessage()
-            ], 500 );
+            ], 500);
         }
     }
 
@@ -60,7 +62,7 @@ class EducationInfoController extends Controller
         
         try{
             return response()->json([
-                'list' => Education_Info::findOrFail($id),
+                'list' => EducationInfo::findOrFail($id),
             ]);
         }catch (ModelNotFoundException $e) {
             return response()->json([
@@ -77,16 +79,18 @@ class EducationInfoController extends Controller
     {
         try{
 
-            $edu_info = Education_Info::findOrFail($id);
+            $edu_info = EducationInfo::findOrFail($id);
             $validated = $request->validate([
-                'title' => 'required|string',
+                'title' => 'sometimes|required|string',
+                'title_kh' => 'nullable|string',
                 'bio' => 'nullable|string',
-                'status' => 'required|boolean'
+                'bio_kh' => 'nullable|string',
+                'status' => 'sometimes|required|boolean'
             ]);
             $edu_info->update($validated);
 
             return response()->json([
-                'message' => 'Education Info updated succesfully',
+                'message' => 'Education Info updated successfully',
                 'data' => $edu_info
             ]);
 
@@ -98,9 +102,9 @@ class EducationInfoController extends Controller
             ], 404);
         }catch(Exception $e){
            return response()->json([
-                'error' => 'Servr error',
+                'error' => 'Server error',
                 'message' => $e->getMessage()
-            ], 500 );
+            ], 500);
         }
     }
 
@@ -111,12 +115,12 @@ class EducationInfoController extends Controller
     {
         try{
 
-            $edu_info = Education_Info::findOrFail($id);
+            $edu_info = EducationInfo::findOrFail($id);
           
             $edu_info->delete();
 
             return response()->json([
-                'message' => 'Education Info deleted succesfully',
+                'message' => 'Education Info deleted successfully',
                 'list' => $edu_info
             ]);
 
@@ -128,9 +132,9 @@ class EducationInfoController extends Controller
             ], 404);
         }catch(Exception $e){
            return response()->json([
-                'error' => 'Servr error',
+                'error' => 'Server error',
                 'message' => $e->getMessage()
-            ], 500 );
+            ], 500);
         }
     }
 }

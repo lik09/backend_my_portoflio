@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Education_Type;
+use App\Models\EducationType;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ class EducationTypeController extends Controller
     public function index()
     {
         try{
-            $education_type = Education_Type::all();
+            $education_type = EducationType::all();
             return response()->json(['list' =>  $education_type ]
             );
         }catch(Exception $e){
@@ -36,19 +36,19 @@ class EducationTypeController extends Controller
                 'name_kh' => 'nullable|string',
                 'status' => 'required|boolean'
            ]);
-           $edu_type = Education_Type::create($validated);
+           $edu_type = EducationType::create($validated);
 
            return response()->json([
-                'message' => 'Education Type Added succesfully',
+                'message' => 'Education Type added successfully',
                 'data' => $edu_type
-           ]);
+           ], 201);
 
 
         }catch(Exception $e){
            return response()->json([
-                'error' => 'Servr error',
+                'error' => 'Server error',
                 'message' => $e->getMessage()
-            ], 500 );
+            ], 500);
         }
     }
 
@@ -58,7 +58,7 @@ class EducationTypeController extends Controller
     public function show(string $id)
     {
         return response()->json([
-            'list' => Education_Type::findOrFail($id)
+            'list' => EducationType::findOrFail($id)
         ]);
     }
 
@@ -68,25 +68,25 @@ class EducationTypeController extends Controller
     public function update(Request $request, string $id)
     {
         try{
-            $edu_type = Education_Type::findOrFail($id);
+            $edu_type = EducationType::findOrFail($id);
             $validated = $request->validate([
-                'name' => 'required|string',
+                'name' => 'sometimes|required|string',
                 'name_kh' => 'nullable|string',
-                'status' => 'required|boolean'
+                'status' => 'sometimes|required|boolean'
             ]);
             $edu_type->update($validated);
 
             return response()->json([
-                'message' => 'Education Type Updated succesfully',
+                'message' => 'Education Type updated successfully',
                 'data' => $edu_type
             ]);
 
 
         }catch(Exception $e){
            return response()->json([
-                'error' => 'Servr error',
+                'error' => 'Server error',
                 'message' => $e->getMessage()
-            ], 500 );
+            ], 500);
         }
     }
 
@@ -96,21 +96,21 @@ class EducationTypeController extends Controller
     public function destroy(string $id)
     {
         try{
-            $edu_type = Education_Type::findOrFail($id);
+            $edu_type = EducationType::findOrFail($id);
            
             $edu_type->delete();
 
             return response()->json([
-                'message' => 'Education Type Deleted succesfully',
+                'message' => 'Education Type deleted successfully',
                 'data' => $edu_type
             ]);
 
 
         }catch(Exception $e){
            return response()->json([
-                'error' => 'Servr error',
+                'error' => 'Server error',
                 'message' => $e->getMessage()
-            ], 500 );
+            ], 500);
         }
     }
 }
