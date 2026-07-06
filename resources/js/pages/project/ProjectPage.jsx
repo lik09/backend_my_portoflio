@@ -19,8 +19,11 @@ import { DeleteFilled, EditFilled, PlusOutlined } from "@ant-design/icons";
 import { request, requestFormData } from "../../utils/request";
 import Toast from "../../components/message/Toast";
 import { config } from "../../utils/config";
+import { useLanguage } from "../../context/LanguageContext";
+import { getLocalizedField } from "../../utils/helper";
 
 function ProjectPage() {
+  const { lang } = useLanguage();
   const [state, setState] = useState({ list: [], proTypeList: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -210,11 +213,10 @@ function ProjectPage() {
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
     {
-      title: "Name English",
-      dataIndex: "name",
-      key: "name"
+      title: "Name",
+      key: "name",
+      render: (_, record) => getLocalizedField(record, "name", lang),
     },
-    { title: "Name Khmer", dataIndex: "name_kh", key: "name_kh" },
     {
       title: "Project Type",
       dataIndex: "project_type",
@@ -222,16 +224,10 @@ function ProjectPage() {
       render: (pro_type) => <Tag color="yellow">{pro_type.name}</Tag>,
     },
     {
-      title: "Description English",
-      dataIndex: "description",
+      title: "Description",
       key: "description",
-      width: 300
-    },
-    {
-      title: "Description Khmer",
-      dataIndex: "description_kh",
-      key: "description_kh",
-      width: 300
+      width: 300,
+      render: (_, record) => getLocalizedField(record, "description", lang),
     },
     {
       title: "Technologies",
@@ -308,6 +304,7 @@ function ProjectPage() {
     {
       title: "Action",
       key: "action",
+      width:110,
       render: (_, record) => (
         <Space>
           <Button type="primary" onClick={() => handleEditBtn(record)}>

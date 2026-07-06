@@ -69,7 +69,7 @@ const DashboardPage = () => {
       <Spin spinning={loading}>
         <Row gutter={[16, 16]}>
           {STAT_CARDS.map(({ key, label, color, Icon }) => (
-            <Col key={key} xs={24} sm={12} md={8} lg={8} xl={4}>
+            <Col key={key} xs={24} sm={12} md={12} lg={8} xl={8}>
               <Card
                 hoverable
                 style={{ borderRadius: 10, height: '100%' }}

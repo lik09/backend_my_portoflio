@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   DesktopOutlined,
   FileOutlined,
@@ -16,6 +16,7 @@ import { IoCodeSlash } from 'react-icons/io5';
 import { SiReaddotcv } from 'react-icons/si';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
+import SidebarConnectors from './SidebarConnectors'; // <-- NEW
 import './MainLayout.css';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -37,6 +38,43 @@ const MainLayout = () => {
   const { isDark, toggleTheme } = useTheme();
 
   const divider = `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`;
+
+  const menuScrollRef = useRef(null);
+  const [indicator, setIndicator] = useState({ top: 0, height: 0, visible: false });
+
+  useEffect(() => {
+    const updateIndicator = () => {
+      const container = menuScrollRef.current;
+      if (!container || collapsed) {
+        setIndicator((prev) => ({ ...prev, visible: false }));
+        return;
+      }
+
+      const target = container.querySelector('.ant-menu-item-selected');
+      if (!target) {
+        setIndicator((prev) => ({ ...prev, visible: false }));
+        return;
+      }
+
+      const containerRect = container.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      setIndicator({
+        top: targetRect.top - containerRect.top + container.scrollTop,
+        height: targetRect.height,
+        visible: true,
+      });
+    };
+
+    updateIndicator();
+
+    const container = menuScrollRef.current;
+    if (!container) return undefined;
+
+    const observer = new ResizeObserver(updateIndicator);
+    observer.observe(container);
+
+    return () => observer.disconnect();
+  }, [location.pathname, collapsed]);
 
   const items = [
     getItem(t('dashboard'), '/', <PieChartOutlined />),
@@ -112,20 +150,18 @@ const MainLayout = () => {
           }}
           onClick={() => navigate('/')}
         >
-          <img
-            src="/storage/general/logo.png"
-            alt="logo"
-            style={{ height: 36, width: 36, objectFit: 'contain', flexShrink: 0, borderRadius: 8 }}
-          />
           {!collapsed && (
-            <span style={{ fontWeight: 700, fontSize: 16, whiteSpace: 'nowrap', color: colorText }}>
+            <span style={{backgroundColor:'transparent',padding:'0px 40px' ,fontWeight: 700, fontSize: 22, whiteSpace: 'nowrap', color: colorText }}>
               Portfolio
             </span>
           )}
         </div>
 
-        {/* Scrollable menu region — sider itself stays sticky/fixed height */}
-        <div className="custom-menu-scroll">
+        {/* Scrollable menu region — sider itself stays sticky/fixed height.
+            position:relative here is required: it's the positioning context
+            both antd's own submenu popups measure against AND the one the
+            SidebarConnectors SVG overlay is absolutely positioned inside. */}
+        <div className="custom-menu-scroll" ref={menuScrollRef} style={{ position: 'relative' }}>
           <Menu
             mode="inline"
             className="custom-menu"
@@ -135,6 +171,18 @@ const MainLayout = () => {
             onClick={({ key }) => navigate(key)}
             style={{ border: 'none', background: 'transparent', paddingTop: 8 }}
           />
+
+          {/* SVG connector overlay — draws trunk + hook lines by measuring
+              real DOM positions, so it never fights antd's own overflow or
+              cssinjs rules the way the old CSS pseudo-elements did. */}
+          {!collapsed && (
+            <SidebarConnectors
+              containerRef={menuScrollRef}
+              deps={[location.pathname, collapsed, isDark, lang]}
+              activeColor="#22c55e"
+              defaultColor={isDark ? 'rgba(255,255,255,0.25)' : '#9a9dd4'}
+            />
+          )}
         </div>
       </Sider>
 
@@ -153,7 +201,6 @@ const MainLayout = () => {
             <h3 style={{ fontSize: 20, fontWeight: '600', margin: 0 }}>My Portfolio</h3>
 
             <Flex align='center' gap={12}>
-              {/* Language toggle */}
               <Segmented
                 value={lang}
                 options={[
@@ -163,7 +210,6 @@ const MainLayout = () => {
                 onChange={(val) => setLang(val)}
               />
 
-              {/* Dark / Light toggle */}
               <Switch
                 checkedChildren={<MoonOutlined />}
                 unCheckedChildren={<SunOutlined />}
@@ -186,7 +232,6 @@ const MainLayout = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            {/* This is where child routes render */}
             <Outlet />
           </div>
         </Content>

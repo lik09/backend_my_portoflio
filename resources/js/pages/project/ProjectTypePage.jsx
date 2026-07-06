@@ -4,8 +4,11 @@ import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { request } from "../../utils/request";
 import Toast from "../../components/message/Toast";
+import { useLanguage } from "../../context/LanguageContext";
+import { getLocalizedField } from "../../utils/helper";
 
 function ProjectTypePage() {
+  const { lang } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -110,8 +113,11 @@ function ProjectTypePage() {
 
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Name (KH)", dataIndex: "name_kh", key: "name_kh" },
+    {
+      title: "Name",
+      key: "name",
+      render: (_, record) => getLocalizedField(record, "name", lang),
+    },
     {
       title: "Status",
       dataIndex: "status",
@@ -121,6 +127,7 @@ function ProjectTypePage() {
     {
       title: "Action",
       key: "action",
+      width:110,
       render: (_, record) => (
         <Space>
           <Button type="primary" onClick={() => handleEditBtn(record)}>Edit <EditFilled /></Button>

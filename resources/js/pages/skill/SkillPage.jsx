@@ -19,8 +19,11 @@ import { DeleteFilled, EditFilled, PlusOutlined } from "@ant-design/icons";
 import { request, requestFormData } from "../../utils/request";
 import Toast from "../../components/message/Toast";
 import { config } from "../../utils/config";
+import { useLanguage } from "../../context/LanguageContext";
+import { getLocalizedField } from "../../utils/helper";
 
 function SkillPage() {
+  const { lang } = useLanguage();
   const [state, setState] = useState({ list: [], skillTypeList: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -189,8 +192,11 @@ function SkillPage() {
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
     
-    { title: "Name Skill English", dataIndex: "name", key: "name" },
-    { title: "Name Skill Khmer", dataIndex: "name_kh", key: "name_kh" },
+    {
+      title: "Name Skill",
+      key: "name",
+      render: (_, record) => getLocalizedField(record, "name", lang),
+    },
     {
       title: "Skill Type",
       dataIndex: "skill_type",
@@ -198,16 +204,10 @@ function SkillPage() {
       render: (skill_type) => <Tag color="yellow">{skill_type?.name}</Tag>
     },
     {
-      title: "Description English",
-      dataIndex: "description",
-      key: "description_study",
-      width: 300
-    },
-    {
-      title: "Description Khmer",
-      dataIndex: "description_kh",
-      key: "description_kh",
-      width: 300
+      title: "Description",
+      key: "description",
+      width: 300,
+      render: (_, record) => getLocalizedField(record, "description", lang),
     },
     {
       title: "Image Logo",
@@ -235,6 +235,7 @@ function SkillPage() {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width:110,
       render: (status) => (
         <Tag color={status === 1 ? "green" : "volcano"}>
           {status === 1 ? "Active" : "Inactive"}

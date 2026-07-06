@@ -4,8 +4,11 @@ import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { request } from "../../utils/request";
 import Toast from "../../components/message/Toast";
+import { useLanguage } from "../../context/LanguageContext";
+import { getLocalizedField } from "../../utils/helper";
 
 function ExperiencePage() {
+  const { lang } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -139,23 +142,35 @@ function ExperiencePage() {
 
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
-    { title: "Title", dataIndex: "title", key: "title" },
-    { title: "Title (KH)", dataIndex: "title_kh", key: "title_kh" },
+    {
+      title: "Title",
+      key: "title",
+      render: (_, record) => getLocalizedField(record, "title", lang),
+    },
     { title: "Icon", dataIndex: "icon", key: "icon" },
-    { title: "Company Name", dataIndex: "company_name", key: "company_name" },
-    { title: "Company (KH)", dataIndex: "company_name_kh", key: "company_name_kh" },
+    {
+      title: "Company Name",
+      key: "company_name",
+      render: (_, record) => getLocalizedField(record, "company_name", lang),
+    },
     { title: "Description", dataIndex: "description", key: "description" },
-    { title: "Location", dataIndex: "location", key: "location" },
-    { title: "Location (KH)", dataIndex: "location_kh", key: "location_kh" },
-    { title: "Job Type", dataIndex: "emp_type", key: "emp_type" },
-    { title: "Job Type (KH)", dataIndex: "emp_type_kh", key: "emp_type_kh" },
+    {
+      title: "Location",
+      key: "location",
+      render: (_, record) => getLocalizedField(record, "location", lang),
+    },
+    {
+      title: "Job Type",
+      key: "emp_type",
+      render: (_, record) => getLocalizedField(record, "emp_type", lang),
+    },
 
     {
       title: "Key Achievements",
-      dataIndex: "key_achievements",
       key: "key_achievements",
-      render: (keyAchieList) =>
-        Array.isArray(keyAchieList) && keyAchieList.length > 0 ? (
+      render: (_, record) => {
+        const keyAchieList = getLocalizedField(record, "key_achievements", lang);
+        return Array.isArray(keyAchieList) && keyAchieList.length > 0 ? (
         <Space size={[0, 8]} wrap>
           {keyAchieList.map((keyAchie, index) => (
             <Tag color="blue" key={index}>
@@ -165,12 +180,14 @@ function ExperiencePage() {
         </Space>
         ) : (
           <Tag color="default">Key Achievements</Tag>
-        ),
+        );
+      },
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width:110,
       render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
     },
     {

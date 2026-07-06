@@ -4,8 +4,11 @@ import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { request } from "../../utils/request";
 import Toast from "../../components/message/Toast";
+import { useLanguage } from "../../context/LanguageContext";
+import { getLocalizedField } from "../../utils/helper";
 
 function ConnectMePage() {
+  const { lang } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -114,11 +117,17 @@ function ConnectMePage() {
 
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
-    { title: "Name English", dataIndex: "name", key: "name" },
-    { title: "Name Khmer", dataIndex: "name_kh", key: "name_kh" },
+    {
+      title: "Name",
+      key: "name",
+      render: (_, record) => getLocalizedField(record, "name", lang),
+    },
     { title: "Connection By", dataIndex: "connection", key: "connection" },
-    { title: "Description English", dataIndex: "description", key: "description" },
-    { title: "Description Khmer", dataIndex: "description_kh", key: "description_kh" },
+    {
+      title: "Description",
+      key: "description",
+      render: (_, record) => getLocalizedField(record, "description", lang),
+    },
     { title: "Icon Name", dataIndex: "icon_name", key: "icon_name" },
     { title: "Icon Import", dataIndex: "icon_import", key: "icon_import" },
     { title: "Backgroud Box", dataIndex: "bg_box", key: "bg_box" },

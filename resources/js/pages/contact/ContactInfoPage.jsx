@@ -4,8 +4,11 @@ import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { request } from "../../utils/request";
 import Toast from "../../components/message/Toast";
+import { useLanguage } from "../../context/LanguageContext";
+import { getLocalizedField } from "../../utils/helper";
 
 function ContactInfoPage() {
+  const { lang } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -114,14 +117,21 @@ function ContactInfoPage() {
 
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
-    { title: "Title English", dataIndex: "title", key: "title" },
-    { title: "Title Khmer", dataIndex: "title_kh", key: "title_kh" },
-    { title: "BIO English", dataIndex: "bio", key: "bio" },
-    { title: "BIO Khmer", dataIndex: "bio_kh", key: "bio_kh" },
+    {
+      title: "Title",
+      key: "title",
+      render: (_, record) => getLocalizedField(record, "title", lang),
+    },
+    {
+      title: "BIO",
+      key: "bio",
+      render: (_, record) => getLocalizedField(record, "bio", lang),
+    },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width:110,
       render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
     },
     {

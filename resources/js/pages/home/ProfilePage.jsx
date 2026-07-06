@@ -6,8 +6,11 @@ import * as FaIcons from "react-icons/fa";
 import { request } from "../../utils/request";
 import Toast from "../../components/message/Toast";
 import { config } from "../../utils/config";
+import { useLanguage } from "../../context/LanguageContext";
+import { getLocalizedField } from "../../utils/helper";
 
 function ProfilePage() {
+  const { lang } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -188,10 +191,17 @@ function ProfilePage() {
 
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
-    { title: "Full Name", dataIndex: "fullname", key: "fullname" },
-    { title: "Full Name (KH)", dataIndex: "fullname_kh", key: "fullname_kh" },
-    { title: "BIO", dataIndex: "bio", key: "bio" },
-    { title: "BIO (KH)", dataIndex: "bio_kh", key: "bio_kh" },
+    {
+      title: "Full Name",
+      key: "fullname",
+      render: (_, record) => getLocalizedField(record, "fullname", lang),
+    },
+    {
+      title: "BIO",
+      key: "bio",
+      width:300,
+      render: (_, record) => getLocalizedField(record, "bio", lang),
+    },
     {
       title: "Connect With Me",
       dataIndex: "connect_with_me",
@@ -253,6 +263,7 @@ function ProfilePage() {
     {
       title: "Action",
       key: "action",
+      width:110,
       render: (_, record) => (
         <Space>
           <Button type="primary" onClick={() => handleEditBtn(record)}>

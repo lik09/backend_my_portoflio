@@ -19,8 +19,11 @@ import { DeleteFilled, EditFilled, PlusOutlined } from "@ant-design/icons";
 import { request, requestFormData } from "../../utils/request";
 import Toast from "../../components/message/Toast";
 import { config } from "../../utils/config";
+import { useLanguage } from "../../context/LanguageContext";
+import { getLocalizedField } from "../../utils/helper";
 
 function SchoolPage() {
+  const { lang } = useLanguage();
   const [state, setState] = useState({ list: [], eduTypeList: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -234,8 +237,11 @@ function SchoolPage() {
           <span>No Logo</span>
         ),
     },
-    { title: "Name School English", dataIndex: "name_school", key: "name_school" },
-    { title: "Name School Khmer", dataIndex: "name_school_kh", key: "name_school_kh" },
+    {
+      title: "Name School",
+      key: "name_school",
+      render: (_, record) => getLocalizedField(record, "name_school", lang),
+    },
     {
       title: "Education Type",
       dataIndex: "edu_type_id",
@@ -243,37 +249,27 @@ function SchoolPage() {
       render: (edu_type) => <Tag color="yellow">{edu_type.name}</Tag>,
     },
     {
-      title: "Description Study English",
-      dataIndex: "description_study",
+      title: "Description Study",
       key: "description_study",
       width: 300,
-      render: (arr) => (
-        <Space wrap>
-          {arr?.map((item, idx) => (
-            <Tag color="blue" key={idx}>
-              {item}
-            </Tag>
-          ))}
-        </Space>
-      ),
+      render: (_, record) => {
+        const arr = getLocalizedField(record, "description_study", lang);
+        return (
+          <Space wrap>
+            {arr?.map((item, idx) => (
+              <Tag color="blue" key={idx}>
+                {item}
+              </Tag>
+            ))}
+          </Space>
+        );
+      },
     },
     {
-      title: "Description Study Khmer",
-      dataIndex: "description_study_kh",
-      key: "description_study_kh",
-      width: 300,
-      render: (arr) => (
-        <Space wrap>
-          {arr?.map((item, idx) => (
-            <Tag color="blue" key={idx}>
-              {item}
-            </Tag>
-          ))}
-        </Space>
-      ),
+      title: "Location",
+      key: "location",
+      render: (_, record) => getLocalizedField(record, "location", lang),
     },
-    { title: "Location English", dataIndex: "location", key: "location" },
-    { title: "Location Khmer", dataIndex: "location_kh", key: "location_kh" },
     {
       title: "Images",
       dataIndex: "images",
@@ -301,6 +297,7 @@ function SchoolPage() {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width:110,
       render: (status) => (
         <Tag color={status === 1 ? "green" : "volcano"}>
           {status === 1 ? "Active" : "Inactive"}

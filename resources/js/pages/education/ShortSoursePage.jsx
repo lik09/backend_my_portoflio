@@ -4,8 +4,11 @@ import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { request } from "../../utils/request";
 import Toast from "../../components/message/Toast";
+import { useLanguage } from "../../context/LanguageContext";
+import { getLocalizedField } from "../../utils/helper";
 
 function ShortSoursePage() {
+  const { lang } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -123,12 +126,21 @@ function ShortSoursePage() {
 
   const columns = [
     { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
-    { title: "Course Name English", dataIndex: "course_name", key: "course_name" },
-    { title: "Course Name Khmer", dataIndex: "course_name_kh", key: "course_name_kh" },
-    { title: "Teacher Name English", dataIndex: "teacher_name", key: "teacher_name" },
-    { title: "Teacher Name Khmer", dataIndex: "teacher_name_kh", key: "teacher_name_kh" },
-    { title: "Description English", dataIndex: "description", key: "description" },
-    { title: "Description Khmer", dataIndex: "description_kh", key: "description_kh" },
+    {
+      title: "Course Name",
+      key: "course_name",
+      render: (_, record) => getLocalizedField(record, "course_name", lang),
+    },
+    {
+      title: "Teacher Name",
+      key: "teacher_name",
+      render: (_, record) => getLocalizedField(record, "teacher_name", lang),
+    },
+    {
+      title: "Description",
+      key: "description",
+      render: (_, record) => getLocalizedField(record, "description", lang),
+    },
     { title: "Time Study", dataIndex: "time_study", key: "time_study" },
     { title: "Type Study", 
       dataIndex: "mode", 
@@ -148,6 +160,7 @@ function ShortSoursePage() {
     {
       title: "Action",
       key: "action",
+      width:110,
       render: (_, record) => (
         <Space>
           <Button type="primary"  onClick={() => handleEditBtn(record)}> Edit <EditFilled /></Button>
