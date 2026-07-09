@@ -1,12 +1,14 @@
-import { Alert, Button, Card, Form, Input } from 'antd';
+import { Alert, Button, Card, Form, Input, theme } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { request } from '../../utils/request';
+import logo from '../../assets/logo/logo_login.png'
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { token } = theme.useToken();
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -36,18 +38,19 @@ const LoginPage = () => {
     <div
       style={{
         minHeight: '100vh',
-        background: '#f0f2f5',
+        background: token.colorBgLayout,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
       }}
     >
       <Card
-        style={{ width: 380, borderRadius: 12, boxShadow: '0 4px 24px rgba(0,0,0,0.10)' }}
+        style={{ width: 420, borderRadius: 12, boxShadow: '0 4px 24px rgba(0,0,0,0.10)',padding:30 }}
       >
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 700, margin: 0 }}>Portfolio Admin</h2>
-          <p style={{ color: '#888', margin: '6px 0 0', fontSize: 13 }}>Sign in to manage your portfolio</p>
+        <div style={{ textAlign: 'center', display: 'flex',
+          flexDirection: 'column', justifyContent:'center' ,alignItems:'center'}}>
+          <img src={logo} alt="logo.png" width={140} height={140} style={{objectFit:'cover'}} />
+          <p style={{ color: token.colorTextSecondary, margin: '8px 0 26px  0', fontSize: 18 }}>Sign in to manage your portfolio</p>
         </div>
 
         {error && (
@@ -67,7 +70,7 @@ const LoginPage = () => {
             name="username"
             rules={[{ required: true, message: 'Please enter your username' }]}
           >
-            <Input size="large" placeholder="your_username" />
+            <Input size="large" placeholder="your username" />
           </Form.Item>
 
           <Form.Item
@@ -75,10 +78,10 @@ const LoginPage = () => {
             name="password"
             rules={[{ required: true, message: 'Please enter your password' }]}
           >
-            <Input.Password size="large" placeholder="Password" />
+            <Input.Password size="large" placeholder="password" />
           </Form.Item>
 
-          <Form.Item style={{ marginBottom: 0, marginTop: 8 }}>
+          <Form.Item style={{ marginBottom: 0, marginTop: 0 ,paddingTop:14 }}>
             <Button
               type="primary"
               htmlType="submit"

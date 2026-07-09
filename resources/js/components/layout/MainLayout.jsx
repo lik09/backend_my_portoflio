@@ -16,8 +16,10 @@ import { IoCodeSlash } from 'react-icons/io5';
 import { SiReaddotcv } from 'react-icons/si';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
-import SidebarConnectors from './SidebarConnectors'; // <-- NEW
+import SidebarConnectors from './SidebarConnectors'; 
 import './MainLayout.css';
+import logo from '../../assets/logo/logo_P_2.png';
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -36,6 +38,10 @@ const MainLayout = () => {
 
   const { lang, setLang, t } = useLanguage();
   const { isDark, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark-theme', isDark);
+  }, [isDark]);
 
   const divider = `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`;
 
@@ -109,16 +115,13 @@ const MainLayout = () => {
     getItem(t('setting'), '/setting', <SettingOutlined />),
   ];
 
-  // Collapsed-sidebar flyout submenus portal outside the Sider, so they
-  // don't inherit `.custom-menu` / `.custom-sider-dark` — give them their
-  // own class (styled in MainLayout.css) so they match the sidebar theme.
   const popupClassName = `custom-menu-popup${isDark ? ' custom-menu-popup-dark' : ''}`;
   const itemsWithPopupClass = items.map((item) =>
     item.children ? { ...item, popupClassName } : item
   );
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: '100vh'}}>
       <Sider
         collapsible
         collapsed={collapsed}
@@ -128,40 +131,42 @@ const MainLayout = () => {
         style={{
           boxShadow: '2px 0 8px rgba(0,0,0,0.08)',
           height: '100vh',
-          position: 'sticky',
+          position: 'sticky',  
           top: 0,
           left: 0,
-          overflow: 'hidden',
+         
         }}
       >
         {/* Brand */}
-        <div
-          style={{
-            height: 64,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'flex-start',
-            padding: collapsed ? 0 : '0 20px',
-            borderBottom: divider,
-            cursor: 'pointer',
-            overflow: 'hidden',
-            transition: 'padding 0.2s',
-            flexShrink: 0,
-          }}
-          onClick={() => navigate('/')}
-        >
-          {!collapsed && (
-            <span style={{backgroundColor:'transparent',padding:'0px 40px' ,fontWeight: 700, fontSize: 22, whiteSpace: 'nowrap', color: colorText }}>
-              Portfolio
-            </span>
-          )}
-        </div>
-
-        {/* Scrollable menu region — sider itself stays sticky/fixed height.
-            position:relative here is required: it's the positioning context
-            both antd's own submenu popups measure against AND the one the
-            SidebarConnectors SVG overlay is absolutely positioned inside. */}
         <div className="custom-menu-scroll" ref={menuScrollRef} style={{ position: 'relative' }}>
+          <div
+            style={{
+              height: 124,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent:'center',
+              padding: 0 ,
+              borderBottom: divider,
+              cursor: 'pointer',
+              overflow: 'hidden',
+              transition: 'padding 0.2s',
+              flexShrink: 0,
+              position: 'sticky',
+              top: 0,
+              left: 0,
+              backgroundColor: 'var(--sider-bg)',
+              overflow: 'hidden',
+              zIndex:10,
+            }}
+            onClick={() => navigate('/')}
+          >
+            <img
+              src={logo}
+              alt="logo.png"
+              style={{ height: !collapsed ? '100%' : '60%', transition: 'height 0.2s ease' }}
+            />
+          </div>
+
           <Menu
             mode="inline"
             className="custom-menu"
@@ -169,36 +174,35 @@ const MainLayout = () => {
             selectedKeys={[location.pathname]}
             defaultOpenKeys={['home', 'exp', 'edu', 'pro', 'sk', 'con']}
             onClick={({ key }) => navigate(key)}
-            style={{ border: 'none', background: 'transparent', paddingTop: 8 }}
+            style={{ border: 'none', background: 'transparent', paddingTop: 8,zIndex:1 }}
           />
 
-          {/* SVG connector overlay — draws trunk + hook lines by measuring
-              real DOM positions, so it never fights antd's own overflow or
-              cssinjs rules the way the old CSS pseudo-elements did. */}
+         
           {!collapsed && (
             <SidebarConnectors
               containerRef={menuScrollRef}
               deps={[location.pathname, collapsed, isDark, lang]}
-              activeColor="#22c55e"
-              defaultColor={isDark ? 'rgba(255,255,255,0.25)' : '#9a9dd4'}
+              activeColor={'#5996FF'}
+              defaultColor={'#BFC6C4'}
             />
           )}
         </div>
       </Sider>
 
-      <Layout style={{ height: '100vh', overflow: 'auto' }}>
+      <Layout>
         <Header
           style={{
             padding: 0,
             background: colorBgContainer,
             borderBottom: divider,
-            position: 'sticky',
+            position: 'sticky',  
+            flexShrink: 0, 
             top: 0,
-            zIndex: 1,
+            zIndex: 9,
           }}
         >
           <Flex align='center' justify='space-between' style={{ padding: '0px 18px', height: '100%' }}>
-            <h3 style={{ fontSize: 20, fontWeight: '600', margin: 0 }}>My Portfolio</h3>
+            <h3 style={{ fontSize: 20, fontWeight: '600', margin: 0 }}> {t('myPortfolio')} </h3>
 
             <Flex align='center' gap={12}>
               <Segmented
@@ -222,12 +226,11 @@ const MainLayout = () => {
           </Flex>
         </Header>
 
-        <Content style={{ margin: '0 16px' }}>
+        <Content style={{ margin: '0 16px'}}>
           <div
             style={{
               marginTop: 16,
               padding: 24,
-              minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
@@ -237,7 +240,7 @@ const MainLayout = () => {
         </Content>
 
         <Footer style={{ textAlign: 'center' }}>
-          LIk Dev. ©{new Date().getFullYear()} Created by ❤️🧑‍💻
+          {t('createdBy')} Lik Dev. ©{new Date().getFullYear()}  ❤️🧑‍💻
         </Footer>
       </Layout>
     </Layout>

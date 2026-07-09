@@ -1,6 +1,7 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
     "private": true,
+    "version": "1.0.0",
     "type": "module",
     "scripts": {
         "build": "vite build",
@@ -19,6 +20,7 @@
     },
     "dependencies": {
         "@ant-design/icons": "^6.0.0",
+        "@ant-design/plots": "^2.6.8",
         "antd": "^5.27.1",
         "dayjs": "^1.11.18",
         "react": "^18.2.0",

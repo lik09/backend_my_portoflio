@@ -8,7 +8,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
 
 function ShortSoursePage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -69,12 +69,12 @@ function ShortSoursePage() {
     try {
       const res = await request(url, method, body);
       if (res && !res.error) {
-        showToast("success", res.message || "Saved successfully");
+        showToast("success", res.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to save");
+      showToast("error", t('failedToSave'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
     }
@@ -107,11 +107,11 @@ function ShortSoursePage() {
     try {
       const res = await request(`short_course/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -125,26 +125,38 @@ function ShortSoursePage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1,width:80 ,align:'center' },
     {
-      title: "Course Name",
+      title: t('courseName'),
       key: "course_name",
+      width:180,
       render: (_, record) => getLocalizedField(record, "course_name", lang),
     },
     {
-      title: "Teacher Name",
+      title: t('teacherName'),
       key: "teacher_name",
+      width:180,
+      align:'center',
       render: (_, record) => getLocalizedField(record, "teacher_name", lang),
     },
     {
-      title: "Description",
+      title: t('description'),
       key: "description",
+      width:300,
       render: (_, record) => getLocalizedField(record, "description", lang),
     },
-    { title: "Time Study", dataIndex: "time_study", key: "time_study" },
-    { title: "Type Study", 
-      dataIndex: "mode", 
+    { 
+      title: t('timeStudy'), 
+      dataIndex: "time_study", 
+      key: "time_study", 
+      width:180,
+      align:'center',
+    },
+    { title: t('typeStudy'),
+      dataIndex: "mode",
       key: "mode" ,
+      width:140,
+      align:'center',
       render: (mode) => (
         <Tag color= "blue">
           {mode}
@@ -152,19 +164,22 @@ function ShortSoursePage() {
       )
     },
     {
-      title: "Status",
+      title: t('status'),
       dataIndex: "status",
       key: "status",
-      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
+      width:110,
+      align:'center',
+      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? t('active') : t('inactive')}</Tag>,
     },
     {
-      title: "Action",
+      title: t('action'),
       key: "action",
       width:110,
+      align:'center',
       render: (_, record) => (
         <Space>
-          <Button type="primary"  onClick={() => handleEditBtn(record)}> Edit <EditFilled /></Button>
-          <Button danger onClick={() => handleDeleteClick(record)}>Delete <DeleteFilled /></Button>
+          <Button type="primary"  onClick={() => handleEditBtn(record)}> {t('edit')} <EditFilled /></Button>
+          <Button danger onClick={() => handleDeleteClick(record)}>{t('delete')} <DeleteFilled /></Button>
         </Space>
       ),
     },
@@ -173,65 +188,65 @@ function ShortSoursePage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Education Information</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('shortCourseInfo')}</h3>
         <Button type="primary" style={{ fontSize: 16, fontWeight: 600 }} onClick={handleNew}>
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
       {/* Form Modal */}
-      <Modal title="Experience Information" footer={null} open={openModal} onCancel={handleClose} width={900} >
+      <Modal title={t('shortCourseInfo')} footer={null} open={openModal} onCancel={handleClose} width={900} >
         <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
           <Row gutter={20}>
             <Col xs={24} md={12}>
-                <Form.Item label="Course Name English" name="course_name" rules={[{ required: true, message: "Please input course name english" }]}>
+                <Form.Item label={t('courseName')} name="course_name" rules={[{ required: true, message: t('plsInputCourseNameEn') }]}>
                   <Input />
                 </Form.Item>
 
-                <Form.Item label="Course Name Khmer" name="course_name_kh" rules={[{ required: true, message: "Please input course name khmer" }]}>
+                <Form.Item label={t('courseNameKh')} name="course_name_kh" rules={[{ required: true, message: t('plsInputCourseNameKh') }]}>
                   <Input />
                 </Form.Item>
 
-                <Form.Item label="Teacher Name English" name="teacher_name" rules={[{ required: true, message: "Please input teacher name english" }]}>
+                <Form.Item label={t('teacherName')} name="teacher_name" rules={[{ required: true, message: t('plsInputTeacherNameEn') }]}>
                   <Input />
                 </Form.Item>
 
-                <Form.Item label="Teacher Name Khmer" name="teacher_name_kh" rules={[{ required: true, message: "Please input teacher name khmer" }]}>
+                <Form.Item label={t('teacherNameKh')} name="teacher_name_kh" rules={[{ required: true, message: t('plsInputTeacherNameKh') }]}>
                   <Input />
                 </Form.Item>
 
-                <Form.Item label="Description English" name="description">
+                <Form.Item label={t('description')} name="description">
                   <Input.TextArea style={{ height: 100 }} />
                 </Form.Item>
 
-                <Form.Item label="Description Khmer" name="description_kh">
+                <Form.Item label={t('descriptionKh')} name="description_kh">
                   <Input.TextArea style={{ height: 100 }} />
                 </Form.Item>
             </Col>
             <Col xs={24} md={12}>
-                <Form.Item label="Time Study" name="time_study" >
+                <Form.Item label={t('timeStudy')} name="time_study" >
                   <Input />
                 </Form.Item>
 
-                <Form.Item label="Type Study" name="mode" rules={[{ required: true, message: "Please input teacher type study" }]}>
-                  <Select options={[{ label: "Online", value: 'online' } ,{ label: "Direct", value: 'direct' }]} />
+                <Form.Item label={t('typeStudy')} name="mode" rules={[{ required: true, message: t('plsSelectTypeStudy') }]}>
+                  <Select options={[{ label: t('online'), value: 'online' } ,{ label: t('direct'), value: 'direct' }]} />
                 </Form.Item>
 
-                <Form.Item label="Status" name="status" rules={[{ required: true, message: "Please select status" }]}>
-                  <Select options={[{ label: "Active", value: 1 }, { label: "Inactive", value: 0 }]} />
+                <Form.Item label={t('status')} name="status" rules={[{ required: true, message: t('plsSelectStatus') }]}>
+                  <Select options={[{ label: t('active'), value: 1 }, { label: t('inactive'), value: 0 }]} />
                 </Form.Item>
             </Col>
           </Row>
 
-          
+
 
 
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
                 <Button type="primary" htmlType="submit">
-                  Save
+                  {t('save')}
                 </Button>
               </Space>
             </div>
@@ -241,14 +256,14 @@ function ShortSoursePage() {
 
       {/* Delete Modal */}
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {/* Toast */}

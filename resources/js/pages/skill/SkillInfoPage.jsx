@@ -8,7 +8,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
 
 function SkillInfoPage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -64,12 +64,12 @@ function SkillInfoPage() {
     try {
       const res = await request(url, method, body);
       if (res && !res.error) {
-        showToast("success", res?.message || "Saved successfully");
+        showToast("success", res?.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to save");
+      showToast("error", t('failedToSave'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
     }
@@ -98,11 +98,11 @@ function SkillInfoPage() {
     try {
       const res = await request(`skill_info/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -116,31 +116,34 @@ function SkillInfoPage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1,width:80 ,align:'center' },
     {
-      title: "Title",
+      title: t('title'),
       key: "title",
       render: (_, record) => getLocalizedField(record, "title", lang),
     },
     {
-      title: "BIO",
+      title: t('bio'),
       key: "bio",
       render: (_, record) => getLocalizedField(record, "bio", lang),
     },
     {
-      title: "Status",
+      title: t('status'),
       dataIndex: "status",
       key: "status",
-      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
+      width:110,
+      align:'center',
+      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? t('active') : t('inactive')}</Tag>,
     },
     {
-      title: "Action",
+      title: t('action'),
       key: "action",
       width:110,
+      align:'center',
       render: (_, record) => (
         <Space>
-          <Button type="primary" onClick={() => handleEditBtn(record)}>Edit <EditFilled /></Button>
-          <Button danger onClick={() => handleDeleteClick(record)}>Delete <DeleteFilled /></Button>
+          <Button type="primary" onClick={() => handleEditBtn(record)}>{t('edit')} <EditFilled /></Button>
+          <Button danger onClick={() => handleDeleteClick(record)}>{t('delete')} <DeleteFilled /></Button>
         </Space>
       ),
     },
@@ -149,37 +152,37 @@ function SkillInfoPage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Skill Information</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('skillInfo')}</h3>
         <Button type="primary" style={{ fontSize: 16, fontWeight: 600 }} onClick={handleNew}>
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
-      <Modal title="Skill Information" footer={null} open={openModal} onCancel={handleClose}>
+      <Modal title={t('skillInfo')} footer={null} open={openModal} onCancel={handleClose}>
         <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
           <Form.Item name="id" hidden>
             <Input type="hidden" />
           </Form.Item>
-          <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input title" }]}>
+          <Form.Item label={t('title')} name="title" rules={[{ required: true, message: t('plsInputTitle') }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Title (KH)" name="title_kh">
+          <Form.Item label={t('titleKh')} name="title_kh">
             <Input />
           </Form.Item>
-          <Form.Item label="BIO" name="bio" rules={[{ required: true, message: "Please input bio" }]}>
+          <Form.Item label={t('bio')} name="bio" rules={[{ required: true, message: t('plsInputBio') }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="BIO (KH)" name="bio_kh">
+          <Form.Item label={t('bioKh')} name="bio_kh">
             <Input />
           </Form.Item>
-          <Form.Item label="Status" name="status" rules={[{ required: true, message: "Please select status" }]}>
-            <Select options={[{ label: "Active", value: 1 }, { label: "Inactive", value: 0 }]} />
+          <Form.Item label={t('status')} name="status" rules={[{ required: true, message: t('plsSelectStatus') }]}>
+            <Select options={[{ label: t('active'), value: 1 }, { label: t('inactive'), value: 0 }]} />
           </Form.Item>
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button type="primary" htmlType="submit">Save</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
+                <Button type="primary" htmlType="submit">{t('save')}</Button>
               </Space>
             </div>
           </Form.Item>
@@ -187,14 +190,14 @@ function SkillInfoPage() {
       </Modal>
 
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}

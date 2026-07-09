@@ -8,7 +8,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
 
 function ProjectTypePage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -62,12 +62,12 @@ function ProjectTypePage() {
     try {
       const res = await request(url, method, body);
       if (res && !res.error) {
-        showToast("success", res?.message || "Saved successfully");
+        showToast("success", res?.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to save");
+      showToast("error", t('failedToSave'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
     }
@@ -94,11 +94,11 @@ function ProjectTypePage() {
     try {
       const res = await request(`project_type/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -112,26 +112,29 @@ function ProjectTypePage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 ,width:80 ,align:'center'},
     {
-      title: "Name",
+      title: t('name'),
       key: "name",
       render: (_, record) => getLocalizedField(record, "name", lang),
     },
     {
-      title: "Status",
+      title: t('status'),
       dataIndex: "status",
       key: "status",
-      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
+      width:110,
+      align:'center',
+      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? t('active') : t('inactive')}</Tag>,
     },
     {
-      title: "Action",
+      title: t('action'),
       key: "action",
       width:110,
+      align:'center',
       render: (_, record) => (
         <Space>
-          <Button type="primary" onClick={() => handleEditBtn(record)}>Edit <EditFilled /></Button>
-          <Button danger onClick={() => handleDeleteClick(record)}>Delete <DeleteFilled /></Button>
+          <Button type="primary" onClick={() => handleEditBtn(record)}>{t('edit')} <EditFilled /></Button>
+          <Button danger onClick={() => handleDeleteClick(record)}>{t('delete')} <DeleteFilled /></Button>
         </Space>
       ),
     },
@@ -140,31 +143,31 @@ function ProjectTypePage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Project Type</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('projectType')}</h3>
         <Button type="primary" style={{ fontSize: 16, fontWeight: 600 }} onClick={handleNew}>
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
-      <Modal title="Project Type" footer={null} open={openModal} onCancel={handleClose}>
+      <Modal title={t('projectType')} footer={null} open={openModal} onCancel={handleClose}>
         <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
           <Form.Item name="id" hidden>
             <Input type="hidden" />
           </Form.Item>
-          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input name" }]}>
+          <Form.Item label={t('name')} name="name" rules={[{ required: true, message: t('plsInputName') }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Name (KH)" name="name_kh">
+          <Form.Item label={t('nameKh')} name="name_kh">
             <Input />
           </Form.Item>
-          <Form.Item label="Status" name="status" rules={[{ required: true, message: "Please select status" }]}>
-            <Select options={[{ label: "Active", value: 1 }, { label: "Inactive", value: 0 }]} />
+          <Form.Item label={t('status')} name="status" rules={[{ required: true, message: t('plsSelectStatus') }]}>
+            <Select options={[{ label: t('active'), value: 1 }, { label: t('inactive'), value: 0 }]} />
           </Form.Item>
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button type="primary" htmlType="submit">Save</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
+                <Button type="primary" htmlType="submit">{t('save')}</Button>
               </Space>
             </div>
           </Form.Item>
@@ -172,14 +175,14 @@ function ProjectTypePage() {
       </Modal>
 
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}

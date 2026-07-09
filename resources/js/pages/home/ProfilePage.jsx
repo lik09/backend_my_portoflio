@@ -8,9 +8,12 @@ import Toast from "../../components/message/Toast";
 import { config } from "../../utils/config";
 import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
+import ReactDOM from 'react-dom/client';
+import { FiDownload, FiPrinter } from 'react-icons/fi';
+
 
 function ProfilePage() {
-  const { lang } = useLanguage();
+  const { lang , t } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -108,15 +111,15 @@ function ProfilePage() {
       });
 
       if (res && !res.error) {
-        showToast("success", res.message || "Saved successfully");
+        showToast("success", res.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       } else {
-        showToast("error", res?.message || "Failed to save");
+        showToast("error", res?.message || t('failedToSave'));
       }
     } catch (err) {
       console.error("Save error:", err);
-      showToast("error", err.message || "Network/server error");
+      showToast("error", err.message || t('networkServerError'));
     } finally {
       setState((p) => ({ ...p, loading: false }));
     }
@@ -161,11 +164,11 @@ function ProfilePage() {
     try {
       const res = await request(`profiles/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -176,6 +179,95 @@ function ProfilePage() {
   const handleDeleteCancel = () => {
     setDeleteModalOpen(false);
     setItemToDelete(null);
+  };
+
+  const handleViewCv = async (id) => {
+    const win = window.open('', '_blank');
+    try {
+      const res = await request(`profiles/${id}/preview-cv`, 'get', {});
+      if (!res || res.error || !res.content) throw new Error('Failed to load CV');
+
+      const byteChars = atob(res.content);
+      const byteNumbers = new Array(byteChars.length);
+      for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+
+      const displayName = res.filename || 'cv.pdf';
+      const file = new File([new Uint8Array(byteNumbers)], displayName, { type: res.mime || 'application/pdf' });
+      const url = URL.createObjectURL(file);
+
+      if (win) {
+        win.document.title = displayName;
+        win.document.body.style.margin = '0';
+        win.document.body.style.overflow = 'hidden';
+        win.document.body.style.fontFamily = 'sans-serif';
+
+        const header = win.document.createElement('div');
+        header.style.cssText = `
+          display: flex; align-items: center; justify-content: space-between;
+          height: 48px; padding: 0 16px;
+          background: #323639; color: #e8eaed; font-size: 14px;
+        `;
+
+        const nameSpan = win.document.createElement('span');
+        nameSpan.textContent = displayName;
+
+        const btnGroup = win.document.createElement('div');
+        btnGroup.style.cssText = 'display: flex; gap: 16px;';
+
+        // Container element ទទេសម្រាប់ mount React component ចូល
+        const downloadContainer = win.document.createElement('a');
+        downloadContainer.href = url;
+        downloadContainer.download = displayName;
+        downloadContainer.style.cssText = 'display: flex; align-items: center; gap: 6px; color: #8ab4f8; text-decoration: none; cursor: pointer;';
+
+        const printContainer = win.document.createElement('button');
+        printContainer.style.cssText = 'display: flex; align-items: center; gap: 6px; background: none; border: none; color: #8ab4f8; cursor: pointer; font-size: 14px;';
+        printContainer.onclick = () => {
+          const iframeEl = win.document.getElementById('pdf-frame');
+          iframeEl.contentWindow.print();
+        };
+
+        btnGroup.appendChild(downloadContainer);
+        btnGroup.appendChild(printContainer);
+        header.appendChild(nameSpan);
+        header.appendChild(btnGroup);
+        win.document.body.appendChild(header);
+
+        // ✅ Render react-icons ចូល container ដោយប្រើ ReactDOM.createRoot
+        const downloadRoot = ReactDOM.createRoot(downloadContainer);
+        downloadRoot.render(
+          <>
+            <FiDownload size={14} />
+            <span>Download</span>
+          </>
+        );
+
+        const printRoot = ReactDOM.createRoot(printContainer);
+        printRoot.render(
+          <>
+            <FiPrinter size={14} />
+            <span>Print</span>
+          </>
+        );
+
+        const iframe = win.document.createElement('iframe');
+        iframe.id = 'pdf-frame';
+        iframe.src = url + '#toolbar=0';
+        iframe.style.border = 'none';
+        iframe.style.width = '100vw';
+        iframe.style.height = 'calc(100vh - 48px)';
+        win.document.body.appendChild(iframe);
+
+        win.addEventListener('beforeunload', () => {
+          URL.revokeObjectURL(url);
+          downloadRoot.unmount();  // cleanup React root ពេលបិទ tab
+          printRoot.unmount();
+        });
+      }
+    } catch (err) {
+      if (win) win.close();
+      showToast('error', t('failedToLoadCv'));
+    }
   };
 
   const getFaIcon = (iconClass) => {
@@ -190,20 +282,20 @@ function ProfilePage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 ,width: 80 , align:'center'},
     {
-      title: "Full Name",
+      title: t('fullName'),
       key: "fullname",
       render: (_, record) => getLocalizedField(record, "fullname", lang),
     },
     {
-      title: "BIO",
+      title: t('bio'),
       key: "bio",
       width:300,
       render: (_, record) => getLocalizedField(record, "bio", lang),
     },
     {
-      title: "Connect With Me",
+      title: t('connectWithMe'),
       dataIndex: "connect_with_me",
       key: "connect_with_me",
       render: (list) =>
@@ -221,13 +313,15 @@ function ProfilePage() {
             ))}
           </Space>
         ) : (
-          <Tag color="default">No Social Links</Tag>
+          <Tag color="default"> {t('noSocialLink')} </Tag>
         ),
     },
     {
-      title: "Photo Cover",
+      title: t("photoCover"),
       dataIndex: "photo_cover",
       key: "photo_cover",
+      width:140,
+      align:'center',
       render: (photo) =>
         photo ? (
           <Image.PreviewGroup>
@@ -238,39 +332,44 @@ function ProfilePage() {
             />
           </Image.PreviewGroup>
         ) : (
-          <span>No Photo</span>
+          <span> {t('noPhoto')} </span>
         ),
     },
     {
-      title: "CV",
+      title: t("cv"),
       dataIndex: "cv",
       key: "cv",
-      render: (cv) =>
+      width:110,
+      align:'center',
+      render: (cv, record) =>
         cv ? (
-          <a href={`${config.image_path}${cv}`} target="_blank" rel="noopener noreferrer">
-            View PDF
-          </a>
+          <Button type="link" style={{ padding: 0 }} onClick={() => handleViewCv(record.id)}>
+            {t('viewPdf')}
+          </Button>
         ) : (
-          <Tag color="default">No CV</Tag>
+          <Tag color="default">{t('noCv')}</Tag>
         ),
     },
     {
-      title: "Status",
+      title: t("status"),
       dataIndex: "status",
       key: "status",
-      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
+      width:110,
+      align:'center',
+      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? t('active') : t('inactive')}</Tag>,
     },
     {
-      title: "Action",
+      title: t("action"),
       key: "action",
       width:110,
+      align:'center',
       render: (_, record) => (
         <Space>
           <Button type="primary" onClick={() => handleEditBtn(record)}>
-            Edit <EditFilled />
+            {t('edit')} <EditFilled />
           </Button>
           <Button danger onClick={() => handleDeleteClick(record)}>
-            Delete <DeleteFilled />
+            {t('delete')} <DeleteFilled />
           </Button>
         </Space>
       ),
@@ -280,26 +379,26 @@ function ProfilePage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Profile Information</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}> {t('profileInfo')} </h3>
         <Button type="primary" style={{ fontSize: 16, fontWeight: 600 }} onClick={handleNew}>
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
       {/* Form Modal */}
-      <Modal title="Profile Information" footer={null} open={openModal} onCancel={handleClose} width={700}>
+      <Modal title= {t('profileInfo')} footer={null} open={openModal} onCancel={handleClose} width={700}>
         <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
-          <Form.Item label="Full Name" name="fullname" rules={[{ required: true, message: "Please input full name" }]}>
+          <Form.Item label={t("fullNameEn")} name="fullname" rules={[{ required: true, message: t('plsInputFullNameEn') }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Full Name (KH)" name="fullname_kh">
+          <Form.Item label={t('fullNameKh')} name="fullname_kh">
             <Input />
           </Form.Item>
 
-          <Form.Item label="BIO" name="bio" rules={[{ required: true, message: "Please input bio" }]}>
+          <Form.Item label={t("bioEn")} name="bio" rules={[{ required: true, message: t('plsInputBioEn') }]}>
             <Input.TextArea style={{ height: 100 }} />
           </Form.Item>
-          <Form.Item label="BIO (KH)" name="bio_kh">
+          <Form.Item label={t("bioKh")} name="bio_kh">
             <Input.TextArea style={{ height: 100 }} />
           </Form.Item>
 
@@ -313,24 +412,24 @@ function ProfilePage() {
                       {...restField}
                       name={[name, "icon"]}
                       fieldKey={[fieldKey, "icon"]}
-                      rules={[{ required: true, message: "Missing icon" }]}
+                      rules={[{ required: true, message: t('requiredIcon') }]}
                     >
-                      <Input placeholder="Icon class (e.g., fab fa-facebook)" />
+                      <Input placeholder={t('iconClass')} />
                     </Form.Item>
                     <Form.Item
                       {...restField}
                       name={[name, "link"]}
                       fieldKey={[fieldKey, "link"]}
-                      rules={[{ required: true, message: "Missing link" }]}
+                      rules={[{ required: true, message: t('requiredLink') }]}
                     >
-                      <Input placeholder="Link URL" />
+                      <Input placeholder= {t('linkUrl')} />
                     </Form.Item>
                     <MinusCircleOutlined onClick={() => remove(name)} />
                   </Space>
                 ))}
                 <Form.Item>
                   <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                    Add Social Link
+                    {t('addSociallink')}
                   </Button>
                 </Form.Item>
               </>
@@ -339,20 +438,20 @@ function ProfilePage() {
 
           {/* CV Upload */}
           <Form.Item
-            label="CV"
+            label={t('cv')}
             name="cv"
             valuePropName="fileList"
             getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
-            rules={[{ required: true, message: "Please upload CV" }]}
+            rules={[{ required: true, message: t('plsUplaodCv') }]}
           >
             <Upload beforeUpload={() => false} accept=".pdf" maxCount={1}>
-              <Button icon={<PlusOutlined />}>Upload CV</Button>
+              <Button icon={<PlusOutlined />}> {t('uploadCv')} </Button>
             </Upload>
           </Form.Item>
 
           {/* Photo Cover Upload */}
           <Form.Item
-            label="Photo Cover"
+            label={t('photoCover')}
             name="photo_cover"
             valuePropName="fileList"
             getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
@@ -360,21 +459,21 @@ function ProfilePage() {
             <Upload listType="picture-card" beforeUpload={() => false} maxCount={1} accept="image/*">
               <div>
                 <PlusOutlined />
-                <div style={{ marginTop: 8 }}>Upload</div>
+                <div style={{ marginTop: 8 }}>{t('upload')}</div>
               </div>
             </Upload>
           </Form.Item>
 
-          <Form.Item label="Status" name="status" rules={[{ required: true, message: "Please select status" }]}>
-            <Select options={[{ label: "Active", value: 1 }, { label: "Inactive", value: 0 }]} />
+          <Form.Item label={t('status')} name="status" rules={[{ required: true, message: t('plsSelectStatus') }]}>
+            <Select options={[{ label: t('active'), value: 1 }, { label: t('inactive'), value: 0 }]} />
           </Form.Item>
 
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>{t('cancel')} </Button>
                 <Button type="primary" htmlType="submit">
-                  Save
+                  {t('save')}
                 </Button>
               </Space>
             </div>
@@ -384,14 +483,14 @@ function ProfilePage() {
 
       {/* Delete Modal */}
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {/* Toast */}

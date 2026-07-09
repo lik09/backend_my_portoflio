@@ -23,7 +23,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
 
 function SkillPage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [state, setState] = useState({ list: [], skillTypeList: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -134,15 +134,15 @@ function SkillPage() {
       const res = await requestFormData(endpoint, method, formData);
 
       if (res && !res.error) {
-        showToast("success", res.message || "Saved successfully");
+        showToast("success", res.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       } else {
-        showToast("error", res?.message || "Failed to save");
+        showToast("error", res?.message || t('failedToSave'));
       }
     } catch (err) {
       console.error("Save error:", err);
-      showToast("error", err.message || "Network/server error");
+      showToast("error", err.message || t('networkServerError'));
     } finally {
       setState((p) => ({ ...p, loading: false }));
     }
@@ -172,11 +172,11 @@ function SkillPage() {
     try {
       const res = await request(`skill/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -190,29 +190,34 @@ function SkillPage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 , width:80 ,align: 'center',},
     
     {
-      title: "Name Skill",
+      title: t('nameSkill'),
       key: "name",
+      width:260,
       render: (_, record) => getLocalizedField(record, "name", lang),
     },
     {
-      title: "Skill Type",
+      title: t('skillType'),
       dataIndex: "skill_type",
       key: "skill_type",
+      width:180,
+      align: 'center',
       render: (skill_type) => <Tag color="yellow">{skill_type?.name}</Tag>
     },
     {
-      title: "Description",
+      title: t('description'),
       key: "description",
       width: 300,
       render: (_, record) => getLocalizedField(record, "description", lang),
     },
     {
-      title: "Image Logo",
+      title: t('imageLogo'),
       dataIndex: "images",
       key: "images",
+      width:120,
+      align: 'center',
       render: (logo) =>
         logo ? (
           <Image.PreviewGroup>
@@ -223,35 +228,46 @@ function SkillPage() {
             />
           </Image.PreviewGroup>
         ) : (
-          <span>No Logo</span>
+          <span>{t('noLogo')}</span>
         ),
     },
     {
-      title: "Percentage Status",
+      title: t('percentageStatus'),
       dataIndex: "pct_status",
       key: "pct_status",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width:110,
-      render: (status) => (
-        <Tag color={status === 1 ? "green" : "volcano"}>
-          {status === 1 ? "Active" : "Inactive"}
+      width:160,
+      align: 'center',
+      render: (pct_status) => (
+        <Tag color="green">
+          {pct_status} %
         </Tag>
       ),
     },
     {
-      title: "Action",
+      title: t('status'),
+      dataIndex: "status",
+      key: "status",
+      width:110,
+      align:'center',
+      align: 'center',
+      render: (status) => (
+        <Tag color={status === 1 ? "green" : "volcano"}>
+          {status === 1 ? t('active') : t('inactive')}
+        </Tag>
+      ),
+    },
+    {
+      title: t('action'),
       key: "action",
+      width:110,
+      align: 'center',
       render: (_, record) => (
         <Space>
           <Button type="primary" onClick={() => handleEditBtn(record)}>
-            Edit <EditFilled />
+            {t('edit')} <EditFilled />
           </Button>
           <Button danger onClick={() => handleDeleteClick(record)}>
-            Delete <DeleteFilled />
+            {t('delete')} <DeleteFilled />
           </Button>
         </Space>
       ),
@@ -261,19 +277,19 @@ function SkillPage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>skill Information</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('skillInfo')}</h3>
         <Button
           type="primary"
           style={{ fontSize: 16, fontWeight: 600 }}
           onClick={handleNew}
         >
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
       {/* Form Modal */}
       <Modal
-        title="Skill Information"
+        title={t('skillInfo')}
         footer={null}
         open={openModal}
         onCancel={handleClose}
@@ -283,25 +299,25 @@ function SkillPage() {
           <Row gutter={20}>
             <Col xs={24} md={12}>
               <Form.Item
-                label="Name Skill English"
+                label={t('nameSkill')}
                 name="name"
-                rules={[{ required: true, message: "Please input name skill english" }]}
+                rules={[{ required: true, message: t('plsInputNameSkillEn') }]}
               >
                 <Input />
               </Form.Item>
 
               <Form.Item
-                label="Name Skill Khmer"
+                label={t('nameSkillKh')}
                 name="name_kh"
-                rules={[{ required: true, message: "Please input name skill khmer" }]}
+                rules={[{ required: true, message: t('plsInputNameSkillKh') }]}
               >
                 <Input />
               </Form.Item>
 
               <Form.Item
-                label="Skill Type"
+                label={t('skillType')}
                 name="skill_type_id"
-                rules={[{ required: true, message: "Please select skill type" }]}
+                rules={[{ required: true, message: t('plsSelectSkillType') }]}
               >
                 <Select
                   options={state.skillTypeList?.map((type) => ({
@@ -311,27 +327,27 @@ function SkillPage() {
                 />
               </Form.Item>
 
-              <Form.Item label="Description Skill English" name="description">
+              <Form.Item label={t('description')} name="description">
                 <Input.TextArea style={{ height: "100px" }} />
               </Form.Item>
 
-              <Form.Item label="Description Skill Khmer" name="description_kh">
+              <Form.Item label={t('descriptionKh')} name="description_kh">
                 <Input.TextArea style={{ height: "100px" }} />
               </Form.Item>
 
-              <Form.Item label="Percentage Status" name="pct_status">
+              <Form.Item label={t('percentageStatus')} name="pct_status">
                 <Input />
               </Form.Item>
-              
+
               <Form.Item
-                label="Status"
+                label={t('status')}
                 name="status"
-                rules={[{ required: true, message: "Please select status" }]}
+                rules={[{ required: true, message: t('plsSelectStatus') }]}
               >
                 <Select
                   options={[
-                    { label: "Active", value: 1 },
-                    { label: "Inactive", value: 0 },
+                    { label: t('active'), value: 1 },
+                    { label: t('inactive'), value: 0 },
                   ]}
                 />
               </Form.Item>
@@ -339,7 +355,7 @@ function SkillPage() {
 
             <Col xs={24} md={12}>
               <Form.Item
-                label="Image Logo"
+                label={t('imageLogo')}
                 name="images"
                 valuePropName="fileList"
                 getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
@@ -347,19 +363,19 @@ function SkillPage() {
                 <Upload listType="picture-card" beforeUpload={() => false} maxCount={1} accept="image/*">
                   <div>
                     <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
+                    <div style={{ marginTop: 8 }}>{t('upload')}</div>
                   </div>
                 </Upload>
-              </Form.Item> 
+              </Form.Item>
             </Col>
           </Row>
 
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
                 <Button type="primary" htmlType="submit">
-                  Save
+                  {t('save')}
                 </Button>
               </Space>
             </div>
@@ -369,14 +385,14 @@ function SkillPage() {
 
       {/* Delete Modal */}
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {/* Toast */}

@@ -35,6 +35,15 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::get('/system-info', function () {
+    return response()->json([
+        'app_version' => config('app.version'),
+        'laravel_version' => app()->version(),
+        'php_version' => PHP_VERSION,
+        'environment' => config('app.env'),
+    ]);
+});
+
 Route::apiResource('profiles', ProfileController::class);
 Route::apiResource('experiences', ExperienceController::class);
 Route::apiResource('experiences_info', ExperienceInfoController::class);
@@ -53,6 +62,7 @@ Route::apiResource('education_type', EducationTypeController::class);
 Route::apiResource('school', SchoolController::class);
 Route::apiResource('short_course', ShortCourseController::class);
 Route::get('/profiles/{id}/download-cv', [ProfileController::class, 'downloadCv']);
+Route::get('/profiles/{id}/preview-cv', [ProfileController::class, 'previewCv']);
 
 
 // Route::middleware('api')->group(function () {

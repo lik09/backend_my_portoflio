@@ -8,7 +8,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
 
 function TalkPage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -64,12 +64,12 @@ function TalkPage() {
     try {
       const res = await request(url, method, body);
       if (res && !res.error) {
-        showToast("success", res?.message || "Saved successfully");
+        showToast("success", res?.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to save");
+      showToast("error", t('failedToSave'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
     }
@@ -93,11 +93,11 @@ function TalkPage() {
     try {
       const res = await request(`talk/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -111,31 +111,34 @@ function TalkPage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 ,width:80, align: 'center' },
     {
-      title: "Title",
+      title: t('title'),
       key: "title",
       render: (_, record) => getLocalizedField(record, "title", lang),
     },
     {
-      title: "Description",
+      title: t('description'),
       key: "description",
       render: (_, record) => getLocalizedField(record, "description", lang),
     },
     {
-      title: "Status",
+      title: t('status'),
       dataIndex: "status",
       key: "status",
-      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
+      width:110,
+      align: 'center',
+      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? t('active') : t('inactive')}</Tag>,
     },
     {
-      title: "Action",
+      title: t('action'),
       key: "action",
       width:110,
+      align: 'center',
       render: (_, record) => (
         <Space>
-          <Button type="primary"  onClick={() => handleEditBtn(record)}> Edit <EditFilled /></Button>
-          <Button danger onClick={() => handleDeleteClick(record)}>Delete <DeleteFilled /></Button>
+          <Button type="primary"  onClick={() => handleEditBtn(record)}> {t('edit')} <EditFilled /></Button>
+          <Button danger onClick={() => handleDeleteClick(record)}>{t('delete')} <DeleteFilled /></Button>
         </Space>
       ),
     },
@@ -144,40 +147,40 @@ function TalkPage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Talk Information</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('talkInfo')}</h3>
         <Button type="primary" style={{ fontSize: 16, fontWeight: 600 }} onClick={handleNew}>
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
       {/* Form Modal */}
-      <Modal title="Talk Information" footer={null} open={openModal} onCancel={handleClose}>
+      <Modal title={t('talkInfo')} footer={null} open={openModal} onCancel={handleClose}>
         <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
-          <Form.Item label="Title English" name="title" rules={[{ required: true, message: "Please input title english" }]}>
-            <Input />
-          </Form.Item>
-          
-          <Form.Item label="Title Khmer" name="title_kh" rules={[{ required: true, message: "Please input title khmer" }]}>
+          <Form.Item label={t('title')} name="title" rules={[{ required: true, message: t('plsInputTitleEn') }]}>
             <Input />
           </Form.Item>
 
-          <Form.Item label="Description English" name="description">
+          <Form.Item label={t('titleKh')} name="title_kh" rules={[{ required: true, message: t('plsInputTitleKh') }]}>
+            <Input />
+          </Form.Item>
+
+          <Form.Item label={t('description')} name="description">
             <Input.TextArea style={{ height: 100 }} />
           </Form.Item>
 
-          <Form.Item label="Description Khmer" name="description_kh">
+          <Form.Item label={t('descriptionKh')} name="description_kh">
             <Input.TextArea style={{ height: 100 }} />
           </Form.Item>
 
-          <Form.Item label="Status" name="status" rules={[{ required: true, message: "Please select status" }]}>
-            <Select options={[{ label: "Active", value: 1 }, { label: "Inactive", value: 0 }]} />
+          <Form.Item label={t('status')} name="status" rules={[{ required: true, message: t('plsSelectStatus') }]}>
+            <Select options={[{ label: t('active'), value: 1 }, { label: t('inactive'), value: 0 }]} />
           </Form.Item>
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
                 <Button type="primary" htmlType="submit">
-                  Save
+                  {t('save')}
                 </Button>
               </Space>
             </div>
@@ -188,14 +191,14 @@ function TalkPage() {
 
       {/* Delete Modal */}
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {/* Toast */}

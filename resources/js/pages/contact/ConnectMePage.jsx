@@ -4,11 +4,12 @@ import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { request } from "../../utils/request";
 import Toast from "../../components/message/Toast";
+import DynamicIcon from "../../components/icon/DynamicIcon";
 import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
 
 function ConnectMePage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -69,12 +70,12 @@ function ConnectMePage() {
     try {
       const res = await request(url, method, body);
       if (res && !res.error) {
-        showToast("success", res?.message || "Saved successfully");
+        showToast("success", res?.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to save");
+      showToast("error", t('failedToSave'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
     }
@@ -98,11 +99,11 @@ function ConnectMePage() {
     try {
       const res = await request(`connect_me/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -116,34 +117,57 @@ function ConnectMePage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 ,width:80 ,align:'center'},
     {
-      title: "Name",
+      title: t('name'),
       key: "name",
       render: (_, record) => getLocalizedField(record, "name", lang),
     },
-    { title: "Connection By", dataIndex: "connection", key: "connection" },
+    { title: t('connectionBy'), dataIndex: "connection", key: "connection" },
     {
-      title: "Description",
+      title: t('description'),
       key: "description",
       render: (_, record) => getLocalizedField(record, "description", lang),
     },
-    { title: "Icon Name", dataIndex: "icon_name", key: "icon_name" },
-    { title: "Icon Import", dataIndex: "icon_import", key: "icon_import" },
-    { title: "Backgroud Box", dataIndex: "bg_box", key: "bg_box" },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
+      title: t('iconName'),
+      dataIndex: "icon_name",
+      key: "icon_name" ,
+      render: (icon_name, record) => (
+        <Space>
+          <DynamicIcon iconImport={record.icon_import} iconName={icon_name} size={18} />
+          {icon_name}
+        </Space>
+      ),
+    },
+    { title: t('iconImport'), dataIndex: "icon_import", key: "icon_import" },
+    { 
+      title: t('backgroundBox'), 
+      dataIndex: "bg_box", 
+      key: "bg_box" ,
+      width:150 ,
+      align: 'center',
+      render: (bg_box) => (
+        <Tag color={bg_box}>{bg_box}</Tag>
+      ),
     },
     {
-      title: "Action",
+      title: t('status'),
+      dataIndex: "status",
+      key: "status",
+      width:110,
+      align: 'center',
+      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? t('active') : t('inactive')}</Tag>,
+    },
+    {
+      title: t('action'),
       key: "action",
+      width:110,
+      align: 'center',
       render: (_, record) => (
         <Space>
-          <Button type="primary"  onClick={() => handleEditBtn(record)}> Edit <EditFilled /></Button>
-          <Button danger onClick={() => handleDeleteClick(record)}>Delete <DeleteFilled /></Button>
+          <Button type="primary"  onClick={() => handleEditBtn(record)}> {t('edit')} <EditFilled /></Button>
+          <Button danger onClick={() => handleDeleteClick(record)}>{t('delete')} <DeleteFilled /></Button>
         </Space>
       ),
     },
@@ -152,54 +176,54 @@ function ConnectMePage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Connect Me Information</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('connectMeInfo')}</h3>
         <Button type="primary" style={{ fontSize: 16, fontWeight: 600 }} onClick={handleNew}>
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
       {/* Form Modal */}
-      <Modal title="Connect Me Information" footer={null} open={openModal} onCancel={handleClose}>
+      <Modal title={t('connectMeInfo')} footer={null} open={openModal} onCancel={handleClose}>
         <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
-          <Form.Item label="Name English" name="name" rules={[{ required: true, message: "Please input name english" }]}>
+          <Form.Item label={t('name')} name="name" rules={[{ required: true, message: t('plsInputNameEn') }]}>
             <Input />
           </Form.Item>
 
-          <Form.Item label="Name Khmer" name="name_kh" rules={[{ required: true, message: "Please input name khmer" }]}>
+          <Form.Item label={t('nameKh')} name="name_kh" rules={[{ required: true, message: t('plsInputNameKh') }]}>
             <Input />
           </Form.Item>
 
-          <Form.Item label="Connection By" name="connection" rules={[{ required: true, message: "Please input connection by" }]} >
+          <Form.Item label={t('connectionBy')} name="connection" rules={[{ required: true, message: t('plsInputConnectionBy') }]} >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Description English" name="description">
+          <Form.Item label={t('description')} name="description">
             <Input.TextArea style={{ height: 100 }} />
           </Form.Item>
 
-          <Form.Item label="Description Khmer" name="description_kh">
+          <Form.Item label={t('descriptionKh')} name="description_kh">
             <Input.TextArea style={{ height: 100 }} />
           </Form.Item>
 
-          <Form.Item label="Icon Name" name="icon_name"  >
+          <Form.Item label={t('iconName')} name="icon_name"  >
             <Input />
           </Form.Item>
-          <Form.Item label="Icon Import" name="icon_import" >
+          <Form.Item label={t('iconImport')} name="icon_import" >
             <Input />
           </Form.Item>
-          <Form.Item label="Backgroud Box" name="bg_box" >
+          <Form.Item label={t('backgroundBox')} name="bg_box" >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Status" name="status" rules={[{ required: true, message: "Please select status" }]}>
-            <Select options={[{ label: "Active", value: 1 }, { label: "Inactive", value: 0 }]} />
+          <Form.Item label={t('status')} name="status" rules={[{ required: true, message: t('plsSelectStatus') }]}>
+            <Select options={[{ label: t('active'), value: 1 }, { label: t('inactive'), value: 0 }]} />
           </Form.Item>
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
                 <Button type="primary" htmlType="submit">
-                  Save
+                  {t('save')}
                 </Button>
               </Space>
             </div>
@@ -209,14 +233,14 @@ function ConnectMePage() {
 
       {/* Delete Modal */}
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {/* Toast */}

@@ -1,9 +1,10 @@
 ﻿import React, { useEffect, useState } from "react";
-import { App, Button, Form, Input, Radio, Space, Spin, Tabs, Upload } from "antd";
+import { App, Button, Descriptions, Form, Input, Radio, Space, Spin, Tabs, Upload } from "antd";
 import {
   UserOutlined,
   LockOutlined,
   GlobalOutlined,
+  InfoCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
 import { request } from "../../utils/request";
@@ -272,6 +273,31 @@ function LanguageTab({ t }) {
   );
 }
 
+function AboutTab({ t }) {
+  const [info, setInfo] = useState(null);
+
+  useEffect(() => {
+    const load = async () => {
+      const res = await request("system-info", "get");
+      if (res) setInfo(res);
+    };
+    load();
+  }, []);
+
+  if (!info) {
+    return <Spin style={{ display: "block", margin: "40px auto" }} />;
+  }
+
+  return (
+    <Descriptions bordered column={1} style={{ maxWidth: 480 }}>
+      <Descriptions.Item label={t("appVersion")}>{info.app_version}</Descriptions.Item>
+      <Descriptions.Item label={t("laravelVersion")}>{info.laravel_version}</Descriptions.Item>
+      <Descriptions.Item label={t("phpVersion")}>{info.php_version}</Descriptions.Item>
+      <Descriptions.Item label={t("environment")}>{info.environment}</Descriptions.Item>
+    </Descriptions>
+  );
+}
+
 function SettingPage() {
   const { t } = useLanguage();
 
@@ -290,6 +316,11 @@ function SettingPage() {
       key: "language",
       label: <span><GlobalOutlined /> {t("changeLanguage")}</span>,
       children: <LanguageTab t={t} />,
+    },
+    {
+      key: "about",
+      label: <span><InfoCircleOutlined /> {t("about")}</span>,
+      children: <AboutTab t={t} />,
     },
   ];
 

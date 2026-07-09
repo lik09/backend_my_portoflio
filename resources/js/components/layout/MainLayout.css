@@ -2,38 +2,36 @@
 
 .custom-sider {
   --sider-bg: #ffffff;
-  --sider-group-text: #363a94;
-  --sider-group-icon: #6469d8;
-  --sider-group-hover-text: #2b2f7e;
-  --sider-group-open-bg: rgba(255, 255, 255, 0.4);
-  --sider-arrow: #7075d6;
-  --sider-sub-text: #6367a8;
-  --sider-sub-hover-text: #3a3ea0;
+  --sider-group-text: #000000;
+  --sider-group-icon: #000000;
+  --sider-group-hover-text: #5996FF;
+  --sider-group-open-bg: transparent;
+  --sider-sub-text: #000000;
+  --sider-sub-hover-text: #5996FF;
   --sider-active-bg: #ffffff;
-  --sider-active-text: #22c55e;
-  --sider-trigger-bg: rgba(255, 255, 255, 0.5);
+  --sider-active-text: #5996FF;
+  --sider-trigger-bg: #ffffff;
   --sider-trigger-hover-bg: rgba(255, 255, 255, 0.8);
-  --sider-trigger-text: #4145a8;
-  --sider-hover-red: #22c55e;
-  --sider-active-accent: #22c55e;
+  --sider-hover-red: #5996FF;
+  --sider-active-accent: #5996FF;
+  --sider-trigger-border: #5996FF;
 
   background: var(--sider-bg) !important;
 }
 
 .custom-sider.custom-sider-dark {
-  --sider-bg: #14162a;
-  --sider-group-text: #c7cbff;
-  --sider-group-icon: #9aa0f5;
-  --sider-group-hover-text: #ffffff;
-  --sider-group-open-bg: rgba(255, 255, 255, 0.045);
-  --sider-arrow: #9aa0f5;
-  --sider-sub-text: #9498c9;
-  --sider-sub-hover-text: #ffffff;
-  --sider-active-bg: rgba(34, 197, 94, 0.18);
-  --sider-active-text: #ffffff;
-  --sider-trigger-bg: rgba(255, 255, 255, 0.05);
-  --sider-trigger-hover-bg: rgba(255, 255, 255, 0.09);
-  --sider-trigger-text: #c7cbff;
+  --sider-bg: #0c0c0c;
+  --sider-group-text: #ffffff;
+  --sider-group-icon: #ffffff;
+  --sider-group-hover-text: transparent;
+  --sider-group-open-bg: transparent;
+  --sider-sub-text: #ffffff;
+  --sider-sub-hover-text: #5996FF;
+  --sider-active-bg: transparent;
+  --sider-active-text: #5996FF;
+  --sider-trigger-bg: #0c0c0c;
+  --sider-trigger-hover-bg: #1D2128;
+  --sider-trigger-border: #5996FF;
 }
 
 .custom-sider .ant-layout-sider-children {
@@ -79,13 +77,13 @@
   border-radius: 10px;
   font-weight: 600;
   font-size: 14px;
-  color: var(--sider-group-text);
+  color: var(--sider-group-text) !important;
   position: relative;
 }
 
 .custom-menu.ant-menu-inline-collapsed .ant-menu-submenu-title {
   border-radius: 10px;
-  color: var(--sider-group-text);
+  color: var(--sider-group-text) !important;
 }
 
 .custom-menu .ant-menu-submenu-title .ant-menu-item-icon {
@@ -124,9 +122,6 @@
   margin-bottom: 4px;
 }
 
-.custom-menu .ant-menu-submenu-arrow {
-  color: var(--sider-arrow);
-}
 
 /* Submenu container */
 .custom-menu .ant-menu-sub.ant-menu-inline {
@@ -166,20 +161,24 @@
   color: var(--sider-hover-red) !important;
 }
 
-/* Active (selected) sub item — clean pill, no outline */
+/* Active (selected) sub item — clean pill, no outline, no accent color */
 .custom-menu .ant-menu-item-selected {
-  background: var(--sider-active-bg) !important;
+  background: transparent !important;
   color: var(--sider-active-text) !important;
   font-weight: 500;
 }
 
-/* Parent group header only turns green when item 0 (the first sub-item)
+.custom-menu .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  background: transparent !important;
+}
+
+/* Parent group header only turns highlighted when item 0 (the first sub-item)
    is specifically the one selected — NOT antd's own .ant-menu-submenu-selected
    class, which fires for any selected descendant regardless of position.
    .connector-header-active is toggled by SidebarConnectors.jsx to match the
    "highlight only the specifically clicked item" design used everywhere else. */
 .custom-menu .connector-header-active > .ant-menu-submenu-title {
-  background: var(--sider-active-bg) !important;
+  background: transparent !important;
   color: var(--sider-active-text) !important;
 }
 
@@ -193,15 +192,96 @@
   background: transparent;
 }
 
-/* Collapsed flyout submenu popups (portalled outside the Sider) */
-.custom-menu-popup .ant-menu {
-  background: var(--sider-bg);
+/* ===== Unified collapsed-hover popup style (speech-bubble shape) =====
+   Antd renders two DIFFERENT components when the sidebar is collapsed:
+   - Tooltip (top-level items with NO children, e.g. Dashboard/Setting) —
+     this one has a built-in arrow/tail.
+   - Submenu Popup (top-level items WITH children, e.g. Home/Experience) —
+     antd gives this NO arrow at all, so we hand-build one with ::before
+     below to match the Tooltip's look.
+   Colors below are kept in sync between the two on purpose: same bg,
+   same text color, same shape — light mode white/black, dark mode
+   #2f2f2f/white. */
+
+/* --- Tooltip (leaf items, no children) --- */
+.ant-menu-inline-collapsed-tooltip .ant-tooltip-inner {
+  background: #ffffff;
+  color: #000000;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 8px 16px;
+  min-width: max-content;
 }
+
+/* Keep the arrow, just recolor it to match the bubble */
+.ant-menu-inline-collapsed-tooltip .ant-tooltip-arrow::before {
+  background: #ffffff;
+}
+
+.dark-theme .ant-menu-inline-collapsed-tooltip .ant-tooltip-inner {
+  background: #2f2f2f;
+  color: #ffffff;
+}
+.dark-theme .ant-menu-inline-collapsed-tooltip .ant-tooltip-arrow::before {
+  background: #2f2f2f;
+}
+
+/* --- Submenu Popup (items with children) ---
+   --sider-sub-text/--sider-active-text/--sider-hover-red now match the
+   Tooltip's colors exactly (black text in light mode, white in dark,
+   #5996FF as the shared accent) instead of the old leftover #6367a8
+   from a previous color scheme. */
+.custom-menu-popup {
+  --sider-bg: #ffffff;
+  --sider-sub-text: #000000;
+  --sider-active-bg: #ffffff;
+  --sider-active-text: #5996FF;
+  --sider-hover-red: #5996FF;
+  overflow: visible !important;
+}
+.custom-menu-popup.custom-menu-popup-dark {
+  --sider-bg: #2f2f2f;
+  --sider-sub-text: #ffffff;
+  --sider-active-bg: #2f2f2f;
+  --sider-active-text: #5996FF;
+  --sider-hover-red: #5996FF;
+}
+
+.custom-menu-popup .ant-menu {
+  background: var(--sider-bg) !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 8px 8px;
+  position: relative;
+  overflow: visible !important;
+  margin-left: 5px;
+}
+
+.custom-menu-popup .ant-menu::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  background: var(--sider-bg) !important;
+  transform: rotate(45deg);
+  border-radius: 2px;
+  z-index: 0;
+}
+
 .custom-menu-popup .ant-menu-item {
   color: var(--sider-sub-text);
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  position: relative;
+  z-index: 1;
 }
 .custom-menu-popup .ant-menu-item-selected {
-  background: var(--sider-active-bg) !important;
+  background: transparent !important;
   color: var(--sider-active-text) !important;
 }
 .custom-menu-popup .ant-menu-item:hover {
@@ -213,12 +293,10 @@
 .custom-sider .ant-layout-sider-trigger {
   background: var(--sider-trigger-bg);
   color: var(--sider-trigger-text);
-  border-top: 1px solid rgba(0,0,0,0.06);
+  border-top: 1px solid var(--sider-trigger-border);
   transition: background 0.15s ease;
 }
 
 .custom-sider .ant-layout-sider-trigger:hover {
   background: var(--sider-trigger-hover-bg);
 }
-
-

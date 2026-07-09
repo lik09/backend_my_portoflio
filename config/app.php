@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | The current version of this application, following Semantic Versioning
+    | (MAJOR.MINOR.PATCH). Bump this in ".env" when cutting a new release.
+    |
+    */
+
+    'version' => env('APP_VERSION', '1.0.0'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

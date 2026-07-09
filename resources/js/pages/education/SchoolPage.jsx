@@ -23,7 +23,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
 
 function SchoolPage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [state, setState] = useState({ list: [], eduTypeList: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -156,15 +156,15 @@ function SchoolPage() {
       const res = await requestFormData(endpoint, method, formData);
 
       if (res && !res.error) {
-        showToast("success", res.message || "Saved successfully");
+        showToast("success", res.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       } else {
-        showToast("error", res?.message || "Failed to save");
+        showToast("error", res?.message || t('failedToSave'));
       }
     } catch (err) {
       console.error("Save error:", err);
-      showToast("error", err.message || "Network/server error");
+      showToast("error", err.message || t('networkServerError'));
     } finally {
       setState((p) => ({ ...p, loading: false }));
     }
@@ -201,11 +201,11 @@ function SchoolPage() {
     try {
       const res = await request(`school/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -219,11 +219,13 @@ function SchoolPage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 ,width:80 ,align:'center'},
     {
-      title: "Logo School",
+      title: t('logoSchool'),
       dataIndex: "logo_school",
       key: "logo_school",
+      width:140,
+      align:'center',
       render: (logo) =>
         logo ? (
           <Image.PreviewGroup>
@@ -234,22 +236,22 @@ function SchoolPage() {
             />
           </Image.PreviewGroup>
         ) : (
-          <span>No Logo</span>
+          <span>{t('noLogo')}</span>
         ),
     },
     {
-      title: "Name School",
+      title: t('nameSchool'),
       key: "name_school",
       render: (_, record) => getLocalizedField(record, "name_school", lang),
     },
     {
-      title: "Education Type",
+      title: t('educationType'),
       dataIndex: "edu_type_id",
       key: "edu_type_id",
       render: (edu_type) => <Tag color="yellow">{edu_type.name}</Tag>,
     },
     {
-      title: "Description Study",
+      title: t('descriptionStudy'),
       key: "description_study",
       width: 300,
       render: (_, record) => {
@@ -266,12 +268,12 @@ function SchoolPage() {
       },
     },
     {
-      title: "Location",
+      title: t('location'),
       key: "location",
       render: (_, record) => getLocalizedField(record, "location", lang),
     },
     {
-      title: "Images",
+      title: t('images'),
       dataIndex: "images",
       key: "images",
       width: 300,
@@ -294,26 +296,29 @@ function SchoolPage() {
       ),
     },
     {
-      title: "Status",
+      title: t('status'),
       dataIndex: "status",
       key: "status",
       width:110,
+      align:'center',
       render: (status) => (
         <Tag color={status === 1 ? "green" : "volcano"}>
-          {status === 1 ? "Active" : "Inactive"}
+          {status === 1 ? t('active') : t('inactive')}
         </Tag>
       ),
     },
     {
-      title: "Action",
+      title: t('action'),
       key: "action",
+      width:110,
+      align:'center',
       render: (_, record) => (
         <Space>
           <Button type="primary" onClick={() => handleEditBtn(record)}>
-            Edit <EditFilled />
+            {t('edit')} <EditFilled />
           </Button>
           <Button danger onClick={() => handleDeleteClick(record)}>
-            Delete <DeleteFilled />
+            {t('delete')} <DeleteFilled />
           </Button>
         </Space>
       ),
@@ -323,19 +328,19 @@ function SchoolPage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>School Information</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('schoolInfo')}</h3>
         <Button
           type="primary"
           style={{ fontSize: 16, fontWeight: 600 }}
           onClick={handleNew}
         >
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
       {/* Form Modal */}
       <Modal
-        title="School Information"
+        title={t('schoolInfo')}
         footer={null}
         open={openModal}
         onCancel={handleClose}
@@ -345,25 +350,25 @@ function SchoolPage() {
           <Row gutter={20}>
             <Col xs={24} md={12}>
               <Form.Item
-                label="Name School English"
+                label={t('nameSchool')}
                 name="name_school"
-                rules={[{ required: true, message: "Please input name school english" }]}
+                rules={[{ required: true, message: t('plsInputNameSchoolEn') }]}
               >
                 <Input />
               </Form.Item>
 
               <Form.Item
-                label="Name School Khmer"
+                label={t('nameSchoolKh')}
                 name="name_school_kh"
-                rules={[{ required: true, message: "Please input name school khmer" }]}
+                rules={[{ required: true, message: t('plsInputNameSchoolKh') }]}
               >
                 <Input />
               </Form.Item>
 
               <Form.Item
-                label="Education Type"
+                label={t('educationType')}
                 name="edu_type_id"
-                rules={[{ required: true, message: "Please select education type" }]}
+                rules={[{ required: true, message: t('plsSelectEducationType') }]}
               >
                 <Select
                   options={state.eduTypeList?.map((type) => ({
@@ -373,24 +378,24 @@ function SchoolPage() {
                 />
               </Form.Item>
 
-              <Form.Item label="Description Study English" name="description_study">
-                <Select mode="tags" style={{ width: "100%" }} placeholder="Type and press Enter" />
+              <Form.Item label={t('descriptionStudyEn')} name="description_study">
+                <Select mode="tags" style={{ width: "100%" }} placeholder={t('typeAndPressEnter')} />
               </Form.Item>
 
-              <Form.Item label="Description Study Khmer" name="description_study_kh">
-                <Select mode="tags" style={{ width: "100%" }} placeholder="Type and press Enter" />
+              <Form.Item label={t('descriptionStudyKh')} name="description_study_kh">
+                <Select mode="tags" style={{ width: "100%" }} placeholder={t('typeAndPressEnter')} />
               </Form.Item>
 
-              <Form.Item label="Location English" name="location">
+              <Form.Item label={t('location')} name="location">
                 <Input placeholder="Ex: Phnom Penh" />
               </Form.Item>
 
-              <Form.Item label="Location Khmer" name="location_kh">
+              <Form.Item label={t('locationKh')} name="location_kh">
                 <Input placeholder="Ex: ភ្នំពេញ" />
               </Form.Item>
 
               <Form.Item
-                label="Logo"
+                label={t('logo')}
                 name="logo_school"
                 valuePropName="fileList"
                 getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
@@ -398,20 +403,20 @@ function SchoolPage() {
                 <Upload listType="picture-card" beforeUpload={() => false} maxCount={1} accept="image/*">
                   <div>
                     <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
+                    <div style={{ marginTop: 8 }}>{t('upload')}</div>
                   </div>
                 </Upload>
               </Form.Item>
 
               <Form.Item
-                label="Status"
+                label={t('status')}
                 name="status"
-                rules={[{ required: true, message: "Please select status" }]}
+                rules={[{ required: true, message: t('plsSelectStatus') }]}
               >
                 <Select
                   options={[
-                    { label: "Active", value: 1 },
-                    { label: "Inactive", value: 0 },
+                    { label: t('active'), value: 1 },
+                    { label: t('inactive'), value: 0 },
                   ]}
                 />
               </Form.Item>
@@ -419,7 +424,7 @@ function SchoolPage() {
 
             <Col xs={24} md={12}>
               <Form.Item
-                label="Images"
+                label={t('images')}
                 name="images"
                 valuePropName="fileList"
                 getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
@@ -427,7 +432,7 @@ function SchoolPage() {
                 <Upload listType="picture-card" multiple beforeUpload={() => false} accept="image/*">
                   <div>
                     <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
+                    <div style={{ marginTop: 8 }}>{t('upload')}</div>
                   </div>
                 </Upload>
               </Form.Item>
@@ -437,9 +442,9 @@ function SchoolPage() {
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
                 <Button type="primary" htmlType="submit">
-                  Save
+                  {t('save')}
                 </Button>
               </Space>
             </div>
@@ -449,14 +454,14 @@ function SchoolPage() {
 
       {/* Delete Modal */}
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {/* Toast */}

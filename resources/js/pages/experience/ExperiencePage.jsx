@@ -8,7 +8,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
 
 function ExperiencePage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [state, setState] = useState({ list: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -77,12 +77,12 @@ function ExperiencePage() {
     try {
       const res = await request(url, method, body);
       if (res && !res.error) {
-        showToast("success", res.message || "Saved successfully");
+        showToast("success", res.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to save");
+      showToast("error", t('failedToSave'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
     }
@@ -123,11 +123,11 @@ function ExperiencePage() {
     try {
       const res = await request(`experiences/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -141,32 +141,32 @@ function ExperiencePage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 ,width:80 ,align:'center'},
     {
-      title: "Title",
+      title: t('title'),
       key: "title",
       render: (_, record) => getLocalizedField(record, "title", lang),
     },
-    { title: "Icon", dataIndex: "icon", key: "icon" },
+    { title: t('icon'), dataIndex: "icon", key: "icon" },
     {
-      title: "Company Name",
+      title: t('companyName'),
       key: "company_name",
       render: (_, record) => getLocalizedField(record, "company_name", lang),
     },
-    { title: "Description", dataIndex: "description", key: "description" },
+    { title: t('description'), dataIndex: "description", key: "description" },
     {
-      title: "Location",
+      title: t('location'),
       key: "location",
       render: (_, record) => getLocalizedField(record, "location", lang),
     },
     {
-      title: "Job Type",
+      title: t('jobType'),
       key: "emp_type",
       render: (_, record) => getLocalizedField(record, "emp_type", lang),
     },
 
     {
-      title: "Key Achievements",
+      title: t('keyAchievements'),
       key: "key_achievements",
       render: (_, record) => {
         const keyAchieList = getLocalizedField(record, "key_achievements", lang);
@@ -179,24 +179,27 @@ function ExperiencePage() {
           ))}
         </Space>
         ) : (
-          <Tag color="default">Key Achievements</Tag>
+          <Tag color="default">{t('keyAchievements')}</Tag>
         );
       },
     },
     {
-      title: "Status",
+      title: t('status'),
       dataIndex: "status",
       key: "status",
       width:110,
-      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? "Active" : "Inactive"}</Tag>,
+      align:'center',
+      render: (status) => <Tag color={status === 1 ? "green" : "volcano"}>{status === 1 ? t('active') : t('inactive')}</Tag>,
     },
     {
-      title: "Action",
+      title: t('action'),
       key: "action",
+      width:110,
+      align:'center',
       render: (_, record) => (
         <Space>
-          <Button type="primary"  onClick={() => handleEditBtn(record)}> Edit <EditFilled /></Button>
-          <Button danger onClick={() => handleDeleteClick(record)}>Delete <DeleteFilled /></Button>
+          <Button type="primary"  onClick={() => handleEditBtn(record)}> {t('edit')} <EditFilled /></Button>
+          <Button danger onClick={() => handleDeleteClick(record)}>{t('delete')} <DeleteFilled /></Button>
         </Space>
       ),
     },
@@ -205,67 +208,67 @@ function ExperiencePage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Experience </h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('experience')}</h3>
         <Button type="primary" style={{ fontSize: 16, fontWeight: 600 }} onClick={handleNew}>
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
       {/* Form Modal */}
-      <Modal title="Experience" footer={null} open={openModal} onCancel={handleClose} width={900} >
+      <Modal title={t('experience')} footer={null} open={openModal} onCancel={handleClose} width={900} >
         <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
           <Row gutter={20}>
             {/* col 1 */}
             <Col xs={24} md={12}>
-              <Form.Item label="Title" name="title" rules={[{ required: true, message: "Please input title" }]}>
+              <Form.Item label={t('title')} name="title" rules={[{ required: true, message: t('plsInputTitle') }]}>
                 <Input />
               </Form.Item>
-              <Form.Item label="Title (KH)" name="title_kh">
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Company Name" name="company_name" rules={[{ required: true, message: "Please input company name" }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item label="Company Name (KH)" name="company_name_kh">
+              <Form.Item label={t('titleKh')} name="title_kh">
                 <Input />
               </Form.Item>
 
-              <Form.Item label="Location" name="location" rules={[{ required: true, message: "Please input location" }]}>
+              <Form.Item label={t('companyName')} name="company_name" rules={[{ required: true, message: t('plsInputCompanyName') }]}>
                 <Input />
               </Form.Item>
-              <Form.Item label="Location (KH)" name="location_kh">
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Employee Type" name="emp_type" rules={[{ required: true, message: "Please input employee type" }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item label="Employee Type (KH)" name="emp_type_kh">
+              <Form.Item label={t('companyNameKh')} name="company_name_kh">
                 <Input />
               </Form.Item>
 
-              <Form.Item label="Description" name="description">
+              <Form.Item label={t('location')} name="location" rules={[{ required: true, message: t('plsInputLocation') }]}>
+                <Input />
+              </Form.Item>
+              <Form.Item label={t('locationKh')} name="location_kh">
+                <Input />
+              </Form.Item>
+
+              <Form.Item label={t('employeeType')} name="emp_type" rules={[{ required: true, message: t('plsInputEmployeeType') }]}>
+                <Input />
+              </Form.Item>
+              <Form.Item label={t('employeeTypeKh')} name="emp_type_kh">
+                <Input />
+              </Form.Item>
+
+              <Form.Item label={t('description')} name="description">
                 <Input.TextArea style={{ height: 100 }} />
               </Form.Item>
-              <Form.Item label="Description (KH)" name="description_kh">
+              <Form.Item label={t('descriptionKh')} name="description_kh">
                 <Input.TextArea style={{ height: 100 }} />
               </Form.Item>
 
-             
+
             </Col>
 
             {/* col 2 */}
             <Col xs={24} md={12}>
               <Row gutter={20}>
                   <Col span={12}>
-                    <Form.Item label="Start Year" name="start_year" rules={[{ required: true, message: "Please input start year" }]}>
+                    <Form.Item label={t('startYear')} name="start_year" rules={[{ required: true, message: t('plsInputStartYear') }]}>
                       <Input />
                     </Form.Item>
                   </Col>
-                
+
                   <Col span={12}>
-                    <Form.Item label="End year" name="end_year" rules={[{ required: true, message: "Please input end year" }]}>
+                    <Form.Item label={t('endYear')} name="end_year" rules={[{ required: true, message: t('plsInputEndYear') }]}>
                       <Input />
                     </Form.Item>
                   </Col>
@@ -273,49 +276,49 @@ function ExperiencePage() {
 
               {/* technologies */}
               <Form.Item
-                label="Technologies"
+                label={t('technologies')}
                 name="technologies"
                 rules={[{ required: false, message: "Please add at least one technology" }]}
               >
                 <Select
                   mode="tags"
                   style={{ width: "100%" }}
-                  placeholder="Type technology and press Enter"
+                  placeholder={t('typeTechnologyPlaceholder')}
                 />
               </Form.Item>
 
               <Form.Item
-                label="Key Achievements"
+                label={t('keyAchievements')}
                 name="key_achievements"
               >
-                <Select mode="tags" style={{ width: "100%" }} placeholder="Key Achievements and press Enter" />
+                <Select mode="tags" style={{ width: "100%" }} placeholder={t('keyAchievementsPlaceholder')} />
               </Form.Item>
               <Form.Item
-                label="Key Achievements (KH)"
+                label={t('keyAchievementsKh')}
                 name="key_achievements_kh"
               >
-                <Select mode="tags" style={{ width: "100%" }} placeholder="Key Achievements (KH) and press Enter" />
+                <Select mode="tags" style={{ width: "100%" }} placeholder={t('keyAchievementsKhPlaceholder')} />
               </Form.Item>
 
-              <Form.Item label="Logo" name="icon" rules={[{ required: false, message: "Please input end year" }]}>
+              <Form.Item label={t('logo')} name="icon" rules={[{ required: false, message: t('plsInputEndYear') }]}>
                 <Input />
               </Form.Item>
 
-              <Form.Item label="Status" name="status" rules={[{ required: true, message: "Please select status" }]}>
-                <Select options={[{ label: "Active", value: 1 }, { label: "Inactive", value: 0 }]} />
+              <Form.Item label={t('status')} name="status" rules={[{ required: true, message: t('plsSelectStatus') }]}>
+                <Select options={[{ label: t('active'), value: 1 }, { label: t('inactive'), value: 0 }]} />
               </Form.Item>
             </Col>
 
           </Row>
-           
-        
-          
+
+
+
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
                 <Button type="primary" htmlType="submit">
-                  Save
+                  {t('save')}
                 </Button>
               </Space>
             </div>
@@ -325,14 +328,14 @@ function ExperiencePage() {
 
       {/* Delete Modal */}
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {/* Toast */}

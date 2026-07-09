@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Dropdown } from "antd";
+import { Avatar, Dropdown, Flex, Typography } from "antd";
 import { UserOutlined, SettingOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { request } from "../../utils/request";
@@ -13,6 +13,7 @@ const AvatarDropdown = () => {
   const avatarSrc = authUser.profile_image
     ? config.image_path + authUser.profile_image
     : null;
+  const displayName = authUser.name || authUser.username || "";
 
   const menuItems = [
     { key: "/profile",  icon: <UserOutlined />,  label: "Profile" },
@@ -38,12 +39,18 @@ const AvatarDropdown = () => {
       arrow
       trigger={["hover"]}
     >
-      <Avatar
-        size="large"
-        src={avatarSrc}
-        icon={!avatarSrc ? <UserOutlined /> : undefined}
-        style={{ cursor: "pointer" }}
-      />
+      <Flex align="center" gap={8} style={{ cursor: "pointer" }}>
+        <Avatar
+          size="large"
+          src={avatarSrc}
+          icon={!avatarSrc ? <UserOutlined /> : undefined}
+        />
+        {displayName && (
+          <Typography.Text strong style={{ maxWidth: 140 }} ellipsis={{ tooltip: displayName }}>
+            {displayName}
+          </Typography.Text>
+        )}
+      </Flex>
     </Dropdown>
   );
 };

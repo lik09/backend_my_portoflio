@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Button,
   Col,
+  DatePicker,
   Flex,
   Form,
   Image,
@@ -14,16 +15,17 @@ import {
   Tag,
   Upload,
 } from "antd";
+import dayjs from "dayjs";
 import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled, PlusOutlined } from "@ant-design/icons";
 import { request, requestFormData } from "../../utils/request";
 import Toast from "../../components/message/Toast";
 import { config } from "../../utils/config";
 import { useLanguage } from "../../context/LanguageContext";
-import { getLocalizedField } from "../../utils/helper";
+import { getLocalizedField, formatDateClient, formatDateServer } from "../../utils/helper";
 
 function ProjectPage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [state, setState] = useState({ list: [], proTypeList: [], loading: false });
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
@@ -118,8 +120,8 @@ function ProjectPage() {
       formData.append("url_live_demo", values.url_live_demo || "");
       formData.append("url_code_project", values.url_code_project || "");
       formData.append("release_year", values.release_year || "");
-      formData.append("start_date", values.start_date || "");
-      formData.append("end_date", values.end_date || "");
+      formData.append("start_date", values.start_date ? formatDateServer(values.start_date) : "");
+      formData.append("end_date", values.end_date ? formatDateServer(values.end_date) : "");
       formData.append("customer_used", values.customer_used || "");
       formData.append("status", values.status ? 1 : 0);
 
@@ -152,15 +154,15 @@ function ProjectPage() {
       const res = await requestFormData(endpoint, method, formData);
 
       if (res && !res.error) {
-        showToast("success", res.message || "Saved successfully");
+        showToast("success", res.message || t('savedSuccessfully'));
         handleClose();
         fetchList();
       } else {
-        showToast("error", res?.message || "Failed to save");
+        showToast("error", res?.message || t('failedToSave'));
       }
     } catch (err) {
       console.error("Save error:", err);
-      showToast("error", err.message || "Network/server error");
+      showToast("error", err.message || t('networkServerError'));
     } finally {
       setState((p) => ({ ...p, loading: false }));
     }
@@ -177,6 +179,8 @@ function ProjectPage() {
         : [],
       pro_type_id:record.pro_type_id,
       images: toFileList(record.images),
+      start_date: record.start_date ? dayjs(record.start_date) : null,
+      end_date: record.end_date ? dayjs(record.end_date) : null,
     });
 
     setOpenModal(true);
@@ -193,11 +197,11 @@ function ProjectPage() {
     try {
       const res = await request(`project/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
-        showToast("success", res.message || "Deleted successfully");
+        showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
       }
     } catch (err) {
-      showToast("error", "Failed to delete");
+      showToast("error", t('failedToDelete'));
     } finally {
       setState((pre) => ({ ...pre, loading: false }));
       setDeleteModalOpen(false);
@@ -211,26 +215,26 @@ function ProjectPage() {
   };
 
   const columns = [
-    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 },
+    { title: "#", dataIndex: "no", key: "id", render: (_, __, index) => index + 1 ,width:80 ,align:'center' },
     {
-      title: "Name",
+      title: t('name'),
       key: "name",
       render: (_, record) => getLocalizedField(record, "name", lang),
     },
     {
-      title: "Project Type",
+      title: t('projectType'),
       dataIndex: "project_type",
       key: "project_type",
       render: (pro_type) => <Tag color="yellow">{pro_type.name}</Tag>,
     },
     {
-      title: "Description",
+      title: t('description'),
       key: "description",
       width: 300,
       render: (_, record) => getLocalizedField(record, "description", lang),
     },
     {
-      title: "Technologies",
+      title: t('technologies'),
       dataIndex: "technologies",
       key: "technologies",
       width: 300,
@@ -244,8 +248,8 @@ function ProjectPage() {
         </Space>
       ),
     },
-    { title: "URL Live Demo", 
-      dataIndex: "url_live_demo", 
+    { title: t('urlLiveDemo'),
+      dataIndex: "url_live_demo",
       key: "url_live_demo" ,
       render: (url) => (
         <Tag color="green">
@@ -253,8 +257,8 @@ function ProjectPage() {
         </Tag>
       ),
     },
-    { title: "URL Code Project", 
-      dataIndex: "url_code_project", 
+    { title: t('urlCodeProject'),
+      dataIndex: "url_code_project",
       key: "url_code_project" ,
       render: (url) => (
         <Tag color="green">
@@ -263,7 +267,7 @@ function ProjectPage() {
       ),
     },
     {
-      title: "Images",
+      title: t('images'),
       dataIndex: "images",
       key: "images",
       width: 300,
@@ -285,33 +289,74 @@ function ProjectPage() {
         </Image.PreviewGroup>
       ),
     },
-    { title: "Release Year", dataIndex: "release_year", key: "release_year" },
-    { title: "Start Date", dataIndex: "start_date", key: "start_date" },
-    { title: "End Date", dataIndex: "end_date", key: "end_date" },
-    { title: "Customer Used", dataIndex: "customer_used", key: "customer_used" },
-
-
+    { 
+      title: t('releaseYear'), 
+      dataIndex: "release_year", 
+      key: "release_year" , 
+      width:120,
+      align:'center',
+      render: (release_year) => (
+        <Tag style={{
+            color: '#FF4400',
+            background: '#FFF1EB',
+            border: '1px solid #FF4400',
+          }}>
+          {release_year}
+        </Tag>
+      ), 
+    },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={status === 1 ? "green" : "volcano"}>
-          {status === 1 ? "Active" : "Inactive"}
+      title: t('startDate'),
+      dataIndex: "start_date",
+      key: "start_date",
+      width:120,
+      align:'center',
+      render: (date) => (date ? formatDateClient(date, "DD-MM-YYYY") : ""),
+    },
+    {
+      title: t('endDate'),
+      dataIndex: "end_date",
+      key: "end_date",
+      width:120,
+      align:'center',
+      render: (date) => (date ? formatDateClient(date, "DD-MM-YYYY") : ""),
+    },
+    { 
+      title: t('customerUsed'), 
+      dataIndex: "customer_used", 
+      key: "customer_used" ,
+      width:160 ,
+      align:'center',
+      render: (customer_used) => (
+        <Tag color="magenta">
+          {customer_used}
         </Tag>
       ),
     },
     {
-      title: "Action",
+      title: t('status'),
+      dataIndex: "status",
+      key: "status",
+      width:110,
+      align:'center',
+      render: (status) => (
+        <Tag color={status === 1 ? "green" : "volcano"}>
+          {status === 1 ? t('active') : t('inactive')}
+        </Tag>
+      ),
+    },
+    {
+      title: t('action'),
       key: "action",
       width:110,
+      align:'center',
       render: (_, record) => (
         <Space>
           <Button type="primary" onClick={() => handleEditBtn(record)}>
-            Edit <EditFilled />
+            {t('edit')} <EditFilled />
           </Button>
           <Button danger onClick={() => handleDeleteClick(record)}>
-            Delete <DeleteFilled />
+            {t('delete')} <DeleteFilled />
           </Button>
         </Space>
       ),
@@ -321,19 +366,19 @@ function ProjectPage() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>Project</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('project')}</h3>
         <Button
           type="primary"
           style={{ fontSize: 16, fontWeight: 600 }}
           onClick={handleNew}
         >
-          <MdOutlineAdd /> Add
+          <MdOutlineAdd /> {t('add')}
         </Button>
       </div>
 
       {/* Form Modal */}
       <Modal
-        title="Project"
+        title={t('project')}
         footer={null}
         open={openModal}
         onCancel={handleClose}
@@ -343,25 +388,25 @@ function ProjectPage() {
           <Row gutter={20}>
             <Col xs={24} md={12}>
               <Form.Item
-                label="Name Project English"
+                label={t('name')}
                 name="name"
-                rules={[{ required: true, message: "Please input name project english" }]}
+                rules={[{ required: true, message: t('plsInputNameProjectEn') }]}
               >
                 <Input />
               </Form.Item>
 
               <Form.Item
-                label="Name Project Khmer"
+                label={t('nameKh')}
                 name="name_kh"
-                rules={[{ required: true, message: "Please input name project khmer" }]}
+                rules={[{ required: true, message: t('plsInputNameProjectKh') }]}
               >
                 <Input />
               </Form.Item>
 
               <Form.Item
-                label="Project Type"
+                label={t('projectType')}
                 name="pro_type_id"
-                rules={[{ required: true, message: "Please select project type" }]}
+                rules={[{ required: true, message: t('plsSelectProjectType') }]}
               >
                 <Select
                   options={state.proTypeList?.map((type) => ({
@@ -371,65 +416,65 @@ function ProjectPage() {
                 />
               </Form.Item>
 
-              <Form.Item label="Description Project English" name="description">
+              <Form.Item label={t('description')} name="description">
                 <Input.TextArea style={{ width: "100%" }} />
               </Form.Item>
 
-              <Form.Item label="Description Project Khmer" name="description_kh">
+              <Form.Item label={t('descriptionKh')} name="description_kh">
                 <Input.TextArea style={{ width: "100%" }} />
               </Form.Item>
 
-              <Form.Item label="Technologies" name="technologies">
-                <Select mode="tags" style={{ width: "100%" }} placeholder="Type and press Enter" />
+              <Form.Item label={t('technologies')} name="technologies">
+                <Select mode="tags" style={{ width: "100%" }} placeholder={t('typeAndPressEnter')} />
               </Form.Item>
 
-              <Form.Item label="URR Live Demo" name="url_live_demo">
+              <Form.Item label={t('urlLiveDemo')} name="url_live_demo">
                 <Input placeholder="Ex: https://my-portoflio-drab.vercel.app/" />
               </Form.Item>
 
-              <Form.Item label="URR Code Project" name="url_code_project">
+              <Form.Item label={t('urlCodeProject')} name="url_code_project">
                 <Input placeholder="Ex: https://my-portoflio-drab.vercel.app/" />
               </Form.Item>
 
               <Form.Item
-                label="Status"
+                label={t('status')}
                 name="status"
-                rules={[{ required: true, message: "Please select status" }]}
+                rules={[{ required: true, message: t('plsSelectStatus') }]}
               >
                 <Select
                   options={[
-                    { label: "Active", value: 1 },
-                    { label: "Inactive", value: 0 },
+                    { label: t('active'), value: 1 },
+                    { label: t('inactive'), value: 0 },
                   ]}
                 />
               </Form.Item>
             </Col>
 
             <Col xs={24} md={12}>
-              <Form.Item label="Release Year" name="release_year">
+              <Form.Item label={t('releaseYear')} name="release_year">
                 <Input />
               </Form.Item>
 
               <Row gutter={20}>
                   <Col span={12}>
-                    <Form.Item label="Start Date" name="start_date" rules={[{ required: true, message: "Please input start year" }]}>
-                      <Input />
+                    <Form.Item label={t('startDate')} name="start_date" rules={[{ required: true, message: t('plsInputStartYear') }]}>
+                      <DatePicker format="DD-MM-YYYY" style={{ width: "100%" }} />
                     </Form.Item>
                   </Col>
-                
+
                   <Col span={12}>
-                    <Form.Item label="End Ddate" name="end_date" rules={[{ required: true, message: "Please input end year" }]}>
-                      <Input />
+                    <Form.Item label={t('endDate')} name="end_date" rules={[{ required: true, message: t('plsInputEndYear') }]}>
+                      <DatePicker format="DD-MM-YYYY" style={{ width: "100%" }} />
                     </Form.Item>
                   </Col>
               </Row>
 
-              <Form.Item label="Customer Used" name="customer_used">
+              <Form.Item label={t('customerUsed')} name="customer_used">
                 <Input />
               </Form.Item>
 
               <Form.Item
-                label="Images"
+                label={t('images')}
                 name="images"
                 valuePropName="fileList"
                 getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
@@ -437,7 +482,7 @@ function ProjectPage() {
                 <Upload listType="picture-card" multiple beforeUpload={() => false} accept="image/*">
                   <div>
                     <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
+                    <div style={{ marginTop: 8 }}>{t('upload')}</div>
                   </div>
                 </Upload>
               </Form.Item>
@@ -447,9 +492,9 @@ function ProjectPage() {
           <Form.Item>
             <div style={{ textAlign: "right" }}>
               <Space>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
                 <Button type="primary" htmlType="submit">
-                  Save
+                  {t('save')}
                 </Button>
               </Space>
             </div>
@@ -459,14 +504,14 @@ function ProjectPage() {
 
       {/* Delete Modal */}
       <Modal
-        title="Confirm Delete"
+        title={t('confirmDelete')}
         open={deleteModalOpen}
         onOk={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
-        okText="Yes"
-        cancelText="No"
+        okText={t('yes')}
+        cancelText={t('no')}
       >
-        Are you sure you want to delete this item?
+        {t('confirmDeleteMessage')}
       </Modal>
 
       {/* Toast */}

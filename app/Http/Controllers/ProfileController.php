@@ -187,4 +187,25 @@ class ProfileController extends Controller
 
         return response()->download($filePath, $downloadName);
     }
+
+    public function previewCv($id)
+    {
+        $profile = Profile::findOrFail($id);
+
+        if (!$profile->cv) {
+            return response()->json(['message' => 'No CV uploaded'], 404);
+        }
+
+        $filePath = storage_path('app/public/' . $profile->cv);
+
+        if (!file_exists($filePath)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        return response()->json([
+            'content' => base64_encode(file_get_contents($filePath)),
+            'mime' => 'application/pdf',
+            'filename' => $profile->cv_original_name ?? basename($filePath),
+        ]);
+    }
 }
