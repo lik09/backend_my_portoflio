@@ -155,7 +155,6 @@ const MainLayout = () => {
               top: 0,
               left: 0,
               backgroundColor: 'var(--sider-bg)',
-              overflow: 'hidden',
               zIndex:10,
             }}
             onClick={() => navigate('/')}

@@ -249,7 +249,6 @@ function SkillPage() {
       key: "status",
       width:110,
       align:'center',
-      align: 'center',
       render: (status) => (
         <Tag color={status === 1 ? "green" : "volcano"}>
           {status === 1 ? t('active') : t('inactive')}
