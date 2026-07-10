@@ -247,7 +247,9 @@ function SchoolPage() {
       title: t('educationType'),
       dataIndex: "edu_type_id",
       key: "edu_type_id",
-      render: (edu_type) => <Tag color="yellow">{edu_type.name}</Tag>,
+      render: (edu_type) => (
+        <Tag color="yellow">{getLocalizedField(edu_type, "name", lang)}</Tag>
+      ),
     },
     {
       title: t('descriptionStudy'),
@@ -371,7 +373,7 @@ function SchoolPage() {
               >
                 <Select
                   options={state.eduTypeList?.map((type) => ({
-                    label: type.name,
+                    label: getLocalizedField(type, "name", lang),
                     value: type.id,
                   }))}
                 />

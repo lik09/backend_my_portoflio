@@ -223,7 +223,9 @@ function ProjectPage() {
       title: t('projectType'),
       dataIndex: "project_type",
       key: "project_type",
-      render: (pro_type) => <Tag color="yellow">{pro_type.name}</Tag>,
+      render: (pro_type) => (
+        <Tag color="yellow">{getLocalizedField(pro_type, "name", lang)}</Tag>
+      ),
     },
     {
       title: t('description'),
@@ -408,7 +410,7 @@ function ProjectPage() {
               >
                 <Select
                   options={state.proTypeList?.map((type) => ({
-                    label: type.name,
+                    label: getLocalizedField(type, "name", lang),
                     value: type.id,
                   }))}
                 />

@@ -204,7 +204,7 @@ function SkillPage() {
       key: "skill_type",
       width:180,
       align: 'center',
-      render: (skill_type) => <Tag color="yellow">{skill_type?.name}</Tag>
+      render: (skill_type) => (<Tag color="yellow">{getLocalizedField(skill_type, "name", lang)}</Tag>)
     },
     {
       title: t('description'),
@@ -320,7 +320,7 @@ function SkillPage() {
               >
                 <Select
                   options={state.skillTypeList?.map((type) => ({
-                    label: type.name,
+                    label: getLocalizedField(type, "name", lang),
                     value: type.id,
                   }))}
                 />
