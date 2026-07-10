@@ -84,6 +84,7 @@ function SchoolPage() {
           eduTypeList: res.list,
           loading: false,
         }));
+        console.log("fetchEduTypeList: ",res);
       } else {
         setState((pre) => ({ ...pre, loading: false }));
       }
@@ -182,7 +183,7 @@ function SchoolPage() {
       description_study_kh: Array.isArray(record.description_study_kh)
         ? record.description_study_kh
         : [],
-      edu_type_id:record.edu_type_id.id,
+      edu_type_id: Number(record.edu_type_id?.id ?? undefined),
       logo_school: toFileList(record.logo_school),
       images: toFileList(record.images),
     });

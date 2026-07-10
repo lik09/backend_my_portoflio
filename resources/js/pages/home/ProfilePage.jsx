@@ -101,10 +101,6 @@ function ProfilePage() {
         formData.append("_method", "PUT"); // for Laravel
       }
 
-      // Debug payload
-      // for (let [k, v] of formData.entries()) {
-      //   console.log("sending:", k, v);
-      // }
 
       const res = await request(endpoint, method, formData,true, {
         headers: { "Content-Type": "multipart/form-data" },
