@@ -152,8 +152,6 @@ function SchoolPage() {
         formData.append("_method", "PUT"); // Laravel update
       }
 
-      console.log("Sending request to:", `${config.base_url_api}/${endpoint}`);
-
       const res = await requestFormData(endpoint, method, formData);
 
       if (res && !res.error) {
