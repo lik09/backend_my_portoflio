@@ -70,7 +70,7 @@ class SchoolController extends Controller
                     } else {
                         return response()->json([
                             'error' => "Image at index $index failed to upload",
-                            'message' => "Please check the file type or size"
+                            'message' => __('Please check the file type or size')
                         ], 422);
                     }
                 }
@@ -90,7 +90,7 @@ class SchoolController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Data added successfully',
+                'message' => __('Data added successfully'),
                 'data'    => $high_school
             ], 201);
 
@@ -174,7 +174,7 @@ class SchoolController extends Controller
             $high_school->update($validated);
 
             return response()->json([
-                'message' => 'Data updated successfully',
+                'message' => __('Data updated successfully'),
                 'data'    => $high_school
             ]);
 
@@ -208,6 +208,6 @@ class SchoolController extends Controller
 
         $high_school->delete();
 
-        return response()->json(['message' => 'Data deleted successfully']);
+        return response()->json(['message' => __('Data deleted successfully')]);
     }
 }

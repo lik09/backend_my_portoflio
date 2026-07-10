@@ -43,7 +43,7 @@ class SkillInfoController extends Controller
             $skill_info = SkillInfo::create($validated);
 
             return response()->json([
-                'message' => 'Skill Info added successfully',
+                'message' => __('Skill Info added successfully'),
                 'list' => $skill_info
             ], 201);
 
@@ -85,7 +85,7 @@ class SkillInfoController extends Controller
             $skill_info->update($validated);
             
             return response()->json([
-                'message' => 'Skill Info updated successfully',
+                'message' => __('Skill Info updated successfully'),
                 'list' => $skill_info
             ]);
 
@@ -109,7 +109,7 @@ class SkillInfoController extends Controller
             $skill_info->delete();
 
             return response()->json([
-                'message' => 'Skill Info deleted successfully.'
+                'message' => __('Skill Info deleted successfully.')
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

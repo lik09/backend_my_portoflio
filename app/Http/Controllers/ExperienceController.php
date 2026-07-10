@@ -56,7 +56,7 @@ class ExperienceController extends Controller
             $experience = Experience::create($validated);
 
             return response()->json([
-                'message' => 'Experience added successfully.',
+                'message' => __('Experience added successfully.'),
                 'experience' => $experience
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -109,7 +109,7 @@ class ExperienceController extends Controller
             $experience->update($validated);
 
             return response()->json([
-                'message' => 'Experience updated successfully.',
+                'message' => __('Experience updated successfully.'),
                 'experience' => $experience
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -132,7 +132,7 @@ class ExperienceController extends Controller
             $experience->delete();
 
             return response()->json([
-                'message' => 'Experience deleted successfully.'
+                'message' => __('Experience deleted successfully.')
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

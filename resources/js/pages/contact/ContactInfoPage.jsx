@@ -27,7 +27,7 @@ function ContactInfoPage() {
   const fetchList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("contact_info", "get", {});
+      const res = await request("contact-info", "get", {});
       if (res && !res.error) {
       
         setState({ list: res.list, loading: false });
@@ -53,11 +53,11 @@ function ContactInfoPage() {
       bio_kh: values.bio_kh, 
       status: values.status 
     };
-    let url = "contact_info",
+    let url = "contact-info",
       method = "post";
 
     if (formRef.getFieldValue("id")) {
-      url = `contact_info/${formRef.getFieldValue("id")}`;
+      url = `contact-info/${formRef.getFieldValue("id")}`;
       method = "put";
     }
 
@@ -96,7 +96,7 @@ function ContactInfoPage() {
     if (!itemToDelete) return;
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request(`contact_info/${itemToDelete.id}`, "delete", {});
+      const res = await request(`contact-info/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
         showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
@@ -209,7 +209,14 @@ function ContactInfoPage() {
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
       {/* Table */}
-      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} scroll={{ x: 'max-content' }} />
+      <Table 
+        bordered 
+        columns={columns} 
+        dataSource={state.list} 
+        loading={state.loading}
+        rowKey="id"
+        scroll={{ x: 'max-content' }} 
+      />
     </div>
   );
 }

@@ -26,7 +26,7 @@ function SkillTypePage() {
   const fetchList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("skill_type", "get", {});
+      const res = await request("skill-type", "get", {});
       if (res && !res.error) {
         const formatted = res.map((item) => ({ ...item, key: item.id }));
         setState({ list: formatted, loading: false });
@@ -50,11 +50,11 @@ function SkillTypePage() {
       name_kh: values.name_kh,
       status: values.status,
     };
-    let url = "skill_type",
+    let url = "skill-type",
       method = "post";
 
     if (formRef.getFieldValue("id")) {
-      url = `skill_type/${formRef.getFieldValue("id")}`;
+      url = `skill-type/${formRef.getFieldValue("id")}`;
       method = "put";
     }
 
@@ -92,7 +92,7 @@ function SkillTypePage() {
     if (!itemToDelete) return;
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request(`skill_type/${itemToDelete.id}`, "delete", {});
+      const res = await request(`skill-type/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
         showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();

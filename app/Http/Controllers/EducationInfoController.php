@@ -43,7 +43,7 @@ class EducationInfoController extends Controller
            $edu_info = EducationInfo::create($validated);
 
            return response()->json([
-                'message' => 'Education Info added successfully',
+                'message' => __('Education Info added successfully'),
                 'data' => $edu_info
            ], 201);
 
@@ -71,7 +71,7 @@ class EducationInfoController extends Controller
         }catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => 'Not Found',
-                'message' => "Education Info with ID $id not found"
+                'message' => __('Education Info with ID :id not found', ['id' => $id])
             ], 404);
         }
     }
@@ -94,7 +94,7 @@ class EducationInfoController extends Controller
             $edu_info->update($validated);
 
             return response()->json([
-                'message' => 'Education Info updated successfully',
+                'message' => __('Education Info updated successfully'),
                 'data' => $edu_info
             ]);
 
@@ -102,7 +102,7 @@ class EducationInfoController extends Controller
         }catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => 'Not Found',
-                'message' => "Education Info with ID $id not found"
+                'message' => __('Education Info with ID :id not found', ['id' => $id])
             ], 404);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
@@ -126,7 +126,7 @@ class EducationInfoController extends Controller
             $edu_info->delete();
 
             return response()->json([
-                'message' => 'Education Info deleted successfully',
+                'message' => __('Education Info deleted successfully'),
                 'list' => $edu_info
             ]);
 
@@ -134,7 +134,7 @@ class EducationInfoController extends Controller
         }catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => 'Not Found',
-                'message' => "Education Info with ID $id not found"
+                'message' => __('Education Info with ID :id not found', ['id' => $id])
             ], 404);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

@@ -36,7 +36,7 @@ class ContactInfoController extends Controller
             $contact_info = ContactInfo::create($validated);
             
             return response()->json([
-                'message' => 'Data added successfully',
+                'message' => __('Data added successfully'),
                 'data' => $contact_info
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -64,7 +64,7 @@ class ContactInfoController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => 'Not Found',
-                'message' => "Contact info with ID $id not found"
+                'message' => __('Contact info with ID :id not found', ['id' => $id])
             ], 404);
         }
 
@@ -89,7 +89,7 @@ class ContactInfoController extends Controller
             $contact_info->update($validated);
 
             return response()->json([
-                'message' => 'Data updated successfully',
+                'message' => __('Data updated successfully'),
                 'data' => $contact_info
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -113,14 +113,14 @@ class ContactInfoController extends Controller
                 $contact_info->delete();
 
                 return response()->json([
-                    'message' => 'Data deleted successfully',
+                    'message' => __('Data deleted successfully'),
                     'data' => $contact_info
                 ], 200);
 
             } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'error' => 'Not Found',
-                    'message' => "Contact info with ID $id not found"
+                    'message' => __('Contact info with ID :id not found', ['id' => $id])
                 ], 404);
             } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

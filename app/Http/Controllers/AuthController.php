@@ -34,7 +34,7 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'error'   => 'Invalid credentials',
-                'message' => 'The username or password is incorrect.',
+                'message' => __('The username or password is incorrect.'),
             ], 401);
         }
 
@@ -67,7 +67,7 @@ class AuthController extends Controller
             User::where('remember_token', $bearer)->update(['remember_token' => null]);
         }
 
-        return response()->json(['message' => 'Logged out successfully']);
+        return response()->json(['message' => __('Logged out successfully')]);
     }
 
     public function updateProfile(Request $request)
@@ -100,7 +100,7 @@ class AuthController extends Controller
             $user->refresh();
 
             return response()->json([
-                'message' => 'Profile updated successfully',
+                'message' => __('Profile updated successfully'),
                 'user'    => $this->userPayload($user),
             ]);
         } catch (\Exception $e) {
@@ -125,7 +125,7 @@ class AuthController extends Controller
 
             $user->update(['password' => Hash::make($request->new_password)]);
 
-            return response()->json(['message' => 'Password changed successfully']);
+            return response()->json(['message' => __('Password changed successfully')]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Server error', 'message' => $e->getMessage()], 500);
         }
@@ -144,7 +144,7 @@ class AuthController extends Controller
             $user->update($validated);
 
             return response()->json([
-                'message' => 'Language updated successfully',
+                'message' => __('Language updated successfully'),
                 'user'    => $this->userPayload($user),
             ]);
         } catch (\Exception $e) {

@@ -29,7 +29,7 @@ class ContactFormMailController extends Controller
 
         return response()->json([
             'status'  => 'success',
-            'message' => 'Email sent successfully!'
+            'message' => __('Email sent successfully!')
         ]);
     }
 

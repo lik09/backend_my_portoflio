@@ -41,7 +41,7 @@ class EducationTypeController extends Controller
            $edu_type = EducationType::create($validated);
 
            return response()->json([
-                'message' => 'Education Type added successfully',
+                'message' => __('Education Type added successfully'),
                 'data' => $edu_type
            ], 201);
 
@@ -81,7 +81,7 @@ class EducationTypeController extends Controller
             $edu_type->update($validated);
 
             return response()->json([
-                'message' => 'Education Type updated successfully',
+                'message' => __('Education Type updated successfully'),
                 'data' => $edu_type
             ]);
 
@@ -107,7 +107,7 @@ class EducationTypeController extends Controller
             $edu_type->delete();
 
             return response()->json([
-                'message' => 'Education Type deleted successfully',
+                'message' => __('Education Type deleted successfully'),
                 'data' => $edu_type
             ]);
 

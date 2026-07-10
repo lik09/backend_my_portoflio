@@ -26,7 +26,7 @@ function ExperienceInfoPage() {
   const fetchList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("experiences_info", "get", {});
+      const res = await request("experiences-info", "get", {});
       if (res && !res.error) {
         const formatted = res.map((item) => ({ ...item, key: item.id }));
         setState({ list: formatted, loading: false });
@@ -52,11 +52,11 @@ function ExperienceInfoPage() {
       bio_kh: values.bio_kh,
       status: values.status,
     };
-    let url = "experiences_info",
+    let url = "experiences-info",
       method = "post";
 
     if (formRef.getFieldValue("id")) {
-      url = `experiences_info/${formRef.getFieldValue("id")}`;
+      url = `experiences-info/${formRef.getFieldValue("id")}`;
       method = "put";
     }
 
@@ -96,7 +96,7 @@ function ExperienceInfoPage() {
     if (!itemToDelete) return;
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request(`experiences_info/${itemToDelete.id}`, "delete", {});
+      const res = await request(`experiences-info/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
         showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
@@ -171,7 +171,7 @@ function ExperienceInfoPage() {
           <Form.Item label={t('titleKh')} name="title_kh">
             <Input />
           </Form.Item>
-          <Form.Item label={t('bio')} name="bio">
+          <Form.Item label={t('bio')} name="bio" rules={[{ required: true, message: t('plsInputBio') }]}>
             <Input.TextArea style={{ height: 100 }} />
           </Form.Item>
           <Form.Item label={t('bioKh')} name="bio_kh">

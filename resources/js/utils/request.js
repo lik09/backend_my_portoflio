@@ -9,6 +9,7 @@ export const request = (url="" , method ="get" ,data={}, isFormData = false)=>{
         data: data,
         headers: {
             "Accept" : "application/json",
+            "Accept-Language": localStorage.getItem('lang') || 'en',
             ...(isFormData ? {} : { "Content-Type": "application/json" }),
             ...(token ? { "Authorization": `Bearer ${token}` } : {}),
         }
@@ -21,7 +22,7 @@ export const request = (url="" , method ="get" ,data={}, isFormData = false)=>{
             window.location.href = '/login';
             return null;
         }
-        return null;
+        return { error: true, ...error.response?.data };
     });
 }
 
@@ -33,6 +34,7 @@ export async function requestFormData(url, method = 'GET', body = null, opts = {
   const options = {
     method,
     headers: {
+      "Accept-Language": localStorage.getItem('lang') || 'en',
       ...opts.headers,
       ...(token ? { "Authorization": `Bearer ${token}` } : {}),
     },

@@ -61,7 +61,7 @@ class ProfileController extends Controller
             $profile = Profile::create($validated);
 
             return response()->json([
-                'message' => 'Profile created successfully',
+                'message' => __('Profile created successfully'),
                 'profile' => $profile
             ], 201);
 
@@ -133,7 +133,7 @@ class ProfileController extends Controller
             $profile->update($validated);
 
             return response()->json([
-                'message' => 'Profile updated successfully',
+                'message' => __('Profile updated successfully'),
                 'profile' => $profile,
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -163,7 +163,7 @@ class ProfileController extends Controller
 
         $profile->delete();
 
-        return response()->json(['message' => 'Profile deleted successfully']);
+        return response()->json(['message' => __('Profile deleted successfully')]);
     }
 
 
@@ -173,13 +173,13 @@ class ProfileController extends Controller
         $profile = Profile::findOrFail($id);
 
         if (!$profile->cv) {
-            return response()->json(['message' => 'No CV uploaded'], 404);
+            return response()->json(['message' => __('No CV uploaded')], 404);
         }
 
         $filePath = storage_path('app/public/' . $profile->cv);
 
         if (!file_exists($filePath)) {
-            return response()->json(['message' => 'File not found'], 404);
+            return response()->json(['message' => __('File not found')], 404);
         }
 
         // Use cv_original_name if available, otherwise fallback
@@ -193,13 +193,13 @@ class ProfileController extends Controller
         $profile = Profile::findOrFail($id);
 
         if (!$profile->cv) {
-            return response()->json(['message' => 'No CV uploaded'], 404);
+            return response()->json(['message' => __('No CV uploaded')], 404);
         }
 
         $filePath = storage_path('app/public/' . $profile->cv);
 
         if (!file_exists($filePath)) {
-            return response()->json(['message' => 'File not found'], 404);
+            return response()->json(['message' => __('File not found')], 404);
         }
 
         return response()->json([

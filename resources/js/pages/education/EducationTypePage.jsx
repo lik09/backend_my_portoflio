@@ -27,7 +27,7 @@ function EducationTypePage() {
   const fetchList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("education_type", "get", {});
+      const res = await request("education-type", "get", {});
       if (res && !res.error) {
         // const formatted = res.map((item) => ({ ...item, key: item.id }));
         setState({ list: res.list, loading: false });
@@ -51,11 +51,11 @@ function EducationTypePage() {
       name_kh: values.name_kh, 
       status: values.status 
     };
-    let url = "education_type",
+    let url = "education-type",
       method = "post";
 
     if (formRef.getFieldValue("id")) {
-      url = `education_type/${formRef.getFieldValue("id")}`;
+      url = `education-type/${formRef.getFieldValue("id")}`;
       method = "put";
     }
 
@@ -93,7 +93,7 @@ function EducationTypePage() {
     if (!itemToDelete) return;
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request(`education_type/${itemToDelete.id}`, "delete", {});
+      const res = await request(`education-type/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
         showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
@@ -191,7 +191,14 @@ function EducationTypePage() {
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
       {/* Table */}
-      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} scroll={{ x: 'max-content' }} />
+      <Table 
+        bordered 
+        columns={columns} 
+        dataSource={state.list} 
+        loading={state.loading} 
+        rowKey="id"
+        scroll={{ x: 'max-content' }} 
+      />
     </div>
   );
 }

@@ -28,7 +28,7 @@ function ConnectMePage() {
   const fetchList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("connect_me", "get", {});
+      const res = await request("contact-me", "get", {});
       if (res && !res.error) {
       
         setState({ list: res.list, loading: false });
@@ -58,11 +58,11 @@ function ConnectMePage() {
       bg_box: values.bg_box, 
       status: values.status 
     };
-    let url = "connect_me",
+    let url = "contact-me",
       method = "post";
 
     if (formRef.getFieldValue("id")) {
-      url = `connect_me/${formRef.getFieldValue("id")}`;
+      url = `contact-me/${formRef.getFieldValue("id")}`;
       method = "put";
     }
 
@@ -97,7 +97,7 @@ function ConnectMePage() {
     if (!itemToDelete) return;
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request(`connect_me/${itemToDelete.id}`, "delete", {});
+      const res = await request(`contact-me/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
         showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();
@@ -247,7 +247,14 @@ function ConnectMePage() {
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
       {/* Table */}
-      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} scroll={{ x: 'max-content' }}  />
+      <Table 
+        bordered 
+        columns={columns} 
+        dataSource={state.list} 
+        loading={state.loading}
+        rowKey="id" 
+        scroll={{ x: 'max-content' }}  
+      />
     </div>
   );
 }

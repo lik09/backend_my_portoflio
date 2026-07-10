@@ -27,7 +27,7 @@ function ShortSoursePage() {
   const fetchList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("short_course", "get", {});
+      const res = await request("short-course", "get", {});
       if (res && !res.error) {
         const formatted = res.map((item) => ({ ...item, key: item.id }));
         setState({ list: formatted, loading: false });
@@ -57,11 +57,11 @@ function ShortSoursePage() {
       mode: values.mode,
       status: values.status 
     };
-    let url = "short_course",
+    let url = "short-course",
       method = "post";
 
     if (formRef.getFieldValue("id")) {
-      url = `short_course/${formRef.getFieldValue("id")}`;
+      url = `short-course/${formRef.getFieldValue("id")}`;
       method = "put";
     }
 
@@ -105,7 +105,7 @@ function ShortSoursePage() {
     if (!itemToDelete) return;
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request(`short_course/${itemToDelete.id}`, "delete", {});
+      const res = await request(`short-course/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
         showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();

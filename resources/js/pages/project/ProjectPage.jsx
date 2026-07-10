@@ -70,7 +70,7 @@ function ProjectPage() {
       if (res && !res.error) {
         setState({ list: res.list, loading: false, proTypeList: state.proTypeList });
       }
-      console.log("Show: ",res.list );
+    
     } catch (err) {
       console.error(err);
       setState((pre) => ({ ...pre, loading: false }));
@@ -80,7 +80,7 @@ function ProjectPage() {
   const fetchProTypeList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("project_type", "get", {});
+      const res = await request("project-type", "get", {});
       if (res && !res.error) {
         setState((pre) => ({
           ...pre,
@@ -149,8 +149,6 @@ function ProjectPage() {
         formData.append("_method", "PUT"); // Laravel update
       }
 
-      console.log("Sending request to:", `${config.base_url_api}/${endpoint}`);
-
       const res = await requestFormData(endpoint, method, formData);
 
       if (res && !res.error) {
@@ -177,7 +175,7 @@ function ProjectPage() {
       technologies: Array.isArray(record.technologies)
         ? record.technologies
         : [],
-      pro_type_id:record.pro_type_id,
+      pro_type_id: Number(record.pro_type_id ?? undefined),
       images: toFileList(record.images),
       start_date: record.start_date ? dayjs(record.start_date) : null,
       end_date: record.end_date ? dayjs(record.end_date) : null,

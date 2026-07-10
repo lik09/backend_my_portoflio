@@ -205,7 +205,14 @@ function TalkPage() {
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
       {/* Table */}
-      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} scroll={{ x: 'max-content' }} />
+      <Table 
+        bordered 
+        columns={columns} 
+        dataSource={state.list} 
+        loading={state.loading} 
+        rowKey="id"
+        scroll={{ x: 'max-content' }} 
+      />
     </div>
   );
 }

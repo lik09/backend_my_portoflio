@@ -15,8 +15,8 @@ export default function Toast({ type = "info", message, onClose, duration = 3000
     <div
       style={{
         position: "fixed",
-        top: 70,
-        right: 20,
+        top: 60,
+        right: 16,
         zIndex: 9999,
         minWidth: 250,
         animation: "slideIn 0.3s ease-out",

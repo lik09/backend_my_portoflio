@@ -68,7 +68,7 @@ class SkillController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Skill added successfully',
+                'message' => __('Skill added successfully'),
                 'list' => $skill
             ], 201);
 
@@ -127,7 +127,7 @@ class SkillController extends Controller
             $skill->update($validated);
 
             return response()->json([
-                'message' => 'Skill updated successfully',
+                'message' => __('Skill updated successfully'),
                 'list' => $skill
             ]);
 
@@ -157,7 +157,7 @@ class SkillController extends Controller
 
         return response()->json([
             'list' => $skill,
-            'message' => "Data deleted successfully!"
+            'message' => __('Data deleted successfully!')
         ], 200);
     }
 }

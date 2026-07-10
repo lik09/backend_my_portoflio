@@ -41,7 +41,7 @@ class ProjectTypeController extends Controller
             $project_type = ProjectType::create($validated);
 
             return response()->json([
-                'message' => 'Project Type added successfully',
+                'message' => __('Project Type added successfully'),
                 'project type' => $project_type
             ], 201);
 
@@ -81,7 +81,7 @@ class ProjectTypeController extends Controller
             $project_type->update($validated);
 
             return response()->json([
-                'message' => 'Project Type updated successfully',
+                'message' => __('Project Type updated successfully'),
                 'project Type' => $project_type
             ]);
 
@@ -105,7 +105,7 @@ class ProjectTypeController extends Controller
             $project_type->delete();
 
             return response()->json([
-                'message' => 'Project Type deleted successfully.'
+                'message' => __('Project Type deleted successfully.')
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

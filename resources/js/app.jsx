@@ -55,20 +55,20 @@ const AppWithConfig = () => {
             <Route element={<MainLayout />}>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/home.profile" element={<ProfilePage />} />
-              <Route path="/exp.experience_info" element={<ExperienceInfoPage />} />
+              <Route path="/exp.experience-info" element={<ExperienceInfoPage />} />
               <Route path="/exp.experience" element={<ExperiencePage />} />
-              <Route path="/edu.education_info" element={<EducationInfoPage />} />
-              <Route path="/edu.education_type" element={<EducationTypePage />} />
+              <Route path="/edu.education-info" element={<EducationInfoPage />} />
+              <Route path="/edu.education-type" element={<EducationTypePage />} />
               <Route path="/edu.school" element={<SchoolPage />} />
-              <Route path="/edu.short_course" element={<ShortSoursePage />} />
+              <Route path="/edu.short-course" element={<ShortSoursePage />} />
               <Route path="/pro.project" element={<ProjectPage />} />
-              <Route path="/pro.project_info" element={<ProjectInfoPage />} />
-              <Route path="/pro.project_type" element={<ProjectTypePage />} />
-              <Route path="/sk.skill_info" element={<SkillInfoPage />} />
-              <Route path="/sk.skill_type" element={<SkillTypePage />} />
+              <Route path="/pro.project-info" element={<ProjectInfoPage />} />
+              <Route path="/pro.project-type" element={<ProjectTypePage />} />
+              <Route path="/sk.skill-info" element={<SkillInfoPage />} />
+              <Route path="/sk.skill-type" element={<SkillTypePage />} />
               <Route path="/sk.skill" element={<SkillPage />} />
-              <Route path="/con.contact_me" element={<ConnectMePage />} />
-              <Route path="/con.contact_info" element={<ContactInfoPage />} />
+              <Route path="/con.contact-me" element={<ConnectMePage />} />
+              <Route path="/con.contact-info" element={<ContactInfoPage />} />
               <Route path="/con.talk" element={<TalkPage />} />
               <Route path="/setting" element={<SettingPage />} />
               <Route path="*" element={<h1>404 - Not Found</h1>} />

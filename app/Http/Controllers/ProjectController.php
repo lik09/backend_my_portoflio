@@ -89,7 +89,7 @@ class ProjectController extends Controller
 
             return response()->json([
                 'list'    => $project,
-                'message' => 'Data created successfully!'
+                'message' => __('Data created successfully!')
             ], 201);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -167,7 +167,7 @@ class ProjectController extends Controller
 
         return response()->json([
             'list'    => $project,
-            'message' => 'Data updated successfully!'
+            'message' => __('Data updated successfully!')
         ]);
     }
 
@@ -188,7 +188,7 @@ class ProjectController extends Controller
 
         return response()->json([
             'list' => $projects,
-            'message' => "Data deleted successfully!"
+            'message' => __('Data deleted successfully!')
         ], 200);
     }
 }

@@ -43,7 +43,7 @@ class ProjectInfoController extends Controller
             $project_info = ProjectInfo::create($validated);
 
             return response()->json([
-                'message' => 'Project Info added successfully',
+                'message' => __('Project Info added successfully'),
                 'list' => $project_info
             ], 201);
 
@@ -85,7 +85,7 @@ class ProjectInfoController extends Controller
             $project_info->update($validated);
 
             return response()->json([
-                'message' => 'Project Info updated successfully',
+                'message' => __('Project Info updated successfully'),
                 'project info' => $project_info
             ]);
 
@@ -109,7 +109,7 @@ class ProjectInfoController extends Controller
             $project_info->delete();
 
             return response()->json([
-                'message' => 'Project Info deleted successfully.'
+                'message' => __('Project Info deleted successfully.')
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;

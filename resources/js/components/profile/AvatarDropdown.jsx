@@ -16,7 +16,7 @@ const AvatarDropdown = () => {
   const displayName = authUser.name || authUser.username || "";
 
   const menuItems = [
-    { key: "/profile",  icon: <UserOutlined />,  label: "Profile" },
+    // { key: "/setting",  icon: <UserOutlined />,  label: "Profile" },
     { key: "/setting",  icon: <SettingOutlined />, label: "Setting" },
     { key: "logout",    icon: <LogoutOutlined />,  label: "Logout", danger: true },
   ];

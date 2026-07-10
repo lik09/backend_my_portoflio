@@ -45,7 +45,7 @@ class TalkController extends Controller
             $talks = Talks::create($validated);
 
             return response()->json([
-                'message' => 'Talk added successfully',
+                'message' => __('Talk added successfully'),
                 'list' => $talks
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -87,7 +87,7 @@ class TalkController extends Controller
             $talks->update($validated);
 
             return response()->json([
-                'message' => 'Talk updated successfully',
+                'message' => __('Talk updated successfully'),
                 'list' => $talks
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -111,7 +111,7 @@ class TalkController extends Controller
             $talks->delete();
             
             return response()->json([
-                'message' => 'Talk deleted successfully',
+                'message' => __('Talk deleted successfully'),
                 'list' => $talks
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {

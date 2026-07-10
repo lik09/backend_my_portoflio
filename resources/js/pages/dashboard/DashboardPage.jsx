@@ -9,9 +9,7 @@ import { request } from '../../utils/request';
 import { useLanguage } from '../../context/LanguageContext';
 import { getLocalizedField } from '../../utils/helper';
 
-// Keyed by skill_type.id (not the localized name) so colors stay stable
-// regardless of UI language or any text-encoding differences in translated names.
-// 1: Frontend, 2: Backend, 3: Tool & Other, 4: Mobile app, 10: Database, 11: Microsoft office
+
 const SKILL_TYPE_COLOR_BY_ID = {
   1: '#3ac6f7',
   2: '#5a4fcf',
@@ -85,8 +83,8 @@ const DashboardPage = () => {
           request('project', 'get'),
           request('skill', 'get'),
           request('school', 'get'),
-          request('short_course', 'get'),
-          request('contact_info', 'get'),
+          request('short-course', 'get'),
+          request('contact-info', 'get'),
         ]);
 
         setCounts({
@@ -111,9 +109,6 @@ const DashboardPage = () => {
     fetchAll();
   }, []);
 
-  useEffect(() => {
-  console.log("circleProjectList updated:", circleProjectList);
-}, [circleProjectList]);
 
   const skillChartData = useMemo(() => {
     const raw = skillList.map((skill) => ({

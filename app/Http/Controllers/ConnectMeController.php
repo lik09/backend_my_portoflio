@@ -49,7 +49,7 @@ class ConnectMeController extends Controller
             $connect_me = ConnectMe::create($validated);
 
             return response()->json([
-                'message' => 'Connect me added successfully',
+                'message' => __('Connect me added successfully'),
                 'list' => $connect_me
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -94,7 +94,7 @@ class ConnectMeController extends Controller
             $connect_me->update($validated);
             
             return response()->json([
-                'message' => 'Connect me updated successfully',
+                'message' => __('Connect me updated successfully'),
                 'list' => $connect_me
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -118,7 +118,7 @@ class ConnectMeController extends Controller
             $connect_me->delete();
              
             return response()->json([
-                'message' => 'Connect me deleted successfully',
+                'message' => __('Connect me deleted successfully'),
                 'list' => $connect_me
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {

@@ -76,7 +76,7 @@ function SkillPage() {
   const fetchSkillTypeList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("skill_type", "get", {});
+      const res = await request("skill-type", "get", {});
       if (res && !res.error) {
         setState((pre) => ({
           ...pre,
@@ -128,9 +128,7 @@ function SkillPage() {
         endpoint = `skill/${id}`;
         formData.append("_method", "PUT"); // Laravel update
       }
-
-      console.log("Sending request to:", `${config.base_url_api}/${endpoint}`);
-
+      
       const res = await requestFormData(endpoint, method, formData);
 
       if (res && !res.error) {
@@ -154,7 +152,7 @@ function SkillPage() {
     formRef.setFieldsValue({
       ...record,
 
-      skill_type_id:record.skill_type_id,
+      skill_type_id: Number(record.skill_type_id ?? undefined),
       images: toFileList(record.images),
     });
 

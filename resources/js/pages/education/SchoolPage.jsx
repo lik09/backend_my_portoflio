@@ -77,14 +77,14 @@ function SchoolPage() {
   const fetchEduTypeList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("education_type", "get", {});
+      const res = await request("education-type", "get", {});
       if (res && !res.error) {
         setState((pre) => ({
           ...pre,
           eduTypeList: res.list,
           loading: false,
         }));
-        console.log("fetchEduTypeList: ",res);
+     
       } else {
         setState((pre) => ({ ...pre, loading: false }));
       }

@@ -26,7 +26,7 @@ function ProjectInfoPage() {
   const fetchList = async () => {
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request("project_info", "get", {});
+      const res = await request("project-info", "get", {});
       if (res && !res.error) {
         const formatted = res.map((item) => ({ ...item, key: item.id }));
         setState({ list: formatted, loading: false });
@@ -52,11 +52,11 @@ function ProjectInfoPage() {
       bio_kh: values.bio_kh,
       status: values.status,
     };
-    let url = "project_info",
+    let url = "project-info",
       method = "post";
 
     if (formRef.getFieldValue("id")) {
-      url = `project_info/${formRef.getFieldValue("id")}`;
+      url = `project-info/${formRef.getFieldValue("id")}`;
       method = "put";
     }
 
@@ -96,7 +96,7 @@ function ProjectInfoPage() {
     if (!itemToDelete) return;
     setState((pre) => ({ ...pre, loading: true }));
     try {
-      const res = await request(`project_info/${itemToDelete.id}`, "delete", {});
+      const res = await request(`project-info/${itemToDelete.id}`, "delete", {});
       if (res && !res.error) {
         showToast("success", res.message || t('deletedSuccessfully'));
         fetchList();

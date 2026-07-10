@@ -46,21 +46,21 @@ Route::get('/system-info', function () {
 
 Route::apiResource('profiles', ProfileController::class);
 Route::apiResource('experiences', ExperienceController::class);
-Route::apiResource('experiences_info', ExperienceInfoController::class);
-Route::apiResource('project_info', ProjectInfoController::class);
-Route::apiResource('project_type', ProjectTypeController::class);
+Route::apiResource('experiences-info', ExperienceInfoController::class);
+Route::apiResource('project-info', ProjectInfoController::class);
+Route::apiResource('project-type', ProjectTypeController::class);
 Route::apiResource('project', ProjectController::class);
-Route::apiResource('skill_info', SkillInfoController::class);
-Route::apiResource('skill_type', SkillTypeController::class);
+Route::apiResource('skill-info', SkillInfoController::class);
+Route::apiResource('skill-type', SkillTypeController::class);
 Route::apiResource('skill', SkillController::class);
 Route::post('/send-message', [ContactFormMailController::class, 'send']);
 Route::apiResource('talk', TalkController::class);
-Route::apiResource('connect_me', ConnectMeController::class);
-Route::apiResource('contact_info', ContactInfoController::class);
-Route::apiResource('education_info', EducationInfoController::class);
-Route::apiResource('education_type', EducationTypeController::class);
+Route::apiResource('contact-me', ConnectMeController::class);
+Route::apiResource('contact-info', ContactInfoController::class);
+Route::apiResource('education-info', EducationInfoController::class);
+Route::apiResource('education-type', EducationTypeController::class);
 Route::apiResource('school', SchoolController::class);
-Route::apiResource('short_course', ShortCourseController::class);
+Route::apiResource('short-course', ShortCourseController::class);
 Route::get('/profiles/{id}/download-cv', [ProfileController::class, 'downloadCv']);
 Route::get('/profiles/{id}/preview-cv', [ProfileController::class, 'previewCv']);
 

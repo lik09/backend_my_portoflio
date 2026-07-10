@@ -49,7 +49,7 @@ class ShortCourseController extends Controller
             $short_course = ShortCourse::create($validated);
 
             return response()->json([
-                'message' => 'Course added successfully',
+                'message' => __('Course added successfully'),
                 'data'    => $short_course
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -98,7 +98,7 @@ class ShortCourseController extends Controller
 
             if (empty($validated)) {
                 return response()->json([
-                    'message' => 'No fields were provided for update',
+                    'message' => __('No fields were provided for update'),
                     'data'    => $course
                 ], 400);
             }
@@ -107,7 +107,7 @@ class ShortCourseController extends Controller
             $course->refresh();
 
             return response()->json([
-                'message' => 'Course updated successfully',
+                'message' => __('Course updated successfully'),
                 'data'    => $course
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -133,7 +133,7 @@ class ShortCourseController extends Controller
             $course->delete();
             
             return response()->json([
-                'message' => 'short course deleted successfully',
+                'message' => __('short course deleted successfully'),
                 'list' => $course
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
