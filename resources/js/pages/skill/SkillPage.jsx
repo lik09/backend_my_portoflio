@@ -65,7 +65,7 @@ function SkillPage() {
     try {
       const res = await request("skill", "get", {});
       if (res && !res.error) {
-        setState({ list: res.list, loading: false, skillTypeList: state.skillTypeList });
+        setState((pre) => ({ ...pre, list: res.list, loading: false }));
       }
     } catch (err) {
       console.error(err);

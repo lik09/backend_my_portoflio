@@ -66,7 +66,7 @@ function SchoolPage() {
     try {
       const res = await request("school", "get", {});
       if (res && !res.error) {
-        setState({ list: res.list, loading: false, eduTypeList: state.eduTypeList });
+        setState((pre) => ({ ...pre, list: res.list, loading: false }));
       }
     } catch (err) {
       console.error(err);

@@ -68,7 +68,7 @@ function ProjectPage() {
     try {
       const res = await request("project", "get", {});
       if (res && !res.error) {
-        setState({ list: res.list, loading: false, proTypeList: state.proTypeList });
+        setState((pre) => ({ ...pre, list: res.list, loading: false }));
       }
     
     } catch (err) {
