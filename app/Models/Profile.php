@@ -16,11 +16,11 @@ class Profile extends Model
         'cv',
         'cv_original_name',
         'photo_cover',
+        'permission_download_cv'
     ];
 
    
     protected $casts = [
         'connect_with_me' => 'array',
-     
     ];
 }

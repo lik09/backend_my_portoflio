@@ -53,5 +53,6 @@
     "Talk deleted successfully": "Talk deleted successfully",
     "Profile deleted successfully": "Profile deleted successfully",
     "No CV uploaded": "No CV uploaded",
-    "File not found": "File not found"
+    "File not found": "File not found",
+    "CV download is not permitted": "CV download is not permitted"
 }

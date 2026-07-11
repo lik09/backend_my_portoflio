@@ -79,6 +79,7 @@ function ProfilePage() {
       formData.append("bio", values.bio || "");
       formData.append("bio_kh", values.bio_kh || "");
       formData.append("status", values.status);
+      formData.append("permission_download_cv", values.permission_download_cv);
 
       if (Array.isArray(values.connect_with_me)) {
         formData.append("connect_with_me", JSON.stringify(values.connect_with_me));
@@ -143,6 +144,7 @@ function ProfilePage() {
 
 
       status: record.status,
+      permission_download_cv: record.permission_download_cv,
       id: record.id,
     });
 
@@ -383,7 +385,7 @@ function ProfilePage() {
 
       {/* Form Modal */}
       <Modal title= {t('profileInfo')} footer={null} open={openModal} onCancel={handleClose} width={700}>
-        <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1 }}>
+        <Form form={formRef} layout="vertical" onFinish={handleSave} initialValues={{ status: 1, permission_download_cv: 1 }}>
           <Form.Item label={t("fullNameEn")} name="fullname" rules={[{ required: true, message: t('plsInputFullNameEn') }]}>
             <Input />
           </Form.Item>
@@ -462,6 +464,10 @@ function ProfilePage() {
 
           <Form.Item label={t('status')} name="status" rules={[{ required: true, message: t('plsSelectStatus') }]}>
             <Select options={[{ label: t('active'), value: 1 }, { label: t('inactive'), value: 0 }]} />
+          </Form.Item>
+
+          <Form.Item label={t('permissionDownloadCv')} name="permission_download_cv" rules={[{ required: true, message: t('plsSelectPermissionDownloadCv') }]}>
+            <Select options={[{ label: t('allowed'), value: 1 }, { label: t('notAllowed'), value: 0 }]} />
           </Form.Item>
 
           <Form.Item>

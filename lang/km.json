@@ -53,5 +53,6 @@
     "Talk deleted successfully": "បានលុប Talk ដោយជោគជ័យ",
     "Profile deleted successfully": "បានលុបប្រវត្តិរូបដោយជោគជ័យ",
     "No CV uploaded": "មិនទាន់មាន CV ផ្ទុកឡើងទេ",
-    "File not found": "រកមិនឃើញឯកសារ"
+    "File not found": "រកមិនឃើញឯកសារ",
+    "CV download is not permitted": "មិនអនុញ្ញាតឱ្យទាញយក CV ទេ"
 }

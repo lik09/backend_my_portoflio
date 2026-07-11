@@ -33,6 +33,8 @@ class ProfileController extends Controller
                 'status' => 'required|boolean',
                 'cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
                 'photo_cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'permission_download_cv' => 'sometimes|boolean',
+
             ]);
 
             if (!empty($validated['connect_with_me'])) {
@@ -102,6 +104,7 @@ class ProfileController extends Controller
                 'status' => 'sometimes|required|boolean',
                 'cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
                 'photo_cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'permission_download_cv' => 'sometimes|boolean',
             ]);
 
             // Decode JSON string for connect_with_me
@@ -171,6 +174,10 @@ class ProfileController extends Controller
     public function downloadCv($id)
     {
         $profile = Profile::findOrFail($id);
+
+        if (!$profile->permission_download_cv) {
+            return response()->json(['message' => __('CV download is not permitted')], 403);
+        }
 
         if (!$profile->cv) {
             return response()->json(['message' => __('No CV uploaded')], 404);
