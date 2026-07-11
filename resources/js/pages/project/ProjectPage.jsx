@@ -365,7 +365,7 @@ function ProjectPage() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('project')}</h3>
         <Button
           type="primary"
@@ -456,13 +456,13 @@ function ProjectPage() {
               </Form.Item>
 
               <Row gutter={20}>
-                  <Col span={12}>
+                  <Col xs={24} sm={12}>
                     <Form.Item label={t('startDate')} name="start_date" rules={[{ required: true, message: t('plsInputStartYear') }]}>
                       <DatePicker format="DD-MM-YYYY" style={{ width: "100%" }} />
                     </Form.Item>
                   </Col>
 
-                  <Col span={12}>
+                  <Col xs={24} sm={12}>
                     <Form.Item label={t('endDate')} name="end_date" rules={[{ required: true, message: t('plsInputEndYear') }]}>
                       <DatePicker format="DD-MM-YYYY" style={{ width: "100%" }} />
                     </Form.Item>

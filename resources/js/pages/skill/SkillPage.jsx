@@ -275,7 +275,7 @@ function SkillPage() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
         <h3 style={{ fontSize: 18, fontWeight: 600 }}>{t('skillInfo')}</h3>
         <Button
           type="primary"

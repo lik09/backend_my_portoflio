@@ -300,3 +300,17 @@
 .custom-sider .ant-layout-sider-trigger:hover {
   background: var(--sider-trigger-hover-bg);
 }
+
+/* ===== Mobile layout ===== */
+@media (max-width: 767px) {
+  .ant-layout-header {
+    height: auto !important;
+    line-height: normal !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-title {
+    display: none;
+  }
+}

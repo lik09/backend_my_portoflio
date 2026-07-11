@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   DesktopOutlined,
   FileOutlined,
+  MenuOutlined,
   MoonOutlined,
   PieChartOutlined,
   SettingOutlined,
   SunOutlined,
 } from '@ant-design/icons';
-import { Flex, Layout, Menu, Segmented, Switch, theme } from 'antd';
+import { Button, Flex, Grid, Layout, Menu, Segmented, Switch, theme } from 'antd';
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import AvatarDropdown from '../profile/AvatarDropdown';
 import { AiOutlineFundProjectionScreen } from 'react-icons/ai';
@@ -22,6 +23,7 @@ import logo from '../../assets/logo/logo_P_2.png';
 
 
 const { Header, Content, Footer, Sider } = Layout;
+const { useBreakpoint } = Grid;
 
 function getItem(label, key, icon, children) {
   return { key, icon, children, label };
@@ -38,6 +40,17 @@ const MainLayout = () => {
 
   const { lang, setLang, t } = useLanguage();
   const { isDark, toggleTheme } = useTheme();
+
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+
+  useEffect(() => {
+    setCollapsed(isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (isMobile) setCollapsed(true);
+  }, [location.pathname, isMobile]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark-theme', isDark);
@@ -124,17 +137,19 @@ const MainLayout = () => {
     <Layout style={{ minHeight: '100vh'}}>
       <Sider
         collapsible
+        trigger={null}
         collapsed={collapsed}
         onCollapse={setCollapsed}
+        collapsedWidth={isMobile ? 0 : 80}
         width={240}
         className={`custom-sider${isDark ? ' custom-sider-dark' : ''}`}
         style={{
           boxShadow: '2px 0 8px rgba(0,0,0,0.08)',
           height: '100vh',
-          position: 'sticky',  
+          position: isMobile ? 'fixed' : 'sticky',
           top: 0,
           left: 0,
-         
+          zIndex: isMobile ? 1000 : undefined,
         }}
       >
         {/* Brand */}
@@ -188,22 +203,42 @@ const MainLayout = () => {
         </div>
       </Sider>
 
+      {isMobile && !collapsed && (
+        <div
+          onClick={() => setCollapsed(true)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.45)',
+            zIndex: 999,
+          }}
+        />
+      )}
+
       <Layout>
         <Header
           style={{
             padding: 0,
             background: colorBgContainer,
             borderBottom: divider,
-            position: 'sticky',  
-            flexShrink: 0, 
+            position: 'sticky',
+            flexShrink: 0,
             top: 0,
             zIndex: 9,
           }}
         >
-          <Flex align='center' justify='space-between' style={{ padding: '0px 18px', height: '100%' }}>
-            <h3 style={{ fontSize: 20, fontWeight: '600', margin: 0 }}> {t('myPortfolio')} </h3>
+          <Flex align='center' justify='space-between' wrap="wrap" style={{ padding: '0px 18px', height: '100%', rowGap: 8 }}>
+            <Flex align='center' gap={8}>
+              <Button
+                type="text"
+                icon={<MenuOutlined />}
+                onClick={() => setCollapsed((prev) => !prev)}
+                style={{ fontSize: 18 }}
+              />
+              <h3 className="header-title" style={{ fontSize: 20, fontWeight: '600', margin: 0 }}> {t('myPortfolio')} </h3>
+            </Flex>
 
-            <Flex align='center' gap={12}>
+            <Flex align='center' gap={12} wrap="wrap">
               <Segmented
                 value={lang}
                 options={[
@@ -225,11 +260,11 @@ const MainLayout = () => {
           </Flex>
         </Header>
 
-        <Content style={{ margin: '0 16px'}}>
+        <Content style={{ margin: isMobile ? '0 8px' : '0 16px'}}>
           <div
             style={{
               marginTop: 16,
-              padding: 24,
+              padding: isMobile ? 12 : 24,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}

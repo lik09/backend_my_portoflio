@@ -6,3 +6,12 @@
 body {
   font-family: 'Noto Sans Khmer', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 }
+
+/* Clamp fixed-width antd Modals to the viewport on small screens */
+@media (max-width: 576px) {
+  .ant-modal {
+    max-width: calc(100vw - 24px) !important;
+    margin: 12px auto;
+    top: 0;
+  }
+}
