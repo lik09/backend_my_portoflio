@@ -19,7 +19,8 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import SidebarConnectors from './SidebarConnectors'; 
 import './MainLayout.css';
-import logo from '../../assets/logo/logo_P_2.png';
+import logo_white from '../../assets/logo/logo_P_2.png';
+import logo_back from '../../assets/logo/logo_back.jpg';
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -175,7 +176,7 @@ const MainLayout = () => {
             onClick={() => navigate('/')}
           >
             <img
-              src={logo}
+              src={isDark ? logo_back : logo_white}
               alt="logo.png"
               style={{ height: !collapsed ? '100%' : '60%', transition: 'height 0.2s ease' }}
             />
@@ -233,7 +234,7 @@ const MainLayout = () => {
                 type="text"
                 icon={<MenuOutlined />}
                 onClick={() => setCollapsed((prev) => !prev)}
-                style={{ fontSize: 18 }}
+                style={{ fontSize: 18  }}
               />
               <h3 className="header-title" style={{ fontSize: 20, fontWeight: '600', margin: 0 }}> {t('myPortfolio')} </h3>
             </Flex>

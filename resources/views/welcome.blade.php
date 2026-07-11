@@ -5,6 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>MS Portfolio</title>
+         
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="{{ asset('logo/favicon.png') }}">
+        <link rel="shortcut icon" type="image/png" href="{{ asset('logo/favicon.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('logo/favicon.png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
