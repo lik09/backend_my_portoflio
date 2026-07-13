@@ -7,32 +7,13 @@ import { IoCodeSlash } from 'react-icons/io5';
 import { PiStudent } from 'react-icons/pi';
 import { request } from '../../utils/request';
 import { useLanguage } from '../../context/LanguageContext';
+import { useTheme } from '../../context/ThemeContext';
 import { getLocalizedField } from '../../utils/helper';
-
-
-const SKILL_TYPE_COLOR_BY_ID = {
-  1: '#3ac6f7',
-  2: '#5a4fcf',
-  3: '#eb2f96',
-  4: '#fa8c16',
-  10: '#52c41a',
-  11: '#13c2c2',
-};
-const DEFAULT_SKILL_COLOR = '#3ac6f7';
-
-// Keyed by project_type.id — សូមកែតម្លៃឲ្យត្រូវនឹង id ជាក់ស្តែងរបស់អ្នក
-const PROJECT_TYPE_COLOR_BY_ID = {
-  1: '#FF6B35',
-  2: '#5AD8A6',
-  3: '#5D7092',
-  4: '#F6BD16',
-  5: '#E8684A',
-  6: '#6DC8EC',
-};
-const DEFAULT_PROJECT_COLOR = '#FF6B35';
+import { getCategoricalColors } from '../../utils/colors';
 
 const DashboardPage = () => {
   const { t, lang } = useLanguage();
+  const { isDark } = useTheme();
   const [counts, setCounts] = useState({
     experience: 0,
     project: 0,
@@ -137,17 +118,15 @@ const DashboardPage = () => {
   }, [skillChartData]);
 
   const { skillTypes, skillTypeColors } = useMemo(() => {
-    const colorByDisplayType = new Map();
+    const types = [];
     for (const d of skillChartData) {
-      if (!colorByDisplayType.has(d.type)) {
-        colorByDisplayType.set(d.type, SKILL_TYPE_COLOR_BY_ID[d.typeId] ?? DEFAULT_SKILL_COLOR);
-      }
+      if (!types.includes(d.type)) types.push(d.type);
     }
     return {
-      skillTypes: Array.from(colorByDisplayType.keys()),
-      skillTypeColors: Array.from(colorByDisplayType.values()),
+      skillTypes: types,
+      skillTypeColors: getCategoricalColors(types, isDark),
     };
-  }, [skillChartData]);
+  }, [skillChartData, isDark]);
 
   const neededWidth = slotCount * MIN_SLOT_WIDTH;
   const chartWidth = Math.max(containerWidth, neededWidth);
@@ -172,12 +151,10 @@ const DashboardPage = () => {
       typeId: info.typeId,
     }));
 
-    const colors = data.map(
-      (d) => PROJECT_TYPE_COLOR_BY_ID[d.typeId] ?? DEFAULT_PROJECT_COLOR
-    );
+    const colors = getCategoricalColors(data.map((d) => d.type), isDark);
 
     return { projectChartData: data, projectTypeColors: colors };
-  }, [circleProjectList, lang, t]);
+  }, [circleProjectList, lang, t, isDark]);
 
   return (
     <div>
