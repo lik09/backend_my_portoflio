@@ -1,11 +1,19 @@
 import { useEffect, useRef } from 'react';
 
-// Converts a plain vertical mouse-wheel/trackpad scroll into horizontal
+// Converts genuine horizontal wheel/trackpad input (deltaX) into horizontal
 // scrolling, because app.css hides all scrollbars globally — on a desktop
-// with no touch/trackpad there'd otherwise be no way to scroll horizontally
-// at all. `selector`, if given, targets a descendant of containerRef's
-// element (e.g. antd Table's internal `.ant-table-content`); omit it to
-// target containerRef's element directly.
+// with no touch there'd otherwise be no visible way to see the content is
+// scrollable. Only engages for deltaX !== 0 (a trackpad's two-finger
+// horizontal swipe, or shift+wheel — both browsers and OSes convert
+// shift+vertical-wheel into deltaX before it reaches JS) — a plain vertical
+// mouse-wheel scroll (deltaY only) is left completely alone so it doesn't
+// hijack the page's normal vertical scroll while hovering a horizontally
+// scrollable table/chart. Mouse-only users without a trackpad can instead
+// use click-and-drag (see useDragToScroll) to pan horizontally.
+//
+// `selector`, if given, targets a descendant of containerRef's element (e.g.
+// antd Table's internal `.ant-table-content`); omit it to target
+// containerRef's element directly.
 //
 // Must be a native, non-passive `wheel` listener — React attaches its
 // synthetic wheel listener as passive, so e.preventDefault() inside a JSX
@@ -42,10 +50,10 @@ export function useHorizontalWheelScroll(containerRef, { selector, enabled = tru
 
     const handleWheel = (e) => {
       if (el.scrollWidth <= el.clientWidth) return; // nothing to scroll — let the page scroll normally
-      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (e.deltaX === 0) return; // pure vertical wheel — don't hijack the page's normal scroll
       e.preventDefault();
       const max = el.scrollWidth - el.clientWidth;
-      targetRef.current = Math.min(Math.max(targetRef.current + delta, 0), max);
+      targetRef.current = Math.min(Math.max(targetRef.current + e.deltaX, 0), max);
       if (rafRef.current == null) rafRef.current = requestAnimationFrame(step);
     };
 
