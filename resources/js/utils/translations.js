@@ -194,6 +194,7 @@ export const translations = {
     iconImport: 'Icon Import',
     backgroundBox: 'Background Box',
     plsInputConnectionBy: 'Please input connection by',
+    swipeToScroll: 'Swipe to see more',
   },
   km: {
     // Sidebar navigation
@@ -390,5 +391,6 @@ export const translations = {
     iconImport: 'នាំចូលរូបតំណាង',
     backgroundBox: 'ប្រអប់ផ្ទៃខាងក្រោយ',
     plsInputConnectionBy: 'សូមបញ្ចូលព័ត៌មានភ្ជាប់ដោយ',
+    swipeToScroll: 'អូសដើម្បីមើលបន្ថែម',
   },
 };

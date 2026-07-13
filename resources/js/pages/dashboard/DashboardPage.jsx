@@ -1,5 +1,5 @@
 import { BookOutlined, DesktopOutlined, FileOutlined } from '@ant-design/icons';
-import { Card, Col, Divider, Empty, Row, Spin, Statistic, theme } from 'antd';
+import { Card, Col, Divider, Empty, Grid, Row, Spin, Statistic, theme } from 'antd';
 import { Column, Pie } from '@ant-design/plots';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AiOutlineFundProjectionScreen } from 'react-icons/ai';
@@ -26,6 +26,9 @@ const DashboardPage = () => {
   const [circleProjectList, setCircleProjectList] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token } = theme.useToken();
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
 
   // --- dynamic width handling ---
   const chartWrapperRef = useRef(null);
@@ -130,6 +133,7 @@ const DashboardPage = () => {
 
   const neededWidth = slotCount * MIN_SLOT_WIDTH;
   const chartWidth = Math.max(containerWidth, neededWidth);
+  const isScrollable = chartWidth > containerWidth && containerWidth > 0;
 
 
   // -------- Project pie chart data -------
@@ -201,7 +205,7 @@ const DashboardPage = () => {
 
         <Divider orientation="left">{t('skill')}</Divider>
 
-        <Card style={{ borderRadius: 10 }}>
+        <Card style={{ borderRadius: 10 }} styles={{ body: { padding: isMobile ? 12 : 24 } }}>
           {skillChartData.length > 0 ? (
             <>
               {/* Custom legend — HTML/CSS ធម្មតា, គ្មានកាត់ label ដាច់ខាត */}
@@ -234,14 +238,20 @@ const DashboardPage = () => {
                 ))}
               </div>
 
-              <div ref={chartWrapperRef} style={{ overflowX: 'auto', width: '100%'}}>
+              {isMobile && isScrollable && (
+                <div style={{ textAlign: 'center', color: token.colorTextSecondary, fontSize: 11, marginBottom: 6 }}>
+                  ⇆ {t('swipeToScroll')}
+                </div>
+              )}
+
+              <div ref={chartWrapperRef} style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
                 <div style={{ width: chartWidth }}>
                   <Column
                     data={skillChartData}
                     xField="name"
                     yField="pct_status"
                     colorField="type"
-                    height={480}
+                    height={isMobile ? 300 : 480}
 
                     scale={{
                       x: { padding: 0.1 },
@@ -259,7 +269,7 @@ const DashboardPage = () => {
                       x: {
                         labelAutoRotate: false,
                         labelAutoHide: false,
-                        style: { labelFontSize: 12 , labelFill: token.colorText},
+                        style: { labelFontSize: isMobile ? 10 : 12 , labelFill: token.colorText},
                       },
                       y: {
                         grid: true,
@@ -277,7 +287,7 @@ const DashboardPage = () => {
                     label={{
                       text: 'pct_status',
                       position: 'top',
-                      style: { fill: '#666', fontSize: 12, fontWeight: 500 },
+                      style: { fill: '#666', fontSize: isMobile ? 10 : 12, fontWeight: 500 },
                     }}
 
                     interaction={{
@@ -294,13 +304,13 @@ const DashboardPage = () => {
 
         <Divider orientation="left">{t('project')}</Divider>
 
-        <Card style={{ borderRadius: 10 }}>
+        <Card style={{ borderRadius: 10 }} styles={{ body: { padding: isMobile ? 12 : 24 } }}>
           {projectChartData.length > 0 ? (
             <Pie
               data={projectChartData}
               angleField="value"
               colorField="type"
-              height={400}
+              height={isMobile ? 320 : 400}
               radius={0.75}
               scale={{
                 color: { domain: projectChartData.map((d) => d.type), range: projectTypeColors },
@@ -309,16 +319,16 @@ const DashboardPage = () => {
                 text: (d) => `${d.type}\n${d.value}`,
                 position: 'outside',
                 style: {
-                  fontSize: 12,
-                  fill: token.colorText,  
-                
+                  fontSize: isMobile ? 10 : 12,
+                  fill: token.colorText,
+
                 },
               }}
               legend={{
                 color: {
-                  position: 'right',
+                  position: isMobile ? 'bottom' : 'right',
                   itemMarker: 'circle',
-                  itemLabelFill: token.colorText ,  
+                  itemLabelFill: token.colorText ,
                 },
               }}
               tooltip={{

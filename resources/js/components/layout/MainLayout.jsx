@@ -216,7 +216,7 @@ const MainLayout = () => {
         />
       )}
 
-      <Layout>
+      <Layout style={{ minWidth: 0 }}>
         <Header
           style={{
             padding: 0,
