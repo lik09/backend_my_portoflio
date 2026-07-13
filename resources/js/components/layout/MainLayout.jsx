@@ -268,6 +268,7 @@ const MainLayout = () => {
               padding: isMobile ? 12 : 24,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
+              
             }}
           >
             <Outlet />

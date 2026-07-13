@@ -10,6 +10,8 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
 import { getLocalizedField } from '../../utils/helper';
 import { getCategoricalColors } from '../../utils/colors';
+import { useHorizontalWheelScroll } from '../../hooks/useHorizontalWheelScroll';
+import { useDragToScroll } from '../../hooks/useDragToScroll';
 
 const DashboardPage = () => {
   const { t, lang } = useLanguage();
@@ -34,6 +36,13 @@ const DashboardPage = () => {
   const chartWrapperRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const MIN_SLOT_WIDTH = 130;
+
+  // --- click/touch-and-drag horizontal scroll ---
+  // Uses Pointer Events so ONE set of handlers covers mouse, touch, and pen.
+  // This replaces relying on native touch scrolling, which the chart canvas
+  // (G2Plot) can swallow via its own touchstart/touchmove listeners for
+  // tooltips — leaving native overflow-scroll unable to fire on mobile.
+  const dragHandlers = useDragToScroll(chartWrapperRef);
 
   useEffect(() => {
     if (!chartWrapperRef.current) return;
@@ -82,7 +91,7 @@ const DashboardPage = () => {
 
         setSkillList(Array.isArray(sk) ? sk : (sk?.list ?? []));
         setCircleProjectList(Array.isArray(pro) ? pro : (pro?.list ?? []));
-     
+
       } catch (err) {
         console.error('Dashboard fetch error:', err);
       } finally {
@@ -98,7 +107,10 @@ const DashboardPage = () => {
     const raw = skillList.map((skill) => ({
       name: getLocalizedField(skill, 'name', lang),
       pct_status: skill.pct_status,
-      type: getLocalizedField(skill.skill_type, 'name', lang),
+      // Fall back to "Other" so a skill with no assigned skill_type still gets
+      // a real, distinct domain entry instead of `undefined` colliding with
+      // every other untyped skill and falling back to the chart's default color.
+      type: getLocalizedField(skill.skill_type, 'name', lang) || t('other'),
       typeId: skill.skill_type?.id,
     }));
 
@@ -113,7 +125,7 @@ const DashboardPage = () => {
     // Group bars by skill type so same-type bars render as one contiguous
     // cluster instead of being interleaved with other types.
     return deduped.sort((a, b) => (a.typeId ?? Infinity) - (b.typeId ?? Infinity));
-  }, [skillList, lang]);
+  }, [skillList, lang, t]);
 
   const slotCount = useMemo(() => {
     const uniqueNames = new Set(skillChartData.map((d) => d.name));
@@ -134,6 +146,11 @@ const DashboardPage = () => {
   const neededWidth = slotCount * MIN_SLOT_WIDTH;
   const chartWidth = Math.max(containerWidth, neededWidth);
   const isScrollable = chartWidth > containerWidth && containerWidth > 0;
+
+  // Desktop mouse wheel / trackpad — hovering the chart pans it instead of
+  // scrolling the page, with eased motion (see hook for why it must be a
+  // native, non-passive listener rather than JSX onWheel).
+  useHorizontalWheelScroll(chartWrapperRef, { enabled: isScrollable });
 
 
   // -------- Project pie chart data -------
@@ -244,7 +261,22 @@ const DashboardPage = () => {
                 </div>
               )}
 
-              <div ref={chartWrapperRef} style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+              <div
+                ref={chartWrapperRef}
+                className="chart-scroll-hidden"
+                style={{
+                  overflowX: 'auto',
+                  width: '100%',
+                  // Let the browser handle vertical page scroll natively, but hand
+                  // horizontal panning fully to our pointer handlers below — this
+                  // stops the chart canvas's own touch listeners from blocking
+                  // native scroll on mobile.
+                  touchAction: 'pan-y',
+                  cursor: isScrollable ? 'grab' : 'default',
+                  userSelect: 'none',
+                }}
+                {...dragHandlers}
+              >
                 <div style={{ width: chartWidth }}>
                   <Column
                     data={skillChartData}

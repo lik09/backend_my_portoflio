@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Input, Modal, Row, Select, Space, Table, Tag } from "antd";
 import { MdOutlineAdd } from "react-icons/md";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
@@ -6,6 +6,8 @@ import { request } from "../../utils/request";
 import Toast from "../../components/message/Toast";
 import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
+import { useHorizontalWheelScroll } from "../../hooks/useHorizontalWheelScroll";
+import { useDragToScroll } from "../../hooks/useDragToScroll";
 
 function ExperiencePage() {
   const { lang, t } = useLanguage();
@@ -13,6 +15,9 @@ function ExperiencePage() {
   const [openModal, setOpenModal] = useState(false);
   const [formRef] = Form.useForm();
   const [toast, setToast] = useState(null);
+  const tableWrapperRef = useRef(null);
+  useHorizontalWheelScroll(tableWrapperRef, { selector: '.ant-table-content' });
+  const dragHandlers = useDragToScroll(tableWrapperRef, { selector: '.ant-table-content' });
 
   // Delete modal state
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -342,7 +347,13 @@ function ExperiencePage() {
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
       {/* Table */}
-      <Table bordered columns={columns} dataSource={state.list} loading={state.loading} scroll={{ x: 'max-content' }}  />
+      <div
+        ref={tableWrapperRef}
+        style={{ cursor: 'grab', userSelect: 'none', touchAction: 'pan-y' }}
+        {...dragHandlers}
+      >
+        <Table  bordered columns={columns} dataSource={state.list} loading={state.loading} scroll={{ x: 'max-content' }}  />
+      </div>
     </div>
   );
 }

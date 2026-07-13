@@ -7,6 +7,33 @@ body {
   font-family: 'Noto Sans Khmer', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
+
+/* Hide scrollbars globally, everywhere in the app — scrolling itself keeps
+   working normally via wheel, touch, drag, and keyboard; only the visible
+   scrollbar track/thumb is removed. */
+* {
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE / legacy Edge */
+}
+*::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari, Edge (Chromium) */
+}
+
+.ant-table-content,
+.ant-table-body {
+  will-change: scroll-position;
+  contain: paint;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.chart-scroll-hidden {
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE/Edge legacy */
+}
+.chart-scroll-hidden::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari, Edge (Chromium) */
+}
+
 /* Clamp fixed-width antd Modals to the viewport on small screens */
 @media (max-width: 576px) {
   .ant-modal {
