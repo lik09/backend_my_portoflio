@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Col,
@@ -21,6 +21,8 @@ import Toast from "../../components/message/Toast";
 import { config } from "../../utils/config";
 import { useLanguage } from "../../context/LanguageContext";
 import { getLocalizedField } from "../../utils/helper";
+import { useHorizontalWheelScroll } from "../../hooks/useHorizontalWheelScroll";
+import { useDragToScroll } from "../../hooks/useDragToScroll";
 
 function SchoolPage() {
   const { lang, t } = useLanguage();
@@ -30,6 +32,9 @@ function SchoolPage() {
   const [toast, setToast] = useState(null);
   const [logoFileList, setLogoFileList] = useState([]);
   const [imageFileList, setImageFileList] = useState([]);
+  const tableWrapperRef = useRef(null);
+  useHorizontalWheelScroll(tableWrapperRef, { selector: '.ant-table-content' });
+  const dragHandlers = useDragToScroll(tableWrapperRef, { selector: '.ant-table-content' });
 
   // Delete modal state
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -469,14 +474,20 @@ function SchoolPage() {
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
       {/* Table */}
-      <Table
-        bordered
-        columns={columns}
-        dataSource={state.list}
-        loading={state.loading}
-        rowKey="id"
-        scroll={{ x: "max-content" }}
-      />
+      <div
+        ref={tableWrapperRef}
+        style={{ cursor: 'grab', userSelect: 'none', touchAction: 'pan-y' }}
+        {...dragHandlers}
+      >
+        <Table
+          bordered
+          columns={columns}
+          dataSource={state.list}
+          loading={state.loading}
+          rowKey="id"
+          scroll={{ x: "max-content" }}
+        />
+      </div>
     </div>
   );
 }
